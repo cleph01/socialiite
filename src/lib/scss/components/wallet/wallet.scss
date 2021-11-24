@@ -1,0 +1,71 @@
+@import "../../variables/variables";
+
+body {
+    background-image: $background-gradient;
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        height: 100vh;
+
+        .wallet-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 100px;
+
+            .header {
+                margin-bottom: 20px;
+
+                border-radius: 10px;
+                .emoji {
+                    text-align: center;
+                    padding: 6px;
+                    font-size: 48px;
+                }
+            }
+        }
+    }
+
+    .claim__btn {
+        display: block;
+        position: relative;
+        width: 115px;
+        height: auto;
+        padding: 5px;
+        border-radius: 25px;
+        background: #1c76d2;
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f9f9f9;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s ease-out;
+        margin-top: 15px;
+    }
+
+    .cancel__btn {
+        display: block;
+        position: relative;
+        width: 115px;
+        height: auto;
+        padding: 5px;
+        border-radius: 25px;
+        background: #f9f9f9;
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1c76d2;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s ease-out;
+        margin-top: 15px;
+        margin-left: 10px;
+    }
+}

@@ -1,0 +1,28 @@
+@import "../../variables/variables";
+
+.geolocation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .geolocation-header {
+        color: $text-color;
+    }
+    .geolocation-button {
+        display: block;
+        position: relative;
+        width: 150px;
+        height: 40px;
+        border-radius: 25px;
+        background: #f9f9f9;
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1c76d2;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s ease-out;
+    }
+}

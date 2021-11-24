@@ -1,0 +1,45 @@
+.hero-header__grid {
+    display: flex;
+    width: 90vmin;
+    margin: 50px 5px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+
+    @media (max-width: 600px) {
+        display: block;
+    }
+
+    .col {
+        flex: 1;
+    }
+
+    .col-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+
+        .hero__details {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin-top: 6px;
+
+            .hero__detail {
+                margin-top: 6px;
+                font-weight: 500;
+            }
+        }
+    }
+    .col-right {
+        display: flex;
+        flex-direction: column;
+        margin-top: 6px;
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    }
+}

@@ -1,0 +1,29 @@
+@import "../../variables/variables";
+
+.header {
+    background-color: #faf9f9;
+
+    a {
+        text-decoration: none;
+    }
+}
+
+.wallet-item-emoji {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 55px;
+}
+
+.description {
+    font-size: 35px;
+    text-align: center;
+}
+
+.footer {
+    background-color: #3674b3;
+    justify-content: space-around;
+
+    .icon {
+        color: #f0f0f0;
+    }
+}
