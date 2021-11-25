@@ -27,6 +27,8 @@ const style = {
     p: 4,
 };
 
+const authUser = localStorage.getItem("authUser");
+
 function ShareModal({
     openShareModal,
     handleCloseShareModal,
@@ -40,7 +42,7 @@ function ShareModal({
                   ": http://localhost:3000/shops/" +
                   shareBusiness.businessId
                 : "undefined"
-        }/${userState.userId}`
+        }/${authUser.uid}`
     );
 
     const smsMessage =

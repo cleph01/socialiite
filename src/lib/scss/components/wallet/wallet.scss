@@ -1,34 +1,13 @@
 @import "../../variables/variables";
 
-body {
-    background-image: $background-gradient;
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        height: 100vh;
-
-        .wallet-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            margin-top: 100px;
-
-            .header {
-                margin-bottom: 20px;
-
-                border-radius: 10px;
-                .emoji {
-                    text-align: center;
-                    padding: 6px;
-                    font-size: 48px;
-                }
-            }
-        }
-    }
+.wallet-wrapper {
+    width: 90vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 15px 0px;
 
     .claim__btn {
         display: block;

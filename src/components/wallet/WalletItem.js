@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -16,11 +16,11 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import CheckIcon from "@mui/icons-material/Check";
 
-import { db } from "../../../firebase/firebase_config";
+import { db } from "../../services/firebase/firebase-config";
 
 import "../../lib/scss/components/wallet/wallet-item.scss";
 
-const Wallet_Item = ({
+const WalletItem = ({
     itemDetails,
     setShareBusiness,
     handleOpen,
@@ -136,4 +136,4 @@ const Wallet_Item = ({
     );
 };
 
-export default Wallet_Item;
+export default React.memo(WalletItem);

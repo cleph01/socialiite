@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
+    height: 100vmin;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
@@ -12,7 +12,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 80%;
+        width: 80vmin;
         color: #999999;
         height: 75vh;
         background-color: #fff;

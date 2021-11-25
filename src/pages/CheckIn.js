@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, forwardRef } from "react";
 import { useParams } from "react-router-dom";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 
-import { db } from "../../firebase/firebase_config";
+import { db } from "../services/firebase/firebase-config";
 import firebase from "firebase";
 
-import GetLocation from "./components/GetLocation";
+import GetLocation from "../components/checkin/GetLocation";
 import Auth from "../components/auth/Auth";
 import ClaimModal from "../components/modals/claim-modal/ClaimModal";
 import AvailablePrizes from "../components/checkin/AvailablePrizes";

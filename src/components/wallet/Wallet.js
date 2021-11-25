@@ -8,13 +8,15 @@ import ClaimModal from "../modals/claim-modal/ClaimModal";
 import ShareModal from "../modals/share-modal/ShareModal";
 import WalletItem from "./WalletItem";
 
+import UpcomingMessage from "../../components/UpcomingMessage";
+
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
 import { db } from "../../services/firebase/firebase-config";
 
-const Wallet = (props) => {
+const Wallet = () => {
     // State to hold post data from Firebase call
 
     const { userState } = useContext(UserContext);
@@ -42,15 +44,24 @@ const Wallet = (props) => {
 
     //every time a new post is added this code fires
     useEffect(() => {
-        db.collection(`user/${userState.userId}/wallet`)
-            .where("redeemed", "==", false)
-            .onSnapshot((snapshot) => {
+        const authUser = localStorage.getItem("authUser");
+
+        db.collection("user")
+            .doc(authUser.uid)
+            .collection("wallet")
+            .get()
+            .then((items) => {
+                console.log("Items in query: ", items);
+
                 setWallet(
-                    snapshot.docs.map((doc) => ({
+                    items.docs.map((doc) => ({
                         walletItemId: doc.id,
                         walletItem: doc.data(),
                     }))
                 );
+            })
+            .catch((error) => {
+                console.log("Error Getting Wallet Items: ", error);
             });
     }, []);
 
@@ -90,30 +101,31 @@ const Wallet = (props) => {
 
     return (
         <>
-            <div className="container">
-                <div className="wallet-wrapper">
-                    <div className="header">
-                        <div className="emoji">&#x1F4B0;</div>
-                    </div>
-                    {wallet.length > 0 ? (
-                        wallet.map((item, index) => (
-                            <WalletItem
-                                key={index}
-                                itemId={item.walletItemId}
-                                itemDetails={item.walletItem}
-                                handleOpen={handleOpen}
-                                handleCloseClaimModal={handleCloseClaimModal}
-                                setShareBusiness={setShareBusiness}
-                                setOpenShareModal={setOpenShareModal}
-                            />
-                        ))
-                    ) : (
-                        <div>Empty Wallet</div>
-                    )}
-                </div>
+            <div className="wallet-wrapper">
+                <h3>Digital Wallet</h3>
+
+                {wallet.length > 0 ? (
+                    wallet.map((item, index) => (
+                        <WalletItem
+                            key={index}
+                            itemId={item.walletItemId}
+                            itemDetails={item.walletItem}
+                            handleOpen={handleOpen}
+                            handleCloseClaimModal={handleCloseClaimModal}
+                            setShareBusiness={setShareBusiness}
+                            setOpenShareModal={setOpenShareModal}
+                        />
+                    ))
+                ) : (
+                    <UpcomingMessage
+                        message="Checkin, Promote, and Win!!"
+                        emoji="💰"
+                    />
+                )}
             </div>
-            <ClaimModal />
-            <ShareModal />
+
+            <ClaimModal handleRedeem={handleRedeem} />
+            <ShareModal handleCloseShareModal={handleCloseShareModal} />
             <Stack spacing={2} sx={{ width: "100%" }}>
                 <Snackbar
                     open={openSnackBar}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { firebase } from "../firebase/firebase_config";
+import firebase from "firebase";
 
 function useAuthListener() {
     const [authUser, setAuthUser] = useState(

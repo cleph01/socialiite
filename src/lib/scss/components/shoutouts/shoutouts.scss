@@ -1,0 +1,13 @@
+.shoutouts-container {
+    display: flex;
+    justify-content: center;
+    background-color: #f9f9f9;
+    width: 90vmin;
+    border-radius: 5px;
+    padding: 15px 0px;
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+}

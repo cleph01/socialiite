@@ -4,13 +4,13 @@ import { Redirect } from "react-router";
 
 import { useParams } from "react-router-dom";
 
-import Auth from "../../Auth";
+import Auth from "../components/auth/Auth";
 
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 
 import "../lib/scss/pages/login.scss";
 
-import logo from "../../assets/images/logos/logo.png";
+import logo from "../assets/images/logos/logo.png";
 
 function Login() {
     const { referrerId } = useParams();
@@ -21,7 +21,7 @@ function Login() {
         <>
             <div className="login__container">
                 <div className="login__wrapper">
-                    <div className="image-wrapper">
+                    <div className="image__wrapper">
                         <img className="logo" src={logo} alt="logo" />
                     </div>
 
@@ -33,7 +33,7 @@ function Login() {
                         </center>
                     </h3>
 
-                    <Auth referrerId={referrerId} redirectPath="/profile" />
+                    <Auth referrerId={referrerId} redirectPath="/hero" />
                 </div>
             </div>
         </>

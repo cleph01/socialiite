@@ -1,15 +1,18 @@
 import { lazy, Suspense, useReducer, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-// import useAuthListener from "./hooks/use-auth-listener";
+import useAuthListener from "./hooks/use-auth-listener";
 
 import { UserContext } from "./contexts/UserContext";
 import UserReducer from "./store/reducers/userReducer.js";
 
 import Skeleton from "@mui/material/Skeleton";
 
+import * as ROUTES from "./routing/routes";
 import * as COMPONENTS from "./routing/routeComponents";
 import Hero from "./pages/Hero";
+import PrivateRoute from "./routing/PrivateRoute";
+import IsUserLoggedIn from "./routing/IsUserLoggedIn";
 
 import "./App.css";
 
@@ -31,7 +34,7 @@ const initialState = {
 function App() {
     const [userState, userDispatch] = useReducer(UserReducer, initialState);
 
-    // const { authUser } = useAuthListener();
+    const { authUser } = useAuthListener();
 
     return (
         <div className="App">
@@ -55,13 +58,34 @@ function App() {
                             </div>
                         }
                     >
-                        <Route path="/hero" component={COMPONENTS.MyProfile} />
+                        <Switch>
+                            <IsUserLoggedIn
+                                authUser={authUser}
+                                path={ROUTES.LOGIN}
+                                loggedInPath={ROUTES.MY_PROFILE}
+                            >
+                                <COMPONENTS.Login />
+                            </IsUserLoggedIn>
 
-                        <Route exact path="/" component={COMPONENTS.NotFound} />
+                            <PrivateRoute
+                                path={ROUTES.MY_PROFILE}
+                                authUser={authUser}
+                            >
+                                <COMPONENTS.MyProfile />
+                            </PrivateRoute>
 
-                        <Route>
-                            <COMPONENTS.NotFound />
-                        </Route>
+                            {/* <Route
+                                path="/hero"
+                                component={COMPONENTS.MyProfile}
+                                authUser={authUser}
+                            /> */}
+
+                            <Route exact path="/" component={COMPONENTS.Home} />
+
+                            <Route>
+                                <COMPONENTS.NotFound />
+                            </Route>
+                        </Switch>
                     </Suspense>
                 </Router>
             </UserContext.Provider>

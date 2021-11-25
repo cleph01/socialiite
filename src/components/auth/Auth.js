@@ -1,6 +1,6 @@
 import { useState } from "react";
+import firebase from "firebase";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import { firebase } from "./firebase/firebase_config";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 

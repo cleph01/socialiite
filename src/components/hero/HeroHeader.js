@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import Avatar from "@mui/material/Avatar";
 import Socials from "./Socials";
-import Button from "../Button";
+import MenuButton from "../MenuButton";
 
 import "../../lib/scss/components/hero/hero-header.scss";
+
+import { auth } from "../../services/firebase/firebase-config";
 
 const emojiStyle = {
     display: "inline-block",
@@ -12,7 +14,15 @@ const emojiStyle = {
 };
 
 function HeroHeader({ user }) {
-    console.log("User at Hero: ", user);
+    let history = useHistory();
+
+    const handleSignOut = () => {
+        console.log("clicking signout");
+        auth.signOut();
+
+        history.push("/login");
+    };
+
     return (
         <>
             {/* Main Grid */}
@@ -38,26 +48,33 @@ function HeroHeader({ user }) {
                     <div className="col-right">
                         <Socials socials={user.socials} />
                         <Link to="/hero/shoutouts">
-                            <Button
+                            <MenuButton
                                 text="Shoutouts"
                                 color="#213b77"
                                 emoji={<span style={emojiStyle}>🗣️</span>}
                             />
                         </Link>
                         <Link to="/hero/wallet">
-                            <Button
+                            <MenuButton
                                 text="Wallet"
                                 color="#213b77"
                                 emoji={<span style={emojiStyle}>💰</span>}
                             />
                         </Link>
                         <Link to="/hero/partner-shops/">
-                            <Button
+                            <MenuButton
                                 text="Partner Shops"
                                 color="#213b77"
                                 emoji={<span style={emojiStyle}>🤜 🤛</span>}
                             />
                         </Link>
+                        <div onClick={handleSignOut}>
+                            <MenuButton
+                                text="Signout"
+                                color="#bb3133"
+                                emoji={<span style={emojiStyle}>✌️</span>}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
