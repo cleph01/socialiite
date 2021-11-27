@@ -10,7 +10,7 @@ import Skeleton from "@mui/material/Skeleton";
 
 import * as ROUTES from "./routing/routes";
 import * as COMPONENTS from "./routing/routeComponents";
-import Hero from "./pages/Hero";
+
 import PrivateRoute from "./routing/PrivateRoute";
 import IsUserLoggedIn from "./routing/IsUserLoggedIn";
 
@@ -29,6 +29,8 @@ const initialState = {
     followersFriends: null,
     followingBusinesses: null,
     userId: null,
+    gotDistance: false,
+    geoDistance: null,
 };
 
 function App() {
@@ -38,7 +40,7 @@ function App() {
 
     return (
         <div className="App">
-            <UserContext.Provider value={{ userState, userDispatch }}>
+            <UserContext.Provider value={{ authUser, userState, userDispatch }}>
                 <Router>
                     <Suspense
                         fallback={
@@ -74,11 +76,15 @@ function App() {
                                 <COMPONENTS.MyProfile />
                             </PrivateRoute>
 
-                            {/* <Route
-                                path="/hero"
-                                component={COMPONENTS.MyProfile}
-                                authUser={authUser}
-                            /> */}
+                            <Route
+                                path={ROUTES.STORE}
+                                component={COMPONENTS.Store}
+                            />
+
+                            <Route
+                                path={ROUTES.CHECKIN}
+                                component={COMPONENTS.Checkin}
+                            />
 
                             <Route exact path="/" component={COMPONENTS.Home} />
 

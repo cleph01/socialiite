@@ -19,7 +19,7 @@ function ShopList() {
                 console.log("Shops in query: ", shops);
                 setShops(
                     shops.docs.map((doc) => ({
-                        shopId: doc.id,
+                        businessId: doc.id,
                         ...doc.data(),
                     }))
                 );
@@ -39,7 +39,7 @@ function ShopList() {
             sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         >
             {shops.map((shop, i) => (
-                <Shop key={shop.shopId} shop={shop} />
+                <Shop key={shop.businessId} shop={shop} />
             ))}
         </List>
     );

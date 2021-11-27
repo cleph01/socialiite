@@ -8,13 +8,13 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 
-function Shop({ shop }) {
+function Shop({ business }) {
     const [prizes, setPrizes] = useState();
 
-    console.log("Shop Item: ", shop);
+    console.log("Shop Item: ", business);
     useEffect(() => {
         db.collection("shops")
-            .doc(shop.shopId)
+            .doc(business.businessId)
             .collection("prizes")
             .get()
             .then((prizes) => {
@@ -37,20 +37,21 @@ function Shop({ shop }) {
     return (
         <div>
             <Link
-                to={`/shops/${shop.shopId}`}
+                to={`/shops/${business.businessId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
             >
                 <Divider />
                 <ListItem>
                     <ListItemAvatar>
-                        <Avatar src={shop.logoUrl} />
+                        <Avatar src={business.logoUrl} />
                     </ListItemAvatar>
                     <div className="bla">
                         <Typography type="headline" component="h2">
-                            {shop.businessName}
+                            {business.businessName}
                         </Typography>
                         <Typography type="subheading" component="h4">
-                            Likes: {shop.likes.length} | Prizes: {prizes.length}
+                            Likes: {business.likes.length} | Prizes:{" "}
+                            {prizes.length}
                         </Typography>
                     </div>
                 </ListItem>

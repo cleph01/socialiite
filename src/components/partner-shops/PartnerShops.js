@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import List from "@mui/material/List";
 
+import Skeleton from "@mui/material/Skeleton";
+
 import { db } from "../../services/firebase/firebase-config";
 
 import Shop from "./Shop";
@@ -33,22 +35,33 @@ function PartnerShops() {
     }, []);
 
     if (!bizRelationships) {
-        return <div>...Loading</div>;
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
     }
 
     console.log("BizRelationships in PartnerShops: ", bizRelationships);
     return (
         <List
             sx={{
-                width: "100%",
-                maxWidth: 360,
+                width: "90vmin",
+
                 bgcolor: "background.paper",
                 borderRadius: "5px",
             }}
         >
             {bizRelationships.length > 0 ? (
-                bizRelationships.map((shop, i) => (
-                    <Shop key={shop.shopId} shop={shop} />
+                bizRelationships.map((business, i) => (
+                    <Shop key={business.businessId} business={business} />
                 ))
             ) : (
                 <UpcomingMessage

@@ -22,7 +22,7 @@ const MyProfile = lazy(() => import("../pages/Hero"));
 // const Shop = lazy(() => import("../pages/shops/Shop.js"));
 
 // QR / Checkin
-const Store = lazy(() => import("../pages/Search.js"));
+const Store = lazy(() => import("../pages/Store.js"));
 const Checkin = lazy(() => import("../pages/CheckIn.js"));
 
 // Shop Related

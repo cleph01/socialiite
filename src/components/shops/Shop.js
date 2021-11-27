@@ -58,7 +58,7 @@ function Shop() {
     const history = useHistory();
 
     const { userState } = useContext(UserContext);
-    const { shopId } = useParams();
+    const { businessId } = useParams();
     const [business, setBusiness] = useState();
     const [allBizRelationships, setAllBizRelationships] = useState();
     const [userBizRelationship, setUserBizRelationship] = useState();
@@ -91,7 +91,7 @@ function Shop() {
             });
 
             setOpenSnackBar(true);
-        } else if (!!allBizRelationships.includes(shopId)) {
+        } else if (!!allBizRelationships.includes(businessId)) {
             setAlertMsg({
                 message:
                     "First Time Incentives are for First Time Customers Only",
@@ -129,7 +129,7 @@ function Shop() {
             userBizRelationship.relationshipInfo.pointSum
         ) {
             const walletItem = {
-                businessId: shopId,
+                businessId: businessId,
                 businessName: business.businessName,
                 emoji: walletPrize.prizeDetails.emoji,
                 itemDescription: walletPrize.prizeDetails.prizeDescription,
@@ -187,7 +187,7 @@ function Shop() {
             business
                 ? business.businessName +
                   ": http://localhost:3000/shops/" +
-                  shopId
+                  businessId
                 : "undefined"
         }/${userState.userId}`
     );
@@ -200,7 +200,7 @@ function Shop() {
         event.preventDefault();
 
         db.collection("shops")
-            .doc(shopId)
+            .doc(businessId)
             .update({
                 comments: firebase.firestore.FieldValue.arrayUnion({
                     comment: comment,
@@ -222,7 +222,7 @@ function Shop() {
             .doc(userState.userId)
             .update({
                 followingBusinesses:
-                    firebase.firestore.FieldValue.arrayUnion(shopId),
+                    firebase.firestore.FieldValue.arrayUnion(businessId),
             })
             .then(() => {
                 console.log(
@@ -237,7 +237,7 @@ function Shop() {
             });
 
         db.collection("shops")
-            .doc(shopId)
+            .doc(businessId)
             .update({
                 followers: firebase.firestore.FieldValue.arrayUnion(
                     userState.userId
@@ -261,7 +261,7 @@ function Shop() {
             .doc(userState.userId)
             .update({
                 followingBusinesses:
-                    firebase.firestore.FieldValue.arrayRemove(shopId),
+                    firebase.firestore.FieldValue.arrayRemove(businessId),
             })
             .then(() => {
                 console.log(
@@ -276,7 +276,7 @@ function Shop() {
             });
 
         db.collection("shops")
-            .doc(shopId)
+            .doc(businessId)
             .update({
                 followers: firebase.firestore.FieldValue.arrayRemove(
                     userState.userId
@@ -301,11 +301,11 @@ function Shop() {
 
     useEffect(() => {
         db.collection("shops")
-            .doc(shopId)
+            .doc(businessId)
             .get()
             .then((doc) => {
                 setBusiness({
-                    shopId: shopId,
+                    businessId: businessId,
                     ...doc.data(),
                 });
             })
@@ -316,7 +316,7 @@ function Shop() {
 
     useEffect(() => {
         db.collection("shops")
-            .doc(shopId)
+            .doc(businessId)
             .collection("prizes")
             .where("incentive", "==", true)
             .get()
@@ -389,7 +389,7 @@ function Shop() {
                         <div className="actions__wrapper">
                             <LikeAction
                                 userId={userState.userId}
-                                shopId={shopId}
+                                businessId={businessId}
                                 likedShop={business.likes.includes(
                                     userState.userId
                                 )}
@@ -413,7 +413,7 @@ function Shop() {
                         <div>
                             {userState.userId ? (
                                 !userState.followingBusinesses.includes(
-                                    shopId
+                                    businessId
                                 ) ? (
                                     <div
                                         className="follow-btn"
@@ -453,7 +453,7 @@ function Shop() {
                     <AvailablePrizes
                         prizes={prizes}
                         handleOpenClaimModal={handleOpenClaimModal}
-                        shopId={shopId}
+                        businessId={businessId}
                         handleOpenShareModal={handleOpenShareModal}
                     />
 
@@ -569,7 +569,7 @@ function Shop() {
                                 size: 40, // the size of each button (INTEGER)
 
                                 // OPTIONAL PARAMETERS
-                                // url: `https://smartseedtech.com/${shopId}`, // (defaults to current url)
+                                // url: `https://smartseedtech.com/${businessId}`, // (defaults to current url)
                                 url: "https://www.chickenshacknyc.com/",
                                 description: `Business Name: ${business.businessName}`, // (defaults to og:description or twitter:description)
                                 title: `Business Name: ${business.businessName}`, // (defaults to og:title or twitter:title)

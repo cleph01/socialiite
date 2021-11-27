@@ -5,13 +5,14 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import AddIcon from "@mui/icons-material/Add";
-import ShareIcon from "@mui/icons-material/Share";
+
+import "../../lib/scss/components/checkin/available-prize-list-item.scss";
 
 function AvailablePrizeItem({
     prize,
     handleOpenClaimModal,
-    storeId,
-    handleOpenShareModal,
+    checkedIn,
+    dupCheckIn,
 }) {
     return (
         <ListItem className="prize-list-item">
@@ -24,24 +25,24 @@ function AvailablePrizeItem({
                     secondary={`Points Needed: ${prize.prize.pointCost}`}
                 />
             </div>
-            <ListItemSecondaryAction className="list-icons-wrapper">
-                <AddIcon
-                    className="list-icons"
-                    id={prize.prizeId}
-                    onClick={() =>
-                        handleOpenClaimModal({
-                            prizeId: prize.prizeId,
-                            ...prize.prize,
-                        })
-                    }
-                />
-                &nbsp;&nbsp;&nbsp;
-                <ShareIcon
-                    className="list-icons"
-                    id={prize.prizeId}
-                    onClick={handleOpenShareModal}
-                />
-            </ListItemSecondaryAction>
+            {checkedIn && !dupCheckIn ? (
+                <ListItemSecondaryAction className="list-icons-wrapper">
+                    <AddIcon
+                        className="list-icons"
+                        id={prize.prizeId}
+                        onClick={() =>
+                            handleOpenClaimModal({
+                                prizeId: prize.prizeId,
+                                ...prize.prize,
+                            })
+                        }
+                    />
+                </ListItemSecondaryAction>
+            ) : (
+                <ListItemSecondaryAction className="list-icons-wrapper">
+                    <div className="checkin-pending-text">Checkin to Claim</div>
+                </ListItemSecondaryAction>
+            )}
         </ListItem>
     );
 }

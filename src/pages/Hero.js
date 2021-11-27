@@ -5,9 +5,12 @@ import { Route } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
 import HeroHeader from "../components/hero/HeroHeader";
+import NavBar from "../components/hero/NavBar";
 import Shoutouts from "../components/shoutouts/Shoutouts";
 import PartnerShops from "../components/partner-shops/PartnerShops";
 import Wallet from "../components/wallet/Wallet";
+
+import "../lib/scss/pages/hero-home.scss";
 
 import { db } from "../services/firebase/firebase-config";
 
@@ -89,8 +92,12 @@ function Hero({ authUser }) {
     }, []);
 
     return (
-        <>
+        <div
+            className="hero-home__container"
+            style={{ backgroundImage: 'url("/logo192.png")' }}
+        >
             <HeroHeader user={userState} />
+            {/* <NavBar user={userState} /> */}
 
             <Route path="/hero/shoutouts">
                 <Shoutouts userId={userState.userId} />
@@ -103,7 +110,7 @@ function Hero({ authUser }) {
             <Route path="/hero/wallet">
                 <Wallet userId={userState.userId} />
             </Route>
-        </>
+        </div>
     );
 }
 

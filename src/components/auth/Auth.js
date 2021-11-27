@@ -1,8 +1,10 @@
 import { useState } from "react";
-import firebase from "firebase";
+import { firebase } from "../../services/firebase/firebase-config";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+
+import { db } from "../../services/firebase/firebase-config";
 
 function Auth({ referrerId, redirectPath }) {
     const [loadingUser, setLoadingUser] = useState(false);
@@ -10,7 +12,7 @@ function Auth({ referrerId, redirectPath }) {
     if (loadingUser) {
         return (
             <Box sx={{ display: "flex" }}>
-                <CircularProgress />
+                <CircularProgress color="inherit" />
                 <div>Logging You In!! 🙌</div>
             </Box>
         );
@@ -33,7 +35,7 @@ function Auth({ referrerId, redirectPath }) {
                             localStorage.setItem("referrerId", referrerId);
                         }
 
-                        return false;
+                        return true;
                     },
                 },
             }}

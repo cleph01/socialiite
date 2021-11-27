@@ -37,6 +37,15 @@ const UserReducer = (state, action) => {
                 followingBusinesses: action.payload.followingBusinesses,
             };
 
+        case "USER/SET_GEO_LOCATION":
+            console.log("Setting Geo Location: ", action.payload);
+
+            return {
+                ...state,
+                gotDistance: action.payload.gotDistance,
+                geoDistance: action.payload.geoDistance,
+            };
+
         case "AUTH/LOGOUT":
             return {
                 isAuthenticated: false,

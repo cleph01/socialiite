@@ -1,17 +1,25 @@
-import { useState } from "react";
+import React from "react";
+
+import { useState, useContext } from "react";
 
 import { useHistory } from "react-router-dom";
 
-import "../lib/css/components/demo-nav-bar.scss";
+import logo from "../assets/images/logos/logo.png";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+import { UserContext } from "../contexts/UserContext";
+
 import { auth } from "../services/firebase/firebase-config";
 
-function NavBar({ user }) {
+import "../lib/scss/components/nav-bar/nav-bar.scss";
+
+function NavBar({ checkedIn }) {
     const history = useHistory();
+
+    const { userState } = useContext(UserContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -34,83 +42,105 @@ function NavBar({ user }) {
         setAnchorEl(null);
     };
 
+    console.log("AuthUser at NavBar: ", userState);
     return (
-        <div
-            className="navbar-container"
-            style={{ backgroundColor: "#ffffff" }}
-        >
+        <div className="navbar-container">
             <div className="logo-wrapper" onClick={() => history.push("/demo")}>
-                <img className="logo" src="/logo.png" alt="logo" />
-            </div>
-            <div className="navbar__body">
-                <div
-                    className="btn desktop"
-                    onClick={() => history.push("/demo/text")}
-                >
-                    Text Demo
-                </div>
-                <div
-                    className="btn desktop"
-                    onClick={() =>
-                        handleRedirect(`/demo/business/add/${user.userId}`)
-                    }
-                >
-                    Add Business
-                </div>
-                <div
-                    className="btn desktop"
-                    onClick={() =>
-                        handleRedirect(`/demo/clients/all/${user.userId}`)
-                    }
-                >
-                    My Clients
-                </div>
-                <div
-                    className="btn signout desktop"
-                    onClick={handleSignOut}
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                            handleSignOut();
-                        }
-                    }}
-                >
-                    Sign Out
-                </div>
-            </div>
-            <div className="menu" onClick={handleClick}>
-                <MenuIcon sx={{ fontSize: "2rem" }} />
+                <img className="logo" src={logo} alt="logo" />
             </div>
 
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                    "aria-labelledby": "basic-button",
-                }}
-            >
-                <MenuItem onClick={() => handleRedirect("/demo/text")}>
-                    Text Demo
-                </MenuItem>
-                <MenuItem
-                    onClick={() =>
-                        handleRedirect(`/demo/business/add/${user.userId}`)
-                    }
-                >
-                    Add Business
-                </MenuItem>
-                <MenuItem
-                    onClick={() =>
-                        handleRedirect(`/demo/clients/all/${user.userId}`)
-                    }
-                >
-                    My Clients
-                </MenuItem>
-                <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
-            </Menu>
+            {checkedIn && (
+                <div className="navbar__body">
+                    <div
+                        className="btn desktop"
+                        onClick={() => handleRedirect("/hero")}
+                    >
+                        Home
+                    </div>
+                    <div
+                        className="btn desktop"
+                        onClick={() => handleRedirect(`/hero/shoutouts`)}
+                    >
+                        Shoutouts
+                    </div>
+                    <div
+                        className="btn desktop"
+                        onClick={() => handleRedirect(`/hero/partner-shops`)}
+                    >
+                        Partner Shops
+                    </div>
+                    <div
+                        className="btn desktop"
+                        onClick={() => handleRedirect(`/hero/wallet`)}
+                    >
+                        Wallet
+                    </div>
+                    <div
+                        className="btn desktop"
+                        onClick={() => handleRedirect(`/search/shops`)}
+                    >
+                        Search Shops
+                    </div>
+
+                    <div
+                        className="btn signout desktop"
+                        onClick={handleSignOut}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                                handleSignOut();
+                            }
+                        }}
+                    >
+                        Sign Out
+                    </div>
+                </div>
+            )}
+            {checkedIn && (
+                <>
+                    <div className="menu" onClick={handleClick}>
+                        <MenuIcon sx={{ fontSize: "2rem" }} />
+                    </div>
+
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                        }}
+                    >
+                        <MenuItem onClick={() => handleRedirect("/hero")}>
+                            Home
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleRedirect(`/hero/shoutouts`)}
+                        >
+                            Shoutouts
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() =>
+                                handleRedirect(`/hero/partner-shops`)
+                            }
+                        >
+                            Partner Shops
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleRedirect(`/hero/wallet`)}
+                        >
+                            Wallet
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleRedirect(`/search/shops`)}
+                        >
+                            Search Shops
+                        </MenuItem>
+                        <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                    </Menu>
+                </>
+            )}
         </div>
     );
 }
 
-export default NavBar;
+export default React.memo(NavBar);

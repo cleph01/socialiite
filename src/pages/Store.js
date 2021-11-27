@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import QRcodeGen from "./components/QRcodeGen";
+import QRcodeGen from "../components/qr-code-generator/QRcodeGen";
 
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -11,12 +11,14 @@ import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 
-import "./styles/store.scss";
+import Skeleton from "@mui/material/Skeleton";
 
-import socialiite from "../../assets/images/logos/logo_white_text.png";
-import productPic from "../../assets/images/chickenshack-product.jpg";
+import "../lib/scss/pages/store.scss";
 
-import { db } from "../../firebase/firebase_config";
+import socialiite from "../assets/images/logos/logo_white_text.png";
+import productPic from "../assets/images/chickenshack-product.jpg";
+
+import { db } from "../services/firebase/firebase-config";
 
 function Store() {
     const { businessId } = useParams();
@@ -38,7 +40,18 @@ function Store() {
     }, []);
 
     if (!businessInfo) {
-        return <div>...Loading Store</div>;
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
     }
 
     return (
@@ -70,7 +83,7 @@ function Store() {
                         loading="lazy"
                         sx={{ marginRight: "30px" }}
                     />
-                    <QRcodeGen />
+                    <QRcodeGen businessId={businessId} />
                 </div>
                 <CardContent>
                     <br />

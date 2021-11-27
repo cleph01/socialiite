@@ -34,12 +34,28 @@ function HeroHeader({ user }) {
                         sx={{ width: 56, height: 56 }}
                     />
                     <div className="hero__details">
-                        <div className="hero__detail">{user.displayName}</div>
-                        <div className="hero__detail">
-                            Referred: 356 Sociallites
+                        <div className="hero__displayName">
+                            {user.displayName}
                         </div>
-                        <div className="hero__detail">
-                            Followers: 693 | Following: 936
+                        <div className="hero__stats_wrapper">
+                            <div className="hero__stats">
+                                <div className="hero__stat">356</div>
+                                <div className="hero__stat__label">
+                                    Referrals
+                                </div>
+                            </div>
+                            <div className="hero__stats">
+                                <div className="hero__stat">693</div>
+                                <div className="hero__stat__label">
+                                    Followers
+                                </div>
+                            </div>
+                            <div className="hero__stats">
+                                <div className="hero__stat">936</div>
+                                <div className="hero__stat__label">
+                                    Following
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -68,6 +84,14 @@ function HeroHeader({ user }) {
                                 emoji={<span style={emojiStyle}>🤜 🤛</span>}
                             />
                         </Link>
+                        <Link to="/hero/partner-shops/">
+                            <MenuButton
+                                text="Search Shops"
+                                color="#213b77"
+                                emoji={<span style={emojiStyle}>🔍</span>}
+                            />
+                        </Link>
+
                         <div onClick={handleSignOut}>
                             <MenuButton
                                 text="Signout"

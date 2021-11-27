@@ -11,8 +11,10 @@ import "../../lib/scss/components/checkin/available-prize-list.scss";
 function AvailablePrizes({
     prizes,
     handleOpenClaimModal,
-    storeId,
+    businessId,
     handleOpenShareModal,
+    checkedIn,
+    dupCheckIn,
 }) {
     if (!prizes) {
         return <div>...Loading Available Prizes</div>;
@@ -26,7 +28,9 @@ function AvailablePrizes({
                         prize={prize}
                         handleOpenClaimModal={handleOpenClaimModal}
                         handleOpenShareModal={handleOpenShareModal}
-                        storeId={storeId}
+                        businessId={businessId}
+                        checkedIn={checkedIn}
+                        dupCheckIn={dupCheckIn}
                     />
                     <Divider />
                 </div>

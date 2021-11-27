@@ -10,6 +10,8 @@ import WalletItem from "./WalletItem";
 
 import UpcomingMessage from "../../components/UpcomingMessage";
 
+import Skeleton from "@mui/material/Skeleton";
+
 import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -21,7 +23,7 @@ const Wallet = () => {
 
     const { userState } = useContext(UserContext);
 
-    const [wallet, setWallet] = useState([]);
+    const [wallet, setWallet] = useState();
     const [walletItemId, setWalletItemId] = useState();
 
     // businessId for share modal
@@ -98,6 +100,21 @@ const Wallet = () => {
     };
 
     console.log("Wallet: ", wallet);
+
+    if (!wallet) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
+    }
 
     return (
         <>

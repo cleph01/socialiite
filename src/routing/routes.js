@@ -50,16 +50,16 @@ const WALLET = "/wallet";
 // Display All Shops on Socialiite
 const SHOPS = "/shops/all";
 // Shop Profile Page - Allow for Referrer Tracking When CTA Follow
-const SHOP = "/shops/:shopId/:referrerId?";
+const SHOP = "/shops/:businessId/:referrerId?";
 
 /**
  *  Store QR Code Routes
  *  Public Routes
  */
 // Display QR Code on Store tablet
-const STORE = "/store/:shopId";
+const STORE = "/store/:businessId";
 // Display the Checkin Page after QR code Scan
-const CHECKIN = "/checkin/:shopId";
+const CHECKIN = "/checkin/:businessId";
 
 /**
  *  User Ownerd Shop Routes
@@ -70,11 +70,11 @@ const MY_SHOPS = "/seller/shops"; // private route
 // Add New Shop to Owner's Shop List
 const NEW_SHOP = "/seller/shop/new"; // private route"
 // Edit Existhing Shop Profile Details
-const EDIT_SHOP = "/seller/shop/edit/:shopId"; // private route
+const EDIT_SHOP = "/seller/shop/edit/:businessId"; // private route
 // Add New Loyalty Prize
-const NEW_PRIZE = "/seller/:shopId/prizes/new"; // private route
+const NEW_PRIZE = "/seller/:businessId/prizes/new"; // private route
 // Edit Existing Loyalty Prize
-const EDIT_PRIZE = "/seller/:shopId/:prizeId/edit-prize"; // private route
+const EDIT_PRIZE = "/seller/:businessId/:prizeId/edit-prize"; // private route
 
 // Market
 // const MARKET = "/market";
@@ -94,11 +94,11 @@ const EDIT_PRIZE = "/seller/:shopId/:prizeId/edit-prize"; // private route
 
 // Order
 // const ORDER = "/order/:orderId";
-// const SHOP_ORDER = "/seller/orders/:shop/:shopId"; //private route
+// const SHOP_ORDER = "/seller/orders/:shop/:businessId"; //private route
 
 // My Shop
-// const NEW_PRODUCT = "/seller/:shopId/products/new"; // private route
-// const EDIT_PRODUCT = "/seller/:shopId/:productId/edit"; // private route
+// const NEW_PRODUCT = "/seller/:businessId/products/new"; // private route
+// const EDIT_PRODUCT = "/seller/:businessId/:productId/edit"; // private route
 
 // Stripe connect
 // const STRIPE = "/seller/stripe/connect";

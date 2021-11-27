@@ -6,12 +6,14 @@ import ImageList from "@mui/material/ImageList";
 
 import UpcomingMessage from "../UpcomingMessage";
 
+import Skeleton from "@mui/material/Skeleton";
+
 import "../../lib/scss/components/shoutouts/shoutouts.scss";
 
 import { db } from "../../services/firebase/firebase-config";
 
 function Shoutouts() {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState();
 
     useEffect(() => {
         const authUser = localStorage.getItem("authUser");
@@ -36,10 +38,25 @@ function Shoutouts() {
             });
     }, []);
 
+    if (!posts) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
+    }
+
     return (
         <div className="shoutouts-container">
             {posts.length > 0 ? (
-                <ImageList sx={{ width: 500 }}>
+                <ImageList sx={{ width: "100%" }}>
                     {posts.map((item, i) => (
                         <Shoutout key={i} item={item} />
                     ))}
