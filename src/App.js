@@ -86,6 +86,18 @@ function App() {
                                 component={COMPONENTS.Checkin}
                             />
 
+                            <PrivateRoute
+                                path={ROUTES.TRADE}
+                                authUser={authUser}
+                            >
+                                <COMPONENTS.Trade />
+                            </PrivateRoute>
+
+                            <Route
+                                path={ROUTES.HOT_SPOT}
+                                component={COMPONENTS.HotSpot}
+                            />
+
                             <Route exact path="/" component={COMPONENTS.Home} />
 
                             <Route>

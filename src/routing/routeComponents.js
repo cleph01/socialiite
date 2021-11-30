@@ -13,6 +13,7 @@ const MyProfile = lazy(() => import("../pages/Hero"));
 // const NewPost = lazy(() => import("../pages/post/AddPost.js"));
 // const Post = lazy(() => import("../pages/post/Post.js"));
 // const UserPosts = lazy(() => import("../pages/post/UserPosts.js"));
+const HotSpot = lazy(() => import("../pages/HotSpot.js"));
 
 // Digital Wallet
 // const Wallet = lazy(() => import("../pages/wallet/Wallet.js"));
@@ -25,6 +26,8 @@ const MyProfile = lazy(() => import("../pages/Hero"));
 const Store = lazy(() => import("../pages/Store.js"));
 const Checkin = lazy(() => import("../pages/CheckIn.js"));
 
+// Trade Room
+const Trade = lazy(() => import("../pages/Trade.js"));
 // Shop Related
 // const MyShop = lazy(() => import("../pages/MyShop.js"));
 // const NewShop = lazy(() => import("../pages/NewShop.js"));
@@ -47,4 +50,4 @@ const NotFound = lazy(() => import("../pages/NotFound.js"));
 
 // const EditProduct = lazy(() => import("../pages/EditProduct.js"));
 
-export { Home, Login, MyProfile, Store, Checkin, NotFound };
+export { Home, Login, MyProfile, HotSpot, Store, Checkin, Trade, NotFound };

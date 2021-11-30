@@ -20,7 +20,7 @@ function MenuButton({ text, color, emoji }) {
                 <span
                     style={{
                         display: "inline-block",
-                        width: "55px",
+                        width: "60px",
                         textAlign: "center",
                     }}
                 >

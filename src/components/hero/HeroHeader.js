@@ -77,11 +77,18 @@ function HeroHeader({ user }) {
                                 emoji={<span style={emojiStyle}>💰</span>}
                             />
                         </Link>
+                        <Link to="/trade">
+                            <MenuButton
+                                text="Trade Room"
+                                color="#213b77"
+                                emoji={<span style={emojiStyle}>🤝</span>}
+                            />
+                        </Link>
                         <Link to="/hero/partner-shops/">
                             <MenuButton
                                 text="Partner Shops"
                                 color="#213b77"
-                                emoji={<span style={emojiStyle}>🤜 🤛</span>}
+                                emoji={<span style={emojiStyle}>🤜🤛</span>}
                             />
                         </Link>
                         <Link to="/hero/partner-shops/">

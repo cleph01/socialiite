@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect, useParams } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import LinearProgress from "@mui/material/LinearProgress";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -10,8 +10,10 @@ import { getDistanceBetween } from "geolocation-distance-between";
 function VerifyLocation({ business, goStatus, setGoStatus }) {
     const history = useHistory();
 
+    const { businessId } = useParams();
+
     const [geoDistance, setGeoDistance] = useState();
-    const { userDispatch } = useContext(UserContext);
+    const { authUser, userDispatch } = useContext(UserContext);
 
     const handleGeoLocation = () => {
         setGoStatus({ ...goStatus, fetchingDistance: true });
@@ -63,6 +65,11 @@ function VerifyLocation({ business, goStatus, setGoStatus }) {
             console.log("Geolocation Not Available in Your Browser");
         }
     };
+
+    console.log("Authuser at VerifyLocation: ", authUser);
+    if (!authUser) {
+        return <Redirect to={`/checkin/${businessId}/process`} />;
+    }
 
     return (
         <div className="geolocation-container">

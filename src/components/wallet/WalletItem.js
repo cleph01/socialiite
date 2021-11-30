@@ -6,6 +6,8 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 
+import Skeleton from "@mui/material/Skeleton";
+
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -42,7 +44,18 @@ const WalletItem = ({
     }, []);
 
     if (!business) {
-        return <div>...Loading Wallet Item</div>;
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
     }
 
     return (

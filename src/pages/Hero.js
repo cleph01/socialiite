@@ -63,6 +63,7 @@ function Hero({ authUser }) {
                             followingFriends: [],
                             followersFriends: [],
                             followingBusinesses: [],
+                            openWallet: true,
                             userId: authUser.uid,
                         };
 
@@ -94,7 +95,10 @@ function Hero({ authUser }) {
     return (
         <div
             className="hero-home__container"
-            style={{ backgroundImage: 'url("/logo192.png")' }}
+            style={{
+                backgroundImage: 'url("/logo192.png")',
+                marginBottom: "125px",
+            }}
         >
             <HeroHeader user={userState} />
             {/* <NavBar user={userState} /> */}

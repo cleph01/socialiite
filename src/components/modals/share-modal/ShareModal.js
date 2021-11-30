@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useContext } from "react";
+
+import { UserContext } from "../../../contexts/UserContext";
 
 import platform from "platform-detect/os.mjs";
 
@@ -27,14 +29,9 @@ const style = {
     p: 4,
 };
 
-const authUser = localStorage.getItem("authUser");
+function ShareModal({ openShareModal, handleCloseShareModal, shareBusiness }) {
+    const { authUser } = useContext(UserContext);
 
-function ShareModal({
-    openShareModal,
-    handleCloseShareModal,
-    shareBusiness,
-    userState,
-}) {
     const encodeMsg = encodeurl(
         `Wanted to share this with you. Check them out. ${
             shareBusiness

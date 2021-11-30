@@ -106,7 +106,7 @@ function ProcessCheckin({
                 } else {
                     // If relationship does NOT exist, create New Relationship
                     const relationshipData = {
-                        relationshipId: business.businessId,
+                        businessId: business.businessId,
                         businessName: business.businessName,
                         visitCount: 1,
                         pointSum: 1,

@@ -69,6 +69,7 @@ function Auth({ referrerId, redirectPath }) {
                                             followingFriends: [],
                                             followersFriends: [],
                                             followingBusinesses: [],
+                                            openWallet: true,
                                             userId: authUser.uid,
                                         };
 

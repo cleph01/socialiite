@@ -20,9 +20,33 @@ const style = {
     p: 4,
 };
 
-function ClaimModal({ handleRedeem, handleCloseClaimModal }) {
-    const [openClaimModal, setOpenClaimModal] = useState(false);
+const redeemStyle = {
+    textAlign: "center",
+    width: "fit-content",
+    fontSize: "small",
+    marginLeft: "10px",
+    // background-color: #bcc0bc,
+    color: "#213b77",
+    border: "1px solid #213b77",
+    borderRadius: "5px",
+    padding: "10px",
+    cursor: "pointer",
+};
 
+const cancelStyle = {
+    textAlign: "center",
+    width: "fit-content",
+    fontSize: "small",
+    marginLeft: "10px",
+    // background-color: #bcc0bc,
+    color: "#bb3133",
+    border: "1px solid #bb3133",
+    borderRadius: "5px",
+    padding: "10px",
+    cursor: "pointer",
+};
+
+function ClaimModal({ openClaimModal, handleAddToWallet, handleRedeem, handleCloseClaimModal }) {
     return (
         <Modal
             open={openClaimModal}
@@ -54,13 +78,10 @@ function ClaimModal({ handleRedeem, handleCloseClaimModal }) {
                         marginTop: "15px",
                     }}
                 >
-                    <div className="claim__btn" onClick={handleRedeem}>
+                    <div style={redeemStyle} onClick={handleRedeem}>
                         Claim Prize
                     </div>
-                    <div
-                        className="cancel__btn"
-                        onClick={handleCloseClaimModal}
-                    >
+                    <div style={cancelStyle} onClick={handleCloseClaimModal}>
                         Cancel
                     </div>
                 </div>

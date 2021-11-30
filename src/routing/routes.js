@@ -36,6 +36,8 @@ const NEW_POST = "/post/:userId/new";
 const POST = "/post/:userId/:postId";
 // Display All Posts by a specific User
 const USER_POSTS = "/posts/:userId";
+// Display posts from other SM platforms according to Hash Tag
+const HOT_SPOT = "/hotspot/:businessId";
 /**
  *  Digital Wallet Routes
  *  Private
@@ -43,6 +45,10 @@ const USER_POSTS = "/posts/:userId";
 // Display User's Digital Wallet
 const WALLET = "/wallet";
 
+/**
+ *  Trade Room
+ */
+const TRADE = "/trade";
 /**
  *  Shops Community
  *  Public Routes
@@ -76,33 +82,6 @@ const NEW_PRIZE = "/seller/:businessId/prizes/new"; // private route
 // Edit Existing Loyalty Prize
 const EDIT_PRIZE = "/seller/:businessId/:prizeId/edit-prize"; // private route
 
-// Market
-// const MARKET = "/market";
-
-// const CART = "/cart";
-// const PRODUCT = "/product/:productId";
-
-// Auction
-// const AUCTIONS = "/auctions/all";
-// const AUCTION = "/auction/:auctionId";
-// const MY_AUCTION = "/myauctions";
-// const NEW_AUCTION = "/auction/new";
-// const EDIT_AUCTION = "/auction/edit/:auctionId";
-
-// Stripe
-// const STRIPE_CONNECT = "/seller/stripe/connect";
-
-// Order
-// const ORDER = "/order/:orderId";
-// const SHOP_ORDER = "/seller/orders/:shop/:businessId"; //private route
-
-// My Shop
-// const NEW_PRODUCT = "/seller/:businessId/products/new"; // private route
-// const EDIT_PRODUCT = "/seller/:businessId/:productId/edit"; // private route
-
-// Stripe connect
-// const STRIPE = "/seller/stripe/connect";
-
 export {
     HOME,
     LOGIN,
@@ -114,6 +93,8 @@ export {
     POST,
     USER_POSTS,
     WALLET,
+    TRADE,
+    HOT_SPOT,
     SHOPS,
     SHOP,
     STORE,

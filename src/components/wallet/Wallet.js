@@ -21,7 +21,7 @@ import { db } from "../../services/firebase/firebase-config";
 const Wallet = () => {
     // State to hold post data from Firebase call
 
-    const { userState } = useContext(UserContext);
+    const { authUser } = useContext(UserContext);
 
     const [wallet, setWallet] = useState();
     const [walletItemId, setWalletItemId] = useState();
@@ -46,11 +46,10 @@ const Wallet = () => {
 
     //every time a new post is added this code fires
     useEffect(() => {
-        const authUser = localStorage.getItem("authUser");
-
-        db.collection("user")
+        db.collection("users")
             .doc(authUser.uid)
             .collection("wallet")
+            .where("redeemed", "==", false)
             .get()
             .then((items) => {
                 console.log("Items in query: ", items);
@@ -68,8 +67,8 @@ const Wallet = () => {
     }, []);
 
     const handleRedeem = () => {
-        db.collection("user")
-            .doc(userState.userId)
+        db.collection("users")
+            .doc(authUser.uid)
             .collection("wallet")
             .doc(walletItemId)
             .update({
@@ -78,6 +77,12 @@ const Wallet = () => {
             })
             .then(() => {
                 console.log("Document successfully updated!");
+
+                setWallet((prevState) => {
+                    return prevState.filter(
+                        (walletItem) => walletItem.walletItemId !== walletItemId
+                    );
+                });
                 setOpenClaimModal(false);
                 setOpenSnackBar(true);
             })
@@ -141,8 +146,17 @@ const Wallet = () => {
                 )}
             </div>
 
-            <ClaimModal handleRedeem={handleRedeem} />
-            <ShareModal handleCloseShareModal={handleCloseShareModal} />
+            <ClaimModal
+                openClaimModal={openClaimModal}
+                setOpenClaimModal={setOpenClaimModal}
+                handleRedeem={handleRedeem}
+            />
+            <ShareModal
+                shareBusiness={shareBusiness}
+                openShareModal={openShareModal}
+                setOpenShareModal={setOpenShareModal}
+                handleCloseShareModal={handleCloseShareModal}
+            />
             <Stack spacing={2} sx={{ width: "100%" }}>
                 <Snackbar
                     open={openSnackBar}

@@ -30,12 +30,10 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-
-
 import "../lib/scss/pages/checkin.scss";
 
 function CheckIn() {
-    const { userDispatch, userState } = useContext(UserContext);
+    const { userDispatch, authUser } = useContext(UserContext);
     const [checkedIn, setCheckedIn] = useState(false);
     const [dupCheckIn, setDupCheckIn] = useState(false);
 
@@ -67,20 +65,12 @@ function CheckIn() {
     const [openSnackBar, setOpenSnackBar] = useState(false);
 
     const handleOpenClaimModal = (itemObj) => {
-        if (goStatus.gotDistance && userState.userId) {
-            setOpenClaimModal(true);
-            setwalletPrize(itemObj);
+        setOpenClaimModal(true);
+        setwalletPrize(itemObj);
 
-            console.log("Wallet Prize: ", walletPrize);
-        } else {
-            setAlertMsg({
-                message: "Please Provide Your Location and Be logged in",
-                severity: "error",
-            });
-
-            setOpenSnackBar(true);
-        }
+        console.log("Wallet Prize: ", walletPrize);
     };
+
     const handleCloseClaimModal = () => setOpenClaimModal(false);
 
     const handleAddToWallet = () => {
@@ -88,33 +78,43 @@ function CheckIn() {
 
         if (walletPrize.pointCost <= userBizRelationship.pointSum) {
             //Add Prize to Wallet and Update pointsSum in Biz Relationship
-            db.collection("user")
-                .doc(userState.userId)
+            db.collection("users")
+                .doc(authUser.uid)
                 .collection("wallet")
                 .add({
                     businessId: businessId,
                     businessName: business.businessName,
                     emoji: walletPrize.emoji,
-                    itemDescription: walletPrize.itemDescription,
+                    itemDescription: walletPrize.description,
                     itemId: walletPrize.prizeId,
                     redeemed: false,
+                    publicWallet: true,
                     created: Date.now(),
                 })
                 .then((docRef) => {
                     console.log("Prize Added to Wallet with ID: ", docRef.id);
 
                     // Decrement Points Sum from BizRelationship
-                    db.collection("user")
-                        .doc(userState.userId)
-                        .collection("bizRelationship")
-                        .doc(userBizRelationship.realtionshipId)
+                    db.collection("users")
+                        .doc(authUser.uid)
+                        .collection("bizRelationships")
+                        .doc(userBizRelationship.businessId)
                         .update({
                             pointSum: firebase.firestore.FieldValue.increment(
-                                -walletPrize.pointThreshold
+                                -walletPrize.pointCost
                             ),
                         })
                         .then(() => {
                             console.log("PointSum successfully updated!");
+
+                            setUserBizRelationship((prevState) => {
+                                return {
+                                    ...prevState,
+                                    pointSum:
+                                        prevState.pointSum -
+                                        walletPrize.pointCost,
+                                };
+                            });
                         })
                         .catch((error) => {
                             // The document probably doesn't exist.
