@@ -9,6 +9,7 @@ import HeroHeader from "../components/hero/HeroHeader";
 import Shoutouts from "../components/shoutouts/Shoutouts";
 import PartnerShops from "../components/partner-shops/PartnerShops";
 import Wallet from "../components/wallet/Wallet";
+import Notifications from "../components/notifications/Notifications";
 
 import "../lib/scss/pages/hero-home.scss";
 
@@ -112,6 +113,10 @@ function Hero({ authUser }) {
 
             <Route path="/hero/wallet">
                 <Wallet userId={userState.userId} />
+            </Route>
+
+            <Route path="/hero/notifications">
+                <Notifications userId={userState.userId} />
             </Route>
         </div>
     );

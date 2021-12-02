@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import useAuthListener from "./hooks/use-auth-listener";
 
 import { UserContext } from "./contexts/UserContext";
+import { NotificationsContext } from "./contexts/NotificationsContext";
 import UserReducer from "./store/reducers/userReducer.js";
-
+import NotificationsReducer from "./store/reducers/notificationsReducer.js";
 import Skeleton from "@mui/material/Skeleton";
 
 import * as ROUTES from "./routing/routes";
@@ -33,79 +34,93 @@ const initialState = {
     geoDistance: null,
 };
 
+
+
 function App() {
     const [userState, userDispatch] = useReducer(UserReducer, initialState);
+    const [notificationsState, notificationDispatch] = useReducer(
+        NotificationsReducer,
+        {}
+    );
 
     const { authUser } = useAuthListener();
 
     return (
         <div className="App">
             <UserContext.Provider value={{ authUser, userState, userDispatch }}>
-                <Router>
-                    <Suspense
-                        fallback={
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    marginTop: "10px",
-                                }}
-                            >
-                                <Skeleton
-                                    variant="rectangular"
-                                    width={350}
-                                    height={218}
+                <NotificationsContext.Provider
+                    value={{ notificationsState, notificationDispatch }}
+                >
+                    <Router>
+                        <Suspense
+                            fallback={
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        marginTop: "10px",
+                                    }}
+                                >
+                                    <Skeleton
+                                        variant="rectangular"
+                                        width={350}
+                                        height={218}
+                                    />
+                                </div>
+                            }
+                        >
+                            <Switch>
+                                <IsUserLoggedIn
+                                    authUser={authUser}
+                                    path={ROUTES.LOGIN}
+                                    loggedInPath={ROUTES.MY_PROFILE}
+                                >
+                                    <COMPONENTS.Login />
+                                </IsUserLoggedIn>
+
+                                <PrivateRoute
+                                    path={ROUTES.MY_PROFILE}
+                                    authUser={authUser}
+                                >
+                                    <COMPONENTS.MyProfile />
+                                </PrivateRoute>
+
+                                <Route
+                                    path={ROUTES.STORE}
+                                    component={COMPONENTS.Store}
                                 />
-                            </div>
-                        }
-                    >
-                        <Switch>
-                            <IsUserLoggedIn
-                                authUser={authUser}
-                                path={ROUTES.LOGIN}
-                                loggedInPath={ROUTES.MY_PROFILE}
-                            >
-                                <COMPONENTS.Login />
-                            </IsUserLoggedIn>
 
-                            <PrivateRoute
-                                path={ROUTES.MY_PROFILE}
-                                authUser={authUser}
-                            >
-                                <COMPONENTS.MyProfile />
-                            </PrivateRoute>
+                                <Route
+                                    path={ROUTES.CHECKIN}
+                                    component={COMPONENTS.Checkin}
+                                />
 
-                            <Route
-                                path={ROUTES.STORE}
-                                component={COMPONENTS.Store}
-                            />
+                                <PrivateRoute
+                                    path={ROUTES.TRADE}
+                                    authUser={authUser}
+                                >
+                                    <COMPONENTS.Trade />
+                                </PrivateRoute>
 
-                            <Route
-                                path={ROUTES.CHECKIN}
-                                component={COMPONENTS.Checkin}
-                            />
+                                <Route
+                                    path={ROUTES.HOT_SPOT}
+                                    component={COMPONENTS.HotSpot}
+                                />
 
-                            <PrivateRoute
-                                path={ROUTES.TRADE}
-                                authUser={authUser}
-                            >
-                                <COMPONENTS.Trade />
-                            </PrivateRoute>
+                                <Route
+                                    exact
+                                    path="/"
+                                    component={COMPONENTS.Home}
+                                />
 
-                            <Route
-                                path={ROUTES.HOT_SPOT}
-                                component={COMPONENTS.HotSpot}
-                            />
-
-                            <Route exact path="/" component={COMPONENTS.Home} />
-
-                            <Route>
-                                <COMPONENTS.NotFound />
-                            </Route>
-                        </Switch>
-                    </Suspense>
-                </Router>
+                                <Route>
+                                    <COMPONENTS.NotFound />
+                                </Route>
+                            </Switch>
+                        </Suspense>
+                    </Router>
+                </NotificationsContext.Provider>
             </UserContext.Provider>
         </div>
     );

@@ -49,6 +49,7 @@ const WALLET = "/wallet";
  *  Trade Room
  */
 const TRADE = "/trade";
+
 /**
  *  Shops Community
  *  Public Routes

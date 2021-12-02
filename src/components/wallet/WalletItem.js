@@ -137,12 +137,16 @@ const WalletItem = ({
                         {/* <CompareArrowsIcon className="icon" /> */}
                         <div>&nbsp;</div>
                     </IconButton>
-                    <IconButton
-                        aria-label="redeem"
-                        onClick={() => handleOpen(itemId)}
-                    >
-                        <CheckIcon className="icon" />
-                    </IconButton>
+                    {itemDetails.offeredInTrade ? (
+                        <div className="icon">Offered in Trade</div>
+                    ) : (
+                        <IconButton
+                            aria-label="redeem"
+                            onClick={() => handleOpen(itemId)}
+                        >
+                            <CheckIcon className="icon" />
+                        </IconButton>
+                    )}
                 </CardActions>
             </Card>
         </>

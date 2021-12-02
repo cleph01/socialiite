@@ -1,4 +1,6 @@
+import { useEffect, useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
 
 import Avatar from "@mui/material/Avatar";
 import Socials from "./Socials";
@@ -8,6 +10,8 @@ import "../../lib/scss/components/hero/hero-header.scss";
 
 import { auth } from "../../services/firebase/firebase-config";
 
+import { db } from "../../services/firebase/firebase-config";
+
 const emojiStyle = {
     display: "inline-block",
     fontSize: "24px",
@@ -16,6 +20,10 @@ const emojiStyle = {
 function HeroHeader({ user }) {
     let history = useHistory();
 
+    const { authUser } = useContext(UserContext);
+
+    const [notifications, setNotifications] = useState([]);
+
     const handleSignOut = () => {
         console.log("clicking signout");
         auth.signOut();
@@ -23,6 +31,33 @@ function HeroHeader({ user }) {
         history.push("/login");
     };
 
+    useEffect(() => {
+        const unsubscribe = db
+            .collection("trades")
+            .where("ownerId", "==", authUser.uid)
+            .where("settled", "==", false)
+            .onSnapshot(
+                (snapshot) => {
+                    console.log("Query SnapShot: ", snapshot);
+
+                    setNotifications(
+                        snapshot.docs.map((doc) => ({
+                            tradeId: doc.id,
+                            ...doc.data(),
+                        }))
+                    );
+                },
+                (error) => {
+                    console.log("Error Getting Notifications: ", error);
+                }
+            );
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
+
+    console.log("Notifications: ", notifications);
     return (
         <>
             {/* Main Grid */}
@@ -70,6 +105,7 @@ function HeroHeader({ user }) {
                                 emoji={<span style={emojiStyle}>🗣️</span>}
                             />
                         </Link>
+
                         <Link to="/hero/wallet">
                             <MenuButton
                                 text="Wallet"
@@ -77,6 +113,18 @@ function HeroHeader({ user }) {
                                 emoji={<span style={emojiStyle}>💰</span>}
                             />
                         </Link>
+
+                        <div
+                            className={notifications.length > 0 ? "glow" : null}
+                        >
+                            <Link to="/hero/notifications">
+                                <MenuButton
+                                    text="Offers to Trade"
+                                    color="#213b77"
+                                    emoji={<span style={emojiStyle}>🔔</span>}
+                                />
+                            </Link>
+                        </div>
                         <Link to="/trade">
                             <MenuButton
                                 text="Trade Room"

@@ -69,5 +69,74 @@
             text-decoration: none;
             color: inherit;
         }
+
+        .glow {
+            transition: transform 0.2s ease-out;
+
+            -webkit-animation: glowing 1500ms infinite;
+            -moz-animation: glowing 1500ms infinite;
+            -o-animation: glowing 1500ms infinite;
+            animation: glowing 1500ms infinite;
+
+            @-webkit-keyframes glowing {
+                0% {
+                    background-color: #d4a344;
+                    -webkit-box-shadow: 0 0 3px #d4a344;
+                }
+                50% {
+                    background-color: #d4a344;
+                    -webkit-box-shadow: 0 0 40px #d4a344;
+                }
+                100% {
+                    background-color: #d4a344;
+                    -webkit-box-shadow: 0 0 3px #d4a344;
+                }
+            }
+
+            @-moz-keyframes glowing {
+                0% {
+                    background-color: #d4a344;
+                    -moz-box-shadow: 0 0 3px #d4a344;
+                }
+                50% {
+                    background-color: #d4a344;
+                    -moz-box-shadow: 0 0 40px #d4a344;
+                }
+                100% {
+                    background-color: #d4a344;
+                    -moz-box-shadow: 0 0 3px #d4a344;
+                }
+            }
+
+            @-o-keyframes glowing {
+                0% {
+                    background-color: #d4a344;
+                    box-shadow: 0 0 3px #d4a344;
+                }
+                50% {
+                    background-color: #d4a344;
+                    box-shadow: 0 0 40px #d4a344;
+                }
+                100% {
+                    background-color: #d4a344;
+                    box-shadow: 0 0 3px #d4a344;
+                }
+            }
+
+            @keyframes glowing {
+                0% {
+                    background-color: #d4a344;
+                    box-shadow: 0 0 3px #d4a344;
+                }
+                50% {
+                    background-color: #d4a344;
+                    box-shadow: 0 0 40px #d4a344;
+                }
+                100% {
+                    background-color: #d4a344;
+                    box-shadow: 0 0 3px #d4a344;
+                }
+            }
+        }
     }
 }

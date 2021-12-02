@@ -165,6 +165,7 @@ function MakeOffer({
                                 tradeOffers: tradeOffer,
                                 businessName: prize.businessName,
                                 businessId: prize.businessId,
+                                settled: false,
                             })
                             .then((docRef) => {
                                 console.log("Trade Offer: ", tradeOffer);

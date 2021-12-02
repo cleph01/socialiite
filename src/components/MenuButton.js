@@ -16,7 +16,7 @@ function MenuButton({ text, color, emoji }) {
 
     return (
         <div style={wrapperStyle}>
-            <div style={{ width: "185px", margin: "auto auto" }}>
+            <div style={{ width: "85%", margin: "auto auto" }}>
                 <span
                     style={{
                         display: "inline-block",
@@ -29,6 +29,7 @@ function MenuButton({ text, color, emoji }) {
                 <span
                     style={{
                         marginLeft: "15px",
+                        width: "125px",
                     }}
                 >
                     {text}
