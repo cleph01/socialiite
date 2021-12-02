@@ -74,6 +74,16 @@ function ProcessCheckin({
                                     "BizRelationship Points Successfully Updated!"
                                 );
 
+                                setUserBizRelationship({
+                                    businessId: businessId,
+                                    ...doc.data(),
+                                });
+
+                                setUserBizRelationship((prevState) => ({
+                                    ...prevState,
+                                    pointSum: prevState.pointSum + 1,
+                                }));
+
                                 setAlertMsg({
                                     message: `Checkin Successful. New Points: ${
                                         bizRelationship.pointSum + 1
@@ -161,6 +171,7 @@ function ProcessCheckin({
 
     console.log("User State", userState);
 
+    console.log("User biz RElationhip at render: ", userBizRelationship);
     if (!userState.gotDistance) {
         console.log(" !Got Distance redirect triggerred");
 
@@ -180,9 +191,7 @@ function ProcessCheckin({
                     <div className="checkin__confirmation-msg">
                         <h3>Checkin Successful !! </h3>
                         <div style={{ fontSize: "36px" }}>🙌</div>
-                        <h4>
-                            Your New Points: {userBizRelationship.pointSum + 1}
-                        </h4>
+                        <h4>Your New Points: {userBizRelationship.pointSum}</h4>
                         <h4>
                             Cick the {<AddIcon />} above to add to your wallet
                         </h4>

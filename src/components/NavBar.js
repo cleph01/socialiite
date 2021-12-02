@@ -16,10 +16,10 @@ import { auth } from "../services/firebase/firebase-config";
 
 import "../lib/scss/components/nav-bar/nav-bar.scss";
 
-function NavBar({ checkedIn }) {
+function NavBar() {
     const history = useHistory();
 
-    const { userState } = useContext(UserContext);
+    const { userState, authUser } = useContext(UserContext);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -49,37 +49,43 @@ function NavBar({ checkedIn }) {
                 <img className="logo" src={logo} alt="logo" />
             </div>
 
-            {checkedIn && (
+            {authUser && (
                 <div className="navbar__body">
                     <div
                         className="btn desktop"
                         onClick={() => handleRedirect("/hero")}
                     >
-                        Home
+                        🏠 Home
+                    </div>
+                    <div
+                        className="btn desktop"
+                        onClick={() => handleRedirect(`/trade`)}
+                    >
+                        🤝 Trade Room
                     </div>
                     <div
                         className="btn desktop"
                         onClick={() => handleRedirect(`/hero/shoutouts`)}
                     >
-                        Shoutouts
+                        🗣️ Shoutouts
                     </div>
                     <div
                         className="btn desktop"
                         onClick={() => handleRedirect(`/hero/partner-shops`)}
                     >
-                        Partner Shops
+                        🤜🤛 Partner Shops
                     </div>
                     <div
                         className="btn desktop"
                         onClick={() => handleRedirect(`/hero/wallet`)}
                     >
-                        Wallet
+                        💰 Wallet
                     </div>
                     <div
                         className="btn desktop"
                         onClick={() => handleRedirect(`/search/shops`)}
                     >
-                        Search Shops
+                        🔍 Search Shops
                     </div>
 
                     <div
@@ -91,11 +97,11 @@ function NavBar({ checkedIn }) {
                             }
                         }}
                     >
-                        Sign Out
+                        ✌️ Sign Out
                     </div>
                 </div>
             )}
-            {checkedIn && (
+            {authUser && (
                 <>
                     <div className="menu" onClick={handleClick}>
                         <MenuIcon sx={{ fontSize: "2rem" }} />
@@ -111,31 +117,34 @@ function NavBar({ checkedIn }) {
                         }}
                     >
                         <MenuItem onClick={() => handleRedirect("/hero")}>
-                            Home
+                            🏠 Home
+                        </MenuItem>
+                        <MenuItem onClick={() => handleRedirect(`/trade`)}>
+                            🤝 Trade Room
                         </MenuItem>
                         <MenuItem
                             onClick={() => handleRedirect(`/hero/shoutouts`)}
                         >
-                            Shoutouts
+                            🗣️ Shoutouts
                         </MenuItem>
                         <MenuItem
                             onClick={() =>
                                 handleRedirect(`/hero/partner-shops`)
                             }
                         >
-                            Partner Shops
+                            🤜🤛 Partner Shops
                         </MenuItem>
                         <MenuItem
                             onClick={() => handleRedirect(`/hero/wallet`)}
                         >
-                            Wallet
+                            💰 Wallet
                         </MenuItem>
                         <MenuItem
                             onClick={() => handleRedirect(`/search/shops`)}
                         >
-                            Search Shops
+                            🔍 Search Shops
                         </MenuItem>
-                        <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                        <MenuItem onClick={handleSignOut}>✌️ Sign Out</MenuItem>
                     </Menu>
                 </>
             )}

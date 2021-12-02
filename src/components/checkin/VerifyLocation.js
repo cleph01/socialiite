@@ -7,7 +7,13 @@ import "../../lib/scss/components/checkin/verify-location.scss";
 
 import { getDistanceBetween } from "geolocation-distance-between";
 
-function VerifyLocation({ business, goStatus, setGoStatus }) {
+function VerifyLocation({
+    business,
+    goStatus,
+    setGoStatus,
+    setOpenSnackBar,
+    setAlertMsg,
+}) {
     const history = useHistory();
 
     const { businessId } = useParams();
@@ -37,12 +43,10 @@ function VerifyLocation({ business, goStatus, setGoStatus }) {
                     longitude: business.lon,
                 };
 
-                let distanceBetween = getDistanceBetween(
-                    coordinateOne,
-                    coordinateTwo
-                );
+                let distanceBetween =
+                    getDistanceBetween(coordinateOne, coordinateTwo) / 1000;
 
-                console.log("Kilometers: ", distanceBetween);
+                console.log("Meters: ", distanceBetween);
 
                 setGeoDistance(distanceBetween);
                 setGoStatus({
@@ -59,7 +63,16 @@ function VerifyLocation({ business, goStatus, setGoStatus }) {
                     },
                 });
 
-                history.push(`/checkin/${business.businessId}/process`);
+                if (distanceBetween < 0.001) {
+                    history.push(`/checkin/${business.businessId}/process`);
+                } else {
+                    setAlertMsg({
+                        message: "You're Not On Location 😱",
+                        severity: "error",
+                    });
+
+                    setOpenSnackBar(true);
+                }
             });
         } else {
             console.log("Geolocation Not Available in Your Browser");

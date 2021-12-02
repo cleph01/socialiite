@@ -46,9 +46,8 @@ const Wallet = () => {
 
     //every time a new post is added this code fires
     useEffect(() => {
-        db.collection("users")
-            .doc(authUser.uid)
-            .collection("wallet")
+        db.collection("wallet")
+            .where("userId", "==", authUser.uid)
             .where("redeemed", "==", false)
             .get()
             .then((items) => {
@@ -67,10 +66,8 @@ const Wallet = () => {
     }, []);
 
     const handleRedeem = () => {
-        db.collection("users")
-            .doc(authUser.uid)
-            .collection("wallet")
-            .doc(walletItemId)
+        db.collection("wallet")
+            .where("userId", "==", authUser.uid)
             .update({
                 redeemed: true,
                 redeemedOn: Date.now(),

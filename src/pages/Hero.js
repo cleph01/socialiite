@@ -5,7 +5,7 @@ import { Route } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
 import HeroHeader from "../components/hero/HeroHeader";
-import NavBar from "../components/hero/NavBar";
+
 import Shoutouts from "../components/shoutouts/Shoutouts";
 import PartnerShops from "../components/partner-shops/PartnerShops";
 import Wallet from "../components/wallet/Wallet";
@@ -101,7 +101,6 @@ function Hero({ authUser }) {
             }}
         >
             <HeroHeader user={userState} />
-            {/* <NavBar user={userState} /> */}
 
             <Route path="/hero/shoutouts">
                 <Shoutouts userId={userState.userId} />

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
 
@@ -46,22 +46,33 @@ const cancelStyle = {
     cursor: "pointer",
 };
 
-function ClaimModal({
-    openClaimModal,
-    handleAddToWallet,
-    handleCloseClaimModal,
-}) {
+function ViewOpenTradeModal({ openViewTradeModal, handleCloseViewTradeModal }) {
+
+    
+
     return (
         <Modal
-            open={openClaimModal}
-            onClose={handleCloseClaimModal}
+            open={false}
+            onClose={handleCloseViewTradeModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <h3>Sure About Claiming Prize?</h3>
+                <Typography
+                    id="modal-modal-title"
+                    variant="h6"
+                    sx={{ textAlign: "center", borderColor: "#f0f0f0" }}
+                >
+                    Please Show to Attendant
+                </Typography>
+                <Typography
+                    id="modal-modal-description"
+                    sx={{ mt: 2, textAlign: "center" }}
+                >
+                    Sure About Claiming Prize?
+                </Typography>
 
-                <h4>Cannot Be Reversed</h4>
+                <h3>Cannot Be Reversed</h3>
                 <div
                     style={{
                         display: "flex",
@@ -70,10 +81,11 @@ function ClaimModal({
                         marginTop: "15px",
                     }}
                 >
-                    <div style={redeemStyle} onClick={handleAddToWallet}>
-                        Claim Prize
-                    </div>
-                    <div style={cancelStyle} onClick={handleCloseClaimModal}>
+                    <div style={redeemStyle}>Make Offer</div>
+                    <div
+                        style={cancelStyle}
+                        onClick={handleCloseViewTradeModal}
+                    >
                         Cancel
                     </div>
                 </div>
@@ -82,4 +94,4 @@ function ClaimModal({
     );
 }
 
-export default ClaimModal;
+export default ViewOpenTradeModal;

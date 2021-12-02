@@ -78,10 +78,9 @@ function CheckIn() {
 
         if (walletPrize.pointCost <= userBizRelationship.pointSum) {
             //Add Prize to Wallet and Update pointsSum in Biz Relationship
-            db.collection("users")
-                .doc(authUser.uid)
-                .collection("wallet")
+            db.collection("wallet")
                 .add({
+                    userId: authUser.uid,
                     businessId: businessId,
                     businessName: business.businessName,
                     emoji: walletPrize.emoji,
@@ -89,6 +88,10 @@ function CheckIn() {
                     itemId: walletPrize.prizeId,
                     redeemed: false,
                     publicWallet: true,
+                    tags: walletPrize.tags,
+                    tradeOffers: [],
+                    offeredInTrade: false,
+                    pointCost: walletPrize.pointCost,
                     created: Date.now(),
                 })
                 .then((docRef) => {
@@ -125,9 +128,18 @@ function CheckIn() {
                         message: "Item Added to Wallet.",
                         severity: "success",
                     });
+
+                    setOpenSnackBar(true);
                 })
                 .catch((error) => {
-                    console.error("Error adding document: ", error);
+                    console.error("Error adding to wallet: ", error);
+
+                    setAlertMsg({
+                        message: "Error Adding to Wallet.",
+                        severity: "error",
+                    });
+
+                    setOpenSnackBar(true);
                 });
         } else {
             setAlertMsg({
@@ -204,7 +216,7 @@ function CheckIn() {
                 className="checkin__container"
                 style={{ backgroundImage: 'url("/logo192.png")' }}
             >
-                <NavBar checkedIn={checkedIn} />
+                <NavBar />
                 <Card sx={{ maxWidth: 345 }}>
                     <CardHeader
                         avatar={
@@ -262,6 +274,8 @@ function CheckIn() {
                         setGoStatus={setGoStatus}
                         goStatus={goStatus}
                         business={business}
+                        setAlertMsg={setAlertMsg}
+                        setOpenSnackBar={setOpenSnackBar}
                     />
                 </Route>
 

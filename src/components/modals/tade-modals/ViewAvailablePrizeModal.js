@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Box from "@mui/material/Box";
 
-import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import Modal from "@mui/material/Modal";
 
 const style = {
@@ -46,22 +46,29 @@ const cancelStyle = {
     cursor: "pointer",
 };
 
-function ClaimModal({
-    openClaimModal,
-    handleAddToWallet,
-    handleCloseClaimModal,
+function ViewAvailablePrizeModal({
+    prize,
+    openAvailablePrizeModal,
+    handleCloseViewAvailablePrizeModal,
 }) {
     return (
         <Modal
-            open={openClaimModal}
-            onClose={handleCloseClaimModal}
+            open={openAvailablePrizeModal}
+            onClose={handleCloseViewAvailablePrizeModal}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <h3>Sure About Claiming Prize?</h3>
+                <h2>Prize</h2>
+                <h3>{prize.itemDescription}</h3>
+                <div style={{ fontWeight: "700", margin: "6px 0px 10px" }}>
+                    @ {prize.businessName}
+                </div>
 
-                <h4>Cannot Be Reversed</h4>
+                <div style={{ fontSize: "36px" }}>{prize.emoji}</div>
+                <h3>Point Cost: {prize.pointCost}</h3>
+                <Divider sx={{ color: "#000" }} />
+                <h3>Wanna Trade?</h3>
                 <div
                     style={{
                         display: "flex",
@@ -70,10 +77,11 @@ function ClaimModal({
                         marginTop: "15px",
                     }}
                 >
-                    <div style={redeemStyle} onClick={handleAddToWallet}>
-                        Claim Prize
-                    </div>
-                    <div style={cancelStyle} onClick={handleCloseClaimModal}>
+                    <div style={redeemStyle}>Make Offers</div>
+                    <div
+                        style={cancelStyle}
+                        onClick={handleCloseViewAvailablePrizeModal}
+                    >
                         Cancel
                     </div>
                 </div>
@@ -82,4 +90,4 @@ function ClaimModal({
     );
 }
 
-export default ClaimModal;
+export default ViewAvailablePrizeModal;
