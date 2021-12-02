@@ -73,11 +73,18 @@ function MakeOffer({
 
     const handleSubmitOffer = () => {
         if (wallet.length > 0) {
-            let tradeOffer = [];
+            let tradeOffer = { bidderId: authUser.uid, offer: {} };
             offer.forEach((offerItem) => {
                 for (let i = 0; i < wallet.length; i++) {
                     if (offerItem === wallet[i].walletItemId) {
-                        tradeOffer.push(wallet[i]);
+                        tradeOffer.offer[i] = {
+                            businessId: wallet[i].businessId,
+                            businessName: wallet[i].businessName,
+                            emoji: wallet[i].emoji,
+                            itemDescription: wallet[i].itemDescription,
+                            pointCost: wallet[i].pointCost,
+                            walletItemId: wallet[i].walletItemId,
+                        };
                     }
                 }
             });
@@ -92,12 +99,16 @@ function MakeOffer({
                         let dbTradeOffers =
                             querySnapshot.docs[0].data().tradeOffers;
 
-                        tradeOffer = [...tradeOffer, ...dbTradeOffers];
+                        const updatedTradeOffer = [...dbTradeOffers];
+
+                        updatedTradeOffer.push(tradeOffer);
+
+                        console.log("Updated Trade Offer: ", updatedTradeOffer);
 
                         db.collection("trades")
                             .doc(querySnapshot.docs[0].id)
                             .update({
-                                tradeOffers: tradeOffer,
+                                tradeOffers: updatedTradeOffer,
                             })
                             .then(() => {
                                 offer.forEach((walletItemId) => {
@@ -162,10 +173,11 @@ function MakeOffer({
                                 walletItemId: prize.walletItemId,
                                 description: prize.itemDescription,
                                 emoji: prize.emoji,
-                                tradeOffers: tradeOffer,
+                                tradeOffers: [tradeOffer],
                                 businessName: prize.businessName,
                                 businessId: prize.businessId,
                                 settled: false,
+                                pointCost: prize.pointCost,
                             })
                             .then((docRef) => {
                                 console.log("Trade Offer: ", tradeOffer);

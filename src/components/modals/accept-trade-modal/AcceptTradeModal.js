@@ -2,7 +2,15 @@ import { useState } from "react";
 
 import Box from "@mui/material/Box";
 
-import Typography from "@mui/material/Typography";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+
+import Skeleton from "@mui/material/Skeleton";
+
 import Modal from "@mui/material/Modal";
 
 const style = {
@@ -20,7 +28,20 @@ const style = {
     p: 4,
 };
 
-const redeemStyle = {
+const acceptStyle = {
+    textAlign: "center",
+    width: "fit-content",
+    fontSize: "small",
+    marginLeft: "10px",
+    // background-color: #bcc0bc,
+    color: "#68cb61",
+    border: "1px solid #68cb61",
+    borderRadius: "5px",
+    padding: "10px",
+    cursor: "pointer",
+};
+
+const declineStyle = {
     textAlign: "center",
     width: "fit-content",
     fontSize: "small",
@@ -50,8 +71,37 @@ function AcceptTradeModal({
     openAcceptTradeModal,
     handleCloseAcceptTradeModal,
     handleAddToWallet,
-    handleCloseClaimModal,
+    trade,
 }) {
+    console.log("Trade in Accept Modal: ", trade);
+
+    const handleAcceptOffer = () => {
+        const swapInfoArr = [];
+
+        // swapInfoArr.push({from})
+        return;
+    };
+
+    const handleDeclineOffer = () => {
+        return;
+    };
+
+    if (!trade) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+                className="hero-home__container"
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
+    }
+
     return (
         <Modal
             open={openAcceptTradeModal}
@@ -60,8 +110,38 @@ function AcceptTradeModal({
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <h3>Sure About Claiming Prize?</h3>
-
+                <h3>Accept the Trade?</h3>
+                <h4>They Want Your:</h4>
+                <div style={{ fontSize: "36px" }}>{trade.emoji}</div>
+                <h4>{trade.description}</h4>
+                <h4>Original Cost: {trade.pointCost} points</h4>
+                <h5>They Offer:</h5>
+                <List
+                    className="product-list-container"
+                    sx={{ maxHeight: "300px", overflow: "auto" }}
+                >
+                    {trade.tradeOffers.map((item, i) => (
+                        <span key={i}>
+                            <ListItem className="product-list-item">
+                                <ListItemAvatar>
+                                    <Avatar
+                                        sx={{ width: 46, height: 46 }}
+                                        loading="lazy"
+                                    >
+                                        <span style={{ fontSize: "36px" }}>
+                                            {item.emoji}
+                                        </span>
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={item.itemDescription}
+                                    secondary={`${item.businessName} | ${item.pointCost} points`}
+                                />
+                            </ListItem>
+                            <Divider />
+                        </span>
+                    ))}
+                </List>
                 <h4>Cannot Be Reversed</h4>
                 <div
                     style={{
@@ -71,14 +151,17 @@ function AcceptTradeModal({
                         marginTop: "15px",
                     }}
                 >
-                    <div style={redeemStyle} onClick={handleAddToWallet}>
+                    <div style={acceptStyle} onClick={handleAcceptOffer}>
                         Accept Trade
+                    </div>
+                    <div style={declineStyle} onClick={handleDeclineOffer}>
+                        Decline
                     </div>
                     <div
                         style={cancelStyle}
                         onClick={handleCloseAcceptTradeModal}
                     >
-                        Decline
+                        Close
                     </div>
                 </div>
             </Box>

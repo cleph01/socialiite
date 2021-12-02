@@ -142,6 +142,7 @@ function Notifications({ userId }) {
                                         style={{ fontSize: "24px" }}
                                         onClick={() => {
                                             setOpenAcceptTradeModal(true);
+                                            setTrade({ ...item });
                                         }}
                                     >
                                         👀
