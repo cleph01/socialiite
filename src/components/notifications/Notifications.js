@@ -158,6 +158,9 @@ function Notifications({ userId }) {
                 trade={trade}
                 openAcceptTradeModal={openAcceptTradeModal}
                 handleCloseAcceptTradeModal={handleCloseAcceptTradeModal}
+                setAlertMsg={setAlertMsg}
+                setOpenSnackBar={setOpenSnackBar}
+                setNotifications={setNotifications}
             />
             <Stack spacing={2} sx={{ width: "100%" }}>
                 <Snackbar

@@ -30,6 +30,8 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
+import KeyPad from "../components/keypad/KeyPad";
+
 import "../lib/scss/pages/checkin.scss";
 
 function CheckIn() {
@@ -38,6 +40,8 @@ function CheckIn() {
     const [dupCheckIn, setDupCheckIn] = useState(false);
 
     const { businessId } = useParams();
+
+    const [pin, setPin] = useState("");
 
     const [goStatus, setGoStatus] = useState({
         fetchingDistance: false,
@@ -267,7 +271,8 @@ function CheckIn() {
                     </CardContent>
                 </Card>
 
-                <ProcessAuth redirectPath={`/checkin/${businessId}/process`} />
+                <KeyPad setPin={setPin} />
+                {/* <ProcessAuth redirectPath={`/checkin/${businessId}/process`} />
 
                 <Route path={`/checkin/${businessId}/verify-location`}>
                     <VerifyLocation
@@ -291,7 +296,7 @@ function CheckIn() {
                         dupCheckIn={dupCheckIn}
                         setDupCheckIn={setDupCheckIn}
                     />
-                </Route>
+                </Route> */}
             </div>
             <ClaimModal
                 openClaimModal={openClaimModal}

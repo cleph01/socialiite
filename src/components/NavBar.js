@@ -83,6 +83,12 @@ function NavBar() {
                     </div>
                     <div
                         className="btn desktop"
+                        onClick={() => handleRedirect(`/hero/notifications`)}
+                    >
+                        🔔 Trade Offers
+                    </div>
+                    <div
+                        className="btn desktop"
                         onClick={() => handleRedirect(`/search/shops`)}
                     >
                         🔍 Search Shops
@@ -139,6 +145,14 @@ function NavBar() {
                         >
                             💰 Wallet
                         </MenuItem>
+                        <MenuItem
+                            onClick={() =>
+                                handleRedirect(`/hero/notifications`)
+                            }
+                        >
+                            🔔 Offers to Trade
+                        </MenuItem>
+
                         <MenuItem
                             onClick={() => handleRedirect(`/search/shops`)}
                         >

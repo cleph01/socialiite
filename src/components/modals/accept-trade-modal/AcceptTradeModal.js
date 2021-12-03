@@ -9,9 +9,17 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import Skeleton from "@mui/material/Skeleton";
 
 import Modal from "@mui/material/Modal";
+
+import { db } from "../../../services/firebase/firebase-config";
 
 const style = {
     display: "flex",
@@ -68,22 +76,85 @@ const cancelStyle = {
 };
 
 function AcceptTradeModal({
+    setAlertMsg,
+    setOpenSnackBar,
     openAcceptTradeModal,
     handleCloseAcceptTradeModal,
     handleAddToWallet,
     trade,
+    setNotifications,
 }) {
+    const [acceptedOffer, setAcceptedOffer] = useState(null);
+
     console.log("Trade in Accept Modal: ", trade);
+    console.log("Selected Offer: ", acceptedOffer);
 
     const handleAcceptOffer = () => {
+        if (!acceptedOffer) {
+            setAlertMsg({
+                message: "Select an Offer First",
+                severity: "error",
+            });
+            setOpenSnackBar(true);
+        } else {
+            return;
+        }
         const swapInfoArr = [];
-
-        // swapInfoArr.push({from})
-        return;
     };
 
     const handleDeclineOffer = () => {
-        return;
+        db.collection("trades")
+            .doc(trade.tradeId)
+            .delete()
+            .then(() => {
+                console.log("trade successfully deleted!");
+
+                trade.tradeOffers.forEach((item) => {
+                    Object.keys(item.offer).forEach((key) => {
+                        console.log("key: ", key, "Offer: ", item.offer[key]);
+                        db.collection("wallet")
+                            .doc(item.offer[key].walletItemId)
+                            .update({
+                                offeredInTrade: false,
+                            })
+                            .then(() => {
+                                console.log(
+                                    "Successfully Updated OfferedInTrade for Deleted Trade"
+                                );
+                            })
+                            .catch((error) => {
+                                console.log(
+                                    "Error Updating OfferedInTrade for Deleted Trade",
+                                    error
+                                );
+                            });
+                    });
+                });
+
+                setNotifications((prevState) =>
+                    prevState.filter(
+                        (stateTrade) => stateTrade.tradeId !== trade.tradeId
+                    )
+                );
+                setAlertMsg({
+                    message: "Trade Successfully Deleted",
+                    severity: "success",
+                });
+                setOpenSnackBar(true);
+
+                handleCloseAcceptTradeModal();
+            })
+            .catch((error) => {
+                console.error("Error removing document: ", error);
+
+                setAlertMsg({
+                    message: "Error Deleting Trade",
+                    severity: "error",
+                });
+                setOpenSnackBar(true);
+
+                handleCloseAcceptTradeModal();
+            });
     };
 
     if (!trade) {
@@ -118,28 +189,66 @@ function AcceptTradeModal({
                 <h5>They Offer:</h5>
                 <List
                     className="product-list-container"
-                    sx={{ maxHeight: "300px", overflow: "auto" }}
+                    sx={{ maxHeight: "300px", width: "100%", overflow: "auto" }}
                 >
                     {trade.tradeOffers.map((item, i) => (
-                        <span key={i}>
-                            <ListItem className="product-list-item">
-                                <ListItemAvatar>
-                                    <Avatar
-                                        sx={{ width: 46, height: 46 }}
-                                        loading="lazy"
-                                    >
-                                        <span style={{ fontSize: "36px" }}>
-                                            {item.emoji}
-                                        </span>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={item.itemDescription}
-                                    secondary={`${item.businessName} | ${item.pointCost} points`}
-                                />
-                            </ListItem>
-                            <Divider />
-                        </span>
+                        <div
+                            key={i}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <input
+                                type="radio"
+                                name="offers"
+                                onChange={() =>
+                                    setAcceptedOffer({ ...item.offer })
+                                }
+                            />
+                            <Accordion
+                                sx={{
+                                    width: "100%",
+                                    marginLeft: "6px",
+                                    marginBottom: "6px",
+                                }}
+                            >
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <h5>{`Offer ${i + 1}`}</h5>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <ol>
+                                        {Object.keys(item.offer).map(
+                                            (offer, i) => (
+                                                <div key={i}>
+                                                    <li
+                                                        style={{
+                                                            margin: "10px 0",
+                                                        }}
+                                                    >
+                                                        {item.offer[i].emoji}{" "}
+                                                        {
+                                                            item.offer[i]
+                                                                .itemDescription
+                                                        }
+                                                        <br />
+                                                        {
+                                                            item.offer[i]
+                                                                .businessName
+                                                        }
+                                                    </li>
+                                                </div>
+                                            )
+                                        )}
+                                    </ol>
+                                </AccordionDetails>
+                            </Accordion>
+                        </div>
                     ))}
                 </List>
                 <h4>Cannot Be Reversed</h4>

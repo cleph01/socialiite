@@ -5,6 +5,7 @@ import { Route } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
 import HeroHeader from "../components/hero/HeroHeader";
+import PinModal from "../components/modals/pin-modal/PinModal";
 
 import Shoutouts from "../components/shoutouts/Shoutouts";
 import PartnerShops from "../components/partner-shops/PartnerShops";
@@ -30,6 +31,10 @@ const user = {
 function Hero({ authUser }) {
     const { userState, userDispatch } = useContext(UserContext);
 
+    const [openPinModal, setOpenPinModal] = useState(false);
+    const handleClosePinModal = () => {
+        setOpenPinModal(false);
+    };
     useEffect(() => {
         // Try and Refactor with Async/Await
 
@@ -101,7 +106,7 @@ function Hero({ authUser }) {
                 marginBottom: "125px",
             }}
         >
-            <HeroHeader user={userState} />
+            <HeroHeader user={userState} setOpenPinModal={setOpenPinModal} />
 
             <Route path="/hero/shoutouts">
                 <Shoutouts userId={userState.userId} />
@@ -118,6 +123,12 @@ function Hero({ authUser }) {
             <Route path="/hero/notifications">
                 <Notifications userId={userState.userId} />
             </Route>
+
+            <PinModal
+                userId={userState.userId}
+                openPinModal={openPinModal}
+                handleClosePinModal={handleClosePinModal}
+            />
         </div>
     );
 }

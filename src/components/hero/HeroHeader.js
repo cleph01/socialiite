@@ -17,7 +17,7 @@ const emojiStyle = {
     fontSize: "24px",
 };
 
-function HeroHeader({ user }) {
+function HeroHeader({ user, setOpenPinModal }) {
     let history = useHistory();
 
     const { authUser } = useContext(UserContext);
@@ -70,7 +70,7 @@ function HeroHeader({ user }) {
                     />
                     <div className="hero__details">
                         <div className="hero__displayName">
-                            {user.displayName}
+                            {authUser.displayName}
                         </div>
                         <div className="hero__stats_wrapper">
                             <div className="hero__stats">
@@ -98,61 +98,93 @@ function HeroHeader({ user }) {
                     {/* Grid at second column */}
                     <div className="col-right">
                         <Socials socials={user.socials} />
-                        <Link to="/hero/shoutouts">
-                            <MenuButton
-                                text="Shoutouts"
-                                color="#213b77"
-                                emoji={<span style={emojiStyle}>🗣️</span>}
-                            />
-                        </Link>
+                        <div className="col-right-subcol-wrapper">
+                            <div className="col-right-subcol">
+                                <div onClick={() => setOpenPinModal(true)}>
+                                    <MenuButton
+                                        text="Your PIN"
+                                        color="#213b77"
+                                        emoji={
+                                            <span style={emojiStyle}>🤫</span>
+                                        }
+                                    />
+                                </div>
+                                <Link to="/hero/shoutouts">
+                                    <MenuButton
+                                        text="Shoutouts"
+                                        color="#213b77"
+                                        emoji={
+                                            <span style={emojiStyle}>📣</span>
+                                        }
+                                    />
+                                </Link>
 
-                        <Link to="/hero/wallet">
-                            <MenuButton
-                                text="Wallet"
-                                color="#213b77"
-                                emoji={<span style={emojiStyle}>💰</span>}
-                            />
-                        </Link>
+                                <Link to="/hero/wallet">
+                                    <MenuButton
+                                        text="Wallet"
+                                        color="#213b77"
+                                        emoji={
+                                            <span style={emojiStyle}>💵</span>
+                                        }
+                                    />
+                                </Link>
+                                <Link to="/hero/partner-shops/">
+                                    <MenuButton
+                                        text="Partners"
+                                        color="#213b77"
+                                        emoji={
+                                            <span style={emojiStyle}>🤜🤛</span>
+                                        }
+                                    />
+                                </Link>
+                            </div>
+                            <div className="col-right-subcol">
+                                <div
+                                    className={
+                                        notifications.length > 0 ? "glow" : null
+                                    }
+                                >
+                                    <Link to="/hero/notifications">
+                                        <MenuButton
+                                            text="Offers"
+                                            color="#213b77"
+                                            emoji={
+                                                <span style={emojiStyle}>
+                                                    🔔
+                                                </span>
+                                            }
+                                        />
+                                    </Link>
+                                </div>
+                                <Link to="/trade">
+                                    <MenuButton
+                                        text="Trade"
+                                        color="#213b77"
+                                        emoji={
+                                            <span style={emojiStyle}>🤝</span>
+                                        }
+                                    />
+                                </Link>
+                                <Link to="/hero/partner-shops/">
+                                    <MenuButton
+                                        text="Search"
+                                        color="#213b77"
+                                        emoji={
+                                            <span style={emojiStyle}>🔍</span>
+                                        }
+                                    />
+                                </Link>
 
-                        <div
-                            className={notifications.length > 0 ? "glow" : null}
-                        >
-                            <Link to="/hero/notifications">
-                                <MenuButton
-                                    text="Offers to Trade"
-                                    color="#213b77"
-                                    emoji={<span style={emojiStyle}>🔔</span>}
-                                />
-                            </Link>
-                        </div>
-                        <Link to="/trade">
-                            <MenuButton
-                                text="Trade Room"
-                                color="#213b77"
-                                emoji={<span style={emojiStyle}>🤝</span>}
-                            />
-                        </Link>
-                        <Link to="/hero/partner-shops/">
-                            <MenuButton
-                                text="Partner Shops"
-                                color="#213b77"
-                                emoji={<span style={emojiStyle}>🤜🤛</span>}
-                            />
-                        </Link>
-                        <Link to="/hero/partner-shops/">
-                            <MenuButton
-                                text="Search Shops"
-                                color="#213b77"
-                                emoji={<span style={emojiStyle}>🔍</span>}
-                            />
-                        </Link>
-
-                        <div onClick={handleSignOut}>
-                            <MenuButton
-                                text="Signout"
-                                color="#bb3133"
-                                emoji={<span style={emojiStyle}>✌️</span>}
-                            />
+                                <div onClick={handleSignOut}>
+                                    <MenuButton
+                                        text="Signout"
+                                        color="#bb3133"
+                                        emoji={
+                                            <span style={emojiStyle}>✌️</span>
+                                        }
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
