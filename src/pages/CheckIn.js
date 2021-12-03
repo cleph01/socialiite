@@ -4,11 +4,8 @@ import { UserContext } from "../contexts/UserContext";
 
 import { db, firebase } from "../services/firebase/firebase-config";
 
-import ClaimModal from "../components/modals/claim-modal/ClaimModal";
+import CheckinModal from "../components/modals/checkin-modal/CheckinModal";
 import AvailablePrizes from "../components/checkin/AvailablePrizes";
-import VerifyLocation from "../components/checkin/VerifyLocation";
-import ProcessCheckin from "../components/checkin/ProcessCheckin";
-import ProcessAuth from "../components/checkin/ProcessAuth";
 
 import Skeleton from "@mui/material/Skeleton";
 import NavBar from "../components/NavBar";
@@ -35,29 +32,21 @@ import KeyPad from "../components/keypad/KeyPad";
 import "../lib/scss/pages/checkin.scss";
 
 function CheckIn() {
-    const { userDispatch, authUser } = useContext(UserContext);
-    const [checkedIn, setCheckedIn] = useState(false);
-    const [dupCheckIn, setDupCheckIn] = useState(false);
-
+    const { authUser } = useContext(UserContext);
     const { businessId } = useParams();
 
-    const [pin, setPin] = useState("");
+    const [checkinUser, setCheckinUser] = useState("");
 
-    const [goStatus, setGoStatus] = useState({
-        fetchingDistance: false,
-        gotDistance: false,
-        checkedIn: false,
-        onSite: false,
-    });
+    const [checkedIn, setCheckedIn] = useState(false);
 
     const [business, setBusiness] = useState();
     const [businessExists, setBusinessExists] = useState(false);
 
     const [prizes, setPrizes] = useState();
 
-    const [userBizRelationship, setUserBizRelationship] = useState(null);
+    const [openCheckinModal, setOpenCheckinModal] = useState(false);
 
-    const [openClaimModal, setOpenClaimModal] = useState(false);
+    const [userBizRelationship, setUserBizRelationship] = useState(null);
 
     const [walletPrize, setwalletPrize] = useState();
 
@@ -68,93 +57,106 @@ function CheckIn() {
 
     const [openSnackBar, setOpenSnackBar] = useState(false);
 
-    const handleOpenClaimModal = (itemObj) => {
-        setOpenClaimModal(true);
-        setwalletPrize(itemObj);
+    const handleCheckedInToggle = (pass) => {
+        if (pass) {
+            setCheckedIn(true);
+            setOpenCheckinModal(false);
 
-        console.log("Wallet Prize: ", walletPrize);
-    };
-
-    const handleCloseClaimModal = () => setOpenClaimModal(false);
-
-    const handleAddToWallet = () => {
-        console.log("Add to wallet invoked: ", walletPrize);
-
-        if (walletPrize.pointCost <= userBizRelationship.pointSum) {
-            //Add Prize to Wallet and Update pointsSum in Biz Relationship
-            db.collection("wallet")
-                .add({
-                    userId: authUser.uid,
-                    businessId: businessId,
-                    businessName: business.businessName,
-                    emoji: walletPrize.emoji,
-                    itemDescription: walletPrize.description,
-                    itemId: walletPrize.prizeId,
-                    redeemed: false,
-                    publicWallet: true,
-                    tags: walletPrize.tags,
-                    tradeOffers: [],
-                    offeredInTrade: false,
-                    pointCost: walletPrize.pointCost,
-                    created: Date.now(),
-                })
-                .then((docRef) => {
-                    console.log("Prize Added to Wallet with ID: ", docRef.id);
-
-                    // Decrement Points Sum from BizRelationship
-                    db.collection("users")
-                        .doc(authUser.uid)
-                        .collection("bizRelationships")
-                        .doc(userBizRelationship.businessId)
-                        .update({
-                            pointSum: firebase.firestore.FieldValue.increment(
-                                -walletPrize.pointCost
-                            ),
-                        })
-                        .then(() => {
-                            console.log("PointSum successfully updated!");
-
-                            setUserBizRelationship((prevState) => {
-                                return {
-                                    ...prevState,
-                                    pointSum:
-                                        prevState.pointSum -
-                                        walletPrize.pointCost,
-                                };
-                            });
-                        })
-                        .catch((error) => {
-                            // The document probably doesn't exist.
-                            console.error("Error updating PointSume: ", error);
-                        });
-
-                    setAlertMsg({
-                        message: "Item Added to Wallet.",
-                        severity: "success",
-                    });
-
-                    setOpenSnackBar(true);
-                })
-                .catch((error) => {
-                    console.error("Error adding to wallet: ", error);
-
-                    setAlertMsg({
-                        message: "Error Adding to Wallet.",
-                        severity: "error",
-                    });
-
-                    setOpenSnackBar(true);
-                });
+            setTimeout(() => {
+                setCheckedIn(false);
+            }, 3000);
         } else {
-            setAlertMsg({
-                message: "Not Enouguh Points.",
-                severity: "error",
-            });
+            setOpenCheckinModal(false);
         }
-
-        setOpenClaimModal(false);
-        setOpenSnackBar(true);
     };
+
+    // const handleOpenClaimModal = (itemObj) => {
+    //     setOpenClaimModal(true);
+    //     setwalletPrize(itemObj);
+
+    //     console.log("Wallet Prize: ", walletPrize);
+    // };
+
+    const handleCloseCheckinModal = () => setOpenCheckinModal(false);
+
+    // const handleAddToWallet = () => {
+    //     console.log("Add to wallet invoked: ", walletPrize);
+
+    //     if (walletPrize.pointCost <= userBizRelationship.pointSum) {
+    //         //Add Prize to Wallet and Update pointsSum in Biz Relationship
+    //         db.collection("wallet")
+    //             .add({
+    //                 userId: authUser.uid,
+    //                 businessId: businessId,
+    //                 businessName: business.businessName,
+    //                 emoji: walletPrize.emoji,
+    //                 itemDescription: walletPrize.description,
+    //                 itemId: walletPrize.prizeId,
+    //                 redeemed: false,
+    //                 publicWallet: true,
+    //                 tags: walletPrize.tags,
+    //                 tradeOffers: [],
+    //                 offeredInTrade: false,
+    //                 pointCost: walletPrize.pointCost,
+    //                 created: Date.now(),
+    //             })
+    //             .then((docRef) => {
+    //                 console.log("Prize Added to Wallet with ID: ", docRef.id);
+
+    //                 // Decrement Points Sum from BizRelationship
+    //                 db.collection("users")
+    //                     .doc(authUser.uid)
+    //                     .collection("bizRelationships")
+    //                     .doc(userBizRelationship.businessId)
+    //                     .update({
+    //                         pointSum: firebase.firestore.FieldValue.increment(
+    //                             -walletPrize.pointCost
+    //                         ),
+    //                     })
+    //                     .then(() => {
+    //                         console.log("PointSum successfully updated!");
+
+    //                         setUserBizRelationship((prevState) => {
+    //                             return {
+    //                                 ...prevState,
+    //                                 pointSum:
+    //                                     prevState.pointSum -
+    //                                     walletPrize.pointCost,
+    //                             };
+    //                         });
+    //                     })
+    //                     .catch((error) => {
+    //                         // The document probably doesn't exist.
+    //                         console.error("Error updating PointSume: ", error);
+    //                     });
+
+    //                 setAlertMsg({
+    //                     message: "Item Added to Wallet.",
+    //                     severity: "success",
+    //                 });
+
+    //                 setOpenSnackBar(true);
+    //             })
+    //             .catch((error) => {
+    //                 console.error("Error adding to wallet: ", error);
+
+    //                 setAlertMsg({
+    //                     message: "Error Adding to Wallet.",
+    //                     severity: "error",
+    //                 });
+
+    //                 setOpenSnackBar(true);
+    //             });
+    //     } else {
+    //         setAlertMsg({
+    //             message: "Not Enouguh Points.",
+    //             severity: "error",
+    //         });
+    //     }
+
+    //     // setOpenClaimModal(false);
+    //     setOpenSnackBar(true);
+    // };
 
     useEffect(() => {
         // Get Business Info
@@ -213,6 +215,7 @@ function CheckIn() {
             </div>
         );
     }
+    console.log("Checkedin User: ", checkinUser);
 
     return (
         <>
@@ -253,10 +256,8 @@ function CheckIn() {
                     <CardContent>
                         <AvailablePrizes
                             prizes={prizes}
-                            handleOpenClaimModal={handleOpenClaimModal}
                             businessId={businessId}
                             checkedIn={checkedIn}
-                            dupCheckIn={dupCheckIn}
                         />
                         <Typography variant="body1" color="text.secondary">
                             Login Each Time You Visit and Get a Chance to Win a
@@ -271,38 +272,38 @@ function CheckIn() {
                     </CardContent>
                 </Card>
 
-                <KeyPad setPin={setPin} />
-                {/* <ProcessAuth redirectPath={`/checkin/${businessId}/process`} />
-
-                <Route path={`/checkin/${businessId}/verify-location`}>
-                    <VerifyLocation
-                        setGoStatus={setGoStatus}
-                        goStatus={goStatus}
-                        business={business}
+                {!checkedIn ? (
+                    <KeyPad
+                        setCheckinUser={setCheckinUser}
                         setAlertMsg={setAlertMsg}
                         setOpenSnackBar={setOpenSnackBar}
+                        setOpenCheckinModal={setOpenCheckinModal}
                     />
-                </Route>
-
-                <Route path="/checkin/:businessId/process">
-                    <ProcessCheckin
-                        business={business}
-                        userBizRelationship={userBizRelationship}
-                        setUserBizRelationship={setUserBizRelationship}
-                        setAlertMsg={setAlertMsg}
-                        setOpenSnackBar={setOpenSnackBar}
-                        checkedIn={checkedIn}
-                        setCheckedIn={setCheckedIn}
-                        dupCheckIn={dupCheckIn}
-                        setDupCheckIn={setDupCheckIn}
-                    />
-                </Route> */}
+                ) : (
+                    <div className="process-checkin__container">
+                        <div className="process-checkin__wrapper">
+                            <div className="checkin__confirmation-msg">
+                                <h3>Checkin Successful !! </h3>
+                                <div style={{ fontSize: "36px" }}>🙌</div>
+                                <h4>
+                                    Your New Points:{" "}
+                                    {userBizRelationship?.pointSum}
+                                </h4>
+                                <h4>Head into the App to Claim Prizes</h4>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
-            <ClaimModal
-                openClaimModal={openClaimModal}
-                setOpenClaimModal={setOpenClaimModal}
-                handleCloseClaimModal={handleCloseClaimModal}
-                handleAddToWallet={handleAddToWallet}
+            <CheckinModal
+                openCheckinModal={openCheckinModal}
+                handleCloseCheckinModal={handleCloseCheckinModal}
+                checkinUser={checkinUser}
+                setAlertMsg={setAlertMsg}
+                setOpenSnackBar={setOpenSnackBar}
+                handleCheckedInToggle={handleCheckedInToggle}
+                setUserBizRelationship={setUserBizRelationship}
+                business={business}
             />
 
             <Stack spacing={2} sx={{ width: "100%" }}>

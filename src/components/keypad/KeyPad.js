@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { db } from "../../services/firebase/firebase-config";
+
 const keyPadContainer = {
     marginTop: "10px",
     display: "flex",
@@ -20,6 +22,8 @@ const col = {
     width: "100%",
     height: "100%",
     fontSize: "24px",
+    backgroundColor: "#213d79",
+    color: "#f1f1f1",
 };
 
 const pinResultWrapper = {
@@ -36,8 +40,43 @@ const pinResult = {
     fontSize: "36px",
     letterSpacing: "18px",
 };
-function KeyPad() {
+function KeyPad({
+    setAlertMsg,
+    setOpenSnackBar,
+    setCheckinUser,
+    setOpenCheckinModal,
+}) {
     const [tempPin, setTempPin] = useState("");
+
+    const handleSubmit = () => {
+        db.collection("users")
+            .where("pin", "==", tempPin)
+            .get()
+            .then((querySnapshot) => {
+                console.log("Query Snapshot in KeyPad: ", querySnapshot);
+                if (querySnapshot.docs.length > 0) {
+                    setCheckinUser(querySnapshot.docs[0].data());
+                    setOpenCheckinModal(true);
+                    setTempPin("");
+                } else {
+                    setAlertMsg({
+                        message: `No User Found with PIN: ${tempPin}`,
+                        severity: "error",
+                    });
+
+                    setOpenSnackBar(true);
+                    setTempPin("");
+                }
+            })
+            .catch((error) => {
+                setAlertMsg({
+                    message: "Error Submitting PIN",
+                    severity: "error",
+                });
+
+                setOpenSnackBar(true);
+            });
+    };
 
     const handleClick = (event) => {
         switch (event.target.innerText) {
@@ -51,8 +90,15 @@ function KeyPad() {
             case "Submit":
                 if (tempPin.length === 6) {
                     console.log("Submit");
+
+                    handleSubmit();
                 } else {
-                    console.log("Must be 6 digits");
+                    setAlertMsg({
+                        message: "PIN is Missing a Digit.",
+                        severity: "error",
+                    });
+
+                    setOpenSnackBar(true);
                 }
 
                 break;

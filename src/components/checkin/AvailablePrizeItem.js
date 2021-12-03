@@ -25,24 +25,10 @@ function AvailablePrizeItem({
                     secondary={`Points Needed: ${prize.prize.pointCost}`}
                 />
             </div>
-            {checkedIn && !dupCheckIn ? (
-                <ListItemSecondaryAction className="list-icons-wrapper">
-                    <AddIcon
-                        className="list-icons"
-                        id={prize.prizeId}
-                        onClick={() =>
-                            handleOpenClaimModal({
-                                prizeId: prize.prizeId,
-                                ...prize.prize,
-                            })
-                        }
-                    />
-                </ListItemSecondaryAction>
-            ) : (
-                <ListItemSecondaryAction className="list-icons-wrapper">
-                    <div className="checkin-pending-text">Checkin to Claim</div>
-                </ListItemSecondaryAction>
-            )}
+
+            <ListItemSecondaryAction className="list-icons-wrapper">
+                <div className="checkin-pending-text">Checkin to Claim</div>
+            </ListItemSecondaryAction>
         </ListItem>
     );
 }
