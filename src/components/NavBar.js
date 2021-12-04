@@ -67,7 +67,7 @@ function NavBar() {
                         className="btn desktop"
                         onClick={() => handleRedirect(`/hero/shoutouts`)}
                     >
-                        🗣️ Shoutouts
+                        📣 Shoutouts
                     </div>
                     <div
                         className="btn desktop"
@@ -131,7 +131,7 @@ function NavBar() {
                         <MenuItem
                             onClick={() => handleRedirect(`/hero/shoutouts`)}
                         >
-                            🗣️ Shoutouts
+                            📣 Shoutouts
                         </MenuItem>
                         <MenuItem
                             onClick={() =>
@@ -143,7 +143,7 @@ function NavBar() {
                         <MenuItem
                             onClick={() => handleRedirect(`/hero/wallet`)}
                         >
-                            💰 Wallet
+                            💵 Wallet
                         </MenuItem>
                         <MenuItem
                             onClick={() =>

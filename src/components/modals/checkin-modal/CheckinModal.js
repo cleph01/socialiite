@@ -95,7 +95,7 @@ function CheckinModal({
                     console.log("Difference in Days: ", diffInDays);
                     // Update Visits, etc
                     // Update Counts and Log
-                    if (diffInDays >= 1) {
+                    if (diffInDays !== 1) {
                         db.collection("users")
                             .doc(checkinUser.userId)
                             .collection("bizRelationships")

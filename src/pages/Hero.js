@@ -125,7 +125,7 @@ function Hero({ authUser }) {
             </Route>
 
             <PinModal
-                userId={userState.userId}
+                userId={authUser.uid}
                 openPinModal={openPinModal}
                 handleClosePinModal={handleClosePinModal}
             />

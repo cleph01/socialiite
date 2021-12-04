@@ -37,16 +37,18 @@ function PinModal({ userId, openPinModal, handleClosePinModal }) {
     const [pin, setPin] = useState();
     console.log("userId in pin modal: ", userId);
     useEffect(() => {
-        db.collection("users")
-            .doc(userId)
-            .get()
-            .then((docRef) => {
-                console.log("docRef in db call: ", docRef);
-                setPin(docRef.data().pin);
-            })
-            .catch((error) => {
-                console.log("Error Getting Pin: ", error);
-            });
+        if (userId) {
+            db.collection("users")
+                .doc(userId)
+                .get()
+                .then((docRef) => {
+                    console.log("docRef in db call: ", docRef);
+                    setPin(docRef.data().pin);
+                })
+                .catch((error) => {
+                    console.log("Error Getting Pin: ", error);
+                });
+        }
     }, []);
 
     return (
@@ -60,7 +62,7 @@ function PinModal({ userId, openPinModal, handleClosePinModal }) {
                 <h3>Your PIN</h3>
                 <div style={{ fontSize: "36px" }}>🤫</div>
                 <h4>Use it to Check In at Shops</h4>
-                <h1>{pin}</h1>
+                <h1 style={{ letterSpacing: "20px" }}>{pin}</h1>
                 <div
                     style={{
                         display: "flex",

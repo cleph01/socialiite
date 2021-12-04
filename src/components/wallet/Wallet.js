@@ -130,7 +130,6 @@ const Wallet = () => {
                             itemId={item.walletItemId}
                             itemDetails={item.walletItem}
                             handleOpen={handleOpen}
-                            handleCloseClaimModal={handleCloseClaimModal}
                             setShareBusiness={setShareBusiness}
                             setOpenShareModal={setOpenShareModal}
                         />
@@ -147,6 +146,7 @@ const Wallet = () => {
                 openClaimModal={openClaimModal}
                 setOpenClaimModal={setOpenClaimModal}
                 handleRedeem={handleRedeem}
+                handleCloseClaimModal={handleCloseClaimModal}
             />
             <ShareModal
                 shareBusiness={shareBusiness}

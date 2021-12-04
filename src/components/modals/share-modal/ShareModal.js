@@ -36,7 +36,7 @@ function ShareModal({ openShareModal, handleCloseShareModal, shareBusiness }) {
         `Wanted to share this with you. Check them out. ${
             shareBusiness
                 ? shareBusiness.businessName +
-                  ": http://localhost:3000/shops/" +
+                  ": https://socialiite.web.app/shops/" +
                   shareBusiness.businessId
                 : "undefined"
         }/${authUser.uid}`

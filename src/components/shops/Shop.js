@@ -186,7 +186,7 @@ function Shop() {
         `Wanted to share this with you. Check them out. ${
             business
                 ? business.businessName +
-                  ": http://localhost:3000/shops/" +
+                  ": https://socialiite.web.app/shops/" +
                   businessId
                 : "undefined"
         }/${userState.userId}`
