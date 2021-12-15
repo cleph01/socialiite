@@ -11,7 +11,9 @@ function QRcodeGen({ businessId }) {
                 alignItems: "center",
             }}
         >
-            <QRCode value={`https://socialiite.web.app/store/${businessId}`} />
+            <QRCode
+                value={`https://socialiite.web.app/checkin/${businessId}`}
+            />
         </div>
     );
 }

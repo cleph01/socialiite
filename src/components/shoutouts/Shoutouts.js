@@ -18,16 +18,15 @@ function Shoutouts() {
     useEffect(() => {
         const authUser = localStorage.getItem("authUser");
         // Get Posts
-        db.collection("user")
-            .doc(authUser.uid)
-            .collection("posts")
+        db.collection("shoutouts")
+            .where("userId", "==", authUser.uid)
             .orderBy("timestamp", "desc")
             .get()
-            .then((posts) => {
-                console.log("Posts in query: ", posts);
+            .then((querySnapshot) => {
+                console.log("Posts in query: ", querySnapshot.docs);
 
                 setPosts(
-                    posts.docs.map((doc) => ({
+                    querySnapshot.docs.map((doc) => ({
                         postId: doc.id,
                         post: doc.data(),
                     }))

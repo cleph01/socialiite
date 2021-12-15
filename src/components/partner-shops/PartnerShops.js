@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 import List from "@mui/material/List";
 
 import Skeleton from "@mui/material/Skeleton";
@@ -12,10 +12,9 @@ import UpcomingMessage from "../UpcomingMessage";
 function PartnerShops() {
     const [bizRelationships, setBizRelationships] = useState();
 
+    const { authUser } = useContext(UserContext);
     useEffect(() => {
-        const authUser = localStorage.getItem("authUser");
-
-        db.collection("user")
+        db.collection("users")
             .doc(authUser.uid)
             .collection("bizRelationships")
             .get()
@@ -24,8 +23,8 @@ function PartnerShops() {
 
                 setBizRelationships(
                     bizRelationships.docs.map((doc) => ({
-                        relationshipId: doc.id,
-                        relationship: doc.data(),
+                        businessId: doc.id,
+                        business: doc.data(),
                     }))
                 );
             })
@@ -60,8 +59,8 @@ function PartnerShops() {
             }}
         >
             {bizRelationships.length > 0 ? (
-                bizRelationships.map((business, i) => (
-                    <Shop key={business.businessId} business={business} />
+                bizRelationships.map((bizRelationship, i) => (
+                    <Shop key={i} bizRelationship={bizRelationship} />
                 ))
             ) : (
                 <UpcomingMessage

@@ -10,7 +10,7 @@ function ProcessAuth() {
     const { authUser } = useContext(UserContext);
 
     if (authUser) {
-        return <Redirect to={`/checkin/${businessId}/verify-location`} />;
+        return <Redirect to={`/checkin/${businessId}/process`} />;
     }
 
     return (

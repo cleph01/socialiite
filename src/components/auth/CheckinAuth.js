@@ -5,7 +5,7 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-function Auth({ referrerId, redirectPath }) {
+function Auth({ referrerId, setCheckedIn }) {
     const [loadingUser, setLoadingUser] = useState(false);
 
     const { userDispatch, userState } = useContext(UserContext);
@@ -103,7 +103,7 @@ function Auth({ referrerId, redirectPath }) {
                                 });
                         }
 
-                        return true;
+                        return false;
                     },
                 },
             }}

@@ -3,6 +3,8 @@ import { useParams, Redirect } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 
 import AddIcon from "@mui/icons-material/Add";
+import KeyPad from "./KeyPad";
+import CheckinAuth from "../../components/auth/Auth";
 
 import { db, firebase } from "../../services/firebase/firebase-config";
 
@@ -16,15 +18,16 @@ function ProcessCheckin({
     setOpenSnackBar,
     setCheckedIn,
     checkedIn,
-    dupCheckIn,
-    setDupCheckIn,
 }) {
     const { authUser, userState, userDispatch } = useContext(UserContext);
 
     const { businessId } = useParams();
 
+    const [dupCheckIn, setDupCheckIn] = useState();
+
     const handleCheckin = () => {
         // Check if Relationship with business exists
+        console.log("Handle Checkin Triggered");
         db.collection("users")
             .doc(authUser.uid)
             .collection("bizRelationships")
@@ -167,16 +170,8 @@ function ProcessCheckin({
             });
     };
 
-    console.log("Got Distance: ", userState.gotDistance);
-
-    console.log("User State", userState);
-
     console.log("User biz RElationhip at render: ", userBizRelationship);
-    if (!userState.gotDistance) {
-        console.log(" !Got Distance redirect triggerred");
 
-        return <Redirect to={`/checkin/${businessId}/verify-location`} />;
-    }
     return (
         <div className="process-checkin__container">
             <div className="process-checkin__wrapper">
@@ -192,19 +187,22 @@ function ProcessCheckin({
                         <h3>Checkin Successful !! </h3>
                         <div style={{ fontSize: "36px" }}>🙌</div>
                         <h4>Your New Points: {userBizRelationship.pointSum}</h4>
-                        <h4>
-                            Cick the {<AddIcon />} above to add to your wallet
-                        </h4>
+                        <div>Remember to Log back in and </div>
+                        <div>Visit Your Partner Page to add Prizes to Your Wallet</div>
                         <h4>@ {business.businessName}</h4>
                     </div>
                 )}
 
-                {!checkedIn && (
-                    <div className="checkin__btn" onClick={handleCheckin}>
-                        {" "}
-                        Check In{" "}
-                    </div>
+                {!checkedIn && authUser && (
+                    <KeyPad
+                        handleCheckin={handleCheckin}
+                        setCheckedIn={setCheckedIn}
+                        setAlertMsg={setAlertMsg}
+                        setOpenSnackBar={setOpenSnackBar}
+                    />
                 )}
+
+                {!authUser && <CheckinAuth setCheckedIn={setCheckedIn} />}
             </div>
         </div>
     );

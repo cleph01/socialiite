@@ -27,15 +27,15 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-import KeyPad from "../components/keypad/KeyPad";
+import KeyPad from "../components/checkin/KeyPad";
 
 import "../lib/scss/pages/checkin.scss";
+import ProcessCheckin from "../components/checkin/ProcessCheckin";
+import ProcessAuth from "../components/checkin/ProcessAuth";
 
 function CheckIn() {
     const { authUser } = useContext(UserContext);
     const { businessId } = useParams();
-
-    const [checkinUser, setCheckinUser] = useState("");
 
     const [checkedIn, setCheckedIn] = useState(false);
 
@@ -215,7 +215,6 @@ function CheckIn() {
             </div>
         );
     }
-    console.log("Checkedin User: ", checkinUser);
 
     return (
         <>
@@ -272,39 +271,16 @@ function CheckIn() {
                     </CardContent>
                 </Card>
 
-                {!checkedIn ? (
-                    <KeyPad
-                        setCheckinUser={setCheckinUser}
-                        setAlertMsg={setAlertMsg}
-                        setOpenSnackBar={setOpenSnackBar}
-                        setOpenCheckinModal={setOpenCheckinModal}
-                    />
-                ) : (
-                    <div className="process-checkin__container">
-                        <div className="process-checkin__wrapper">
-                            <div className="checkin__confirmation-msg">
-                                <h3>Checkin Successful !! </h3>
-                                <div style={{ fontSize: "36px" }}>🙌</div>
-                                <h4>
-                                    Your New Points:{" "}
-                                    {userBizRelationship?.pointSum}
-                                </h4>
-                                <h4>Head into the App to Claim Prizes</h4>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <ProcessCheckin
+                    business={business}
+                    userBizRelationship={userBizRelationship}
+                    setUserBizRelationship={setUserBizRelationship}
+                    setAlertMsg={setAlertMsg}
+                    setOpenSnackBar={setOpenSnackBar}
+                    setCheckedIn={setCheckedIn}
+                    checkedIn={checkedIn}
+                />
             </div>
-            <CheckinModal
-                openCheckinModal={openCheckinModal}
-                handleCloseCheckinModal={handleCloseCheckinModal}
-                checkinUser={checkinUser}
-                setAlertMsg={setAlertMsg}
-                setOpenSnackBar={setOpenSnackBar}
-                handleCheckedInToggle={handleCheckedInToggle}
-                setUserBizRelationship={setUserBizRelationship}
-                business={business}
-            />
 
             <Stack spacing={2} sx={{ width: "100%" }}>
                 <Snackbar

@@ -28,15 +28,21 @@ function Store() {
     // const todaysDate = Date.now();
 
     useEffect(() => {
-        db.collection("shops")
+        const unsubscribe = db
+            .collection("shops")
             .doc(businessId)
-            .get()
-            .then((doc) => {
-                setBusinessInfo(doc.data());
-            })
-            .catch((err) => {
-                console.log("Error getting Business Info: ", err);
-            });
+            .onSnapshot(
+                (doc) => {
+                    setBusinessInfo(doc.data());
+                },
+                (error) => {
+                    console.log("Error getting Business Info: ", error);
+                }
+            );
+
+        return () => {
+            unsubscribe();
+        };
     }, []);
 
     if (!businessInfo) {
@@ -83,7 +89,13 @@ function Store() {
                         loading="lazy"
                         sx={{ marginRight: "30px" }}
                     />
-                    <QRcodeGen businessId={businessId} />
+                    <div className="pin-wrapper">
+                        <QRcodeGen businessId={businessId} />
+                        <div className="pin-code">
+                            {" "}
+                            {businessInfo.checkinPin}{" "}
+                        </div>
+                    </div>
                 </div>
                 <CardContent>
                     <br />

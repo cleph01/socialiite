@@ -8,9 +8,11 @@ import HeroHeader from "../components/hero/HeroHeader";
 import PinModal from "../components/modals/pin-modal/PinModal";
 
 import Shoutouts from "../components/shoutouts/Shoutouts";
+import ShoutoutMedia from "../components/shoutouts/ShoutoutMedia";
 import PartnerShops from "../components/partner-shops/PartnerShops";
 import Wallet from "../components/wallet/Wallet";
 import Notifications from "../components/notifications/Notifications";
+import UploadShoutout from "../components/shoutouts/UploadShoutout";
 
 import "../lib/scss/pages/hero-home.scss";
 
@@ -109,19 +111,27 @@ function Hero({ authUser }) {
             <HeroHeader user={userState} setOpenPinModal={setOpenPinModal} />
 
             <Route path="/hero/shoutouts">
-                <Shoutouts userId={userState.userId} />
+                <Shoutouts />
+            </Route>
+
+            <Route path="/hero/shoutout/:postId">
+                <ShoutoutMedia />
+            </Route>
+
+            <Route path="/hero/upload">
+                <UploadShoutout />
             </Route>
 
             <Route path="/hero/partner-shops">
-                <PartnerShops userId={userState.userId} />
+                <PartnerShops />
             </Route>
 
             <Route path="/hero/wallet">
-                <Wallet userId={userState.userId} />
+                <Wallet />
             </Route>
 
             <Route path="/hero/notifications">
-                <Notifications userId={userState.userId} />
+                <Notifications />
             </Route>
 
             <PinModal

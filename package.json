@@ -10,6 +10,8 @@
         "@mui/material": "^5.2.0",
         "axios": "^0.24.0",
         "cra-template": "1.1.2",
+        "filestack-js": "^3.25.0",
+        "filestack-react": "^4.0.1",
         "firebase": "^8.10.0",
         "firebase-tools": "^9.23.0",
         "geolocation-distance-between": "^0.1.0",
@@ -17,12 +19,15 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-firebaseui": "^5.0.2",
+        "react-player": "^2.9.0",
         "react-qr-code": "^2.0.3",
         "react-router": "^5.2.1",
         "react-router-dom": "^5.3.0",
         "react-scripts": "4.0.3",
         "sass": "^1.43.4",
-        "sharethis-reactjs": "^1.6.0"
+        "screenfull": "^6.0.0",
+        "sharethis-reactjs": "^1.6.0",
+        "uuid": "^3.4.0"
     },
     "scripts": {
         "start": "react-scripts start",

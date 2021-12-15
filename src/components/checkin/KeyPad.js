@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useParams } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
 
-import { db } from "../../services/firebase/firebase-config";
+import { db, firebase } from "../../services/firebase/firebase-config";
 
 const keyPadContainer = {
     marginTop: "10px",
@@ -30,7 +32,7 @@ const pinResultWrapper = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#e1e1e1",
     width: "100%",
     height: "150px",
 };
@@ -40,35 +42,36 @@ const pinResult = {
     fontSize: "36px",
     letterSpacing: "18px",
 };
-function KeyPad({
-    setAlertMsg,
-    setOpenSnackBar,
-    setCheckinUser,
-    setOpenCheckinModal,
-}) {
+function KeyPad({ setAlertMsg, handleCheckin, setOpenSnackBar }) {
     const [tempPin, setTempPin] = useState("");
+    const { businessId } = useParams();
+    const { authUser } = useContext(UserContext);
 
-    const handleSubmit = () => {
-        db.collection("users")
-            .where("pin", "==", tempPin)
+    const handleValidatePin = () => {
+        db.collection("shops")
+            .doc(businessId)
             .get()
-            .then((querySnapshot) => {
-                console.log("Query Snapshot in KeyPad: ", querySnapshot);
-                if (querySnapshot.docs.length > 0) {
-                    setCheckinUser(querySnapshot.docs[0].data());
-                    setOpenCheckinModal(true);
-                    setTempPin("");
-                } else {
+            .then((doc) => {
+                console.log(
+                    "Validate Doc: ",
+                    doc.data(),
+                    " - TempPin: ",
+                    tempPin
+                );
+                if (doc.data().checkinPin !== parseInt(tempPin)) {
                     setAlertMsg({
-                        message: `No User Found with PIN: ${tempPin}`,
+                        message: "Incorrect PIN. Try Again.",
                         severity: "error",
                     });
-
                     setOpenSnackBar(true);
+                    setTempPin("");
+                } else {
+                    handleCheckin();
                     setTempPin("");
                 }
             })
             .catch((error) => {
+                console.log("Error Submitting PIN: ", error);
                 setAlertMsg({
                     message: "Error Submitting PIN",
                     severity: "error",
@@ -88,11 +91,13 @@ function KeyPad({
                 }
                 break;
             case "Submit":
-                if (tempPin.length === 6) {
+                if (tempPin.length <= 4) {
                     console.log("Submit");
 
-                    handleSubmit();
+                    handleValidatePin();
                 } else {
+                    setOpenSnackBar(true);
+
                     setAlertMsg({
                         message: "PIN is Missing a Digit.",
                         severity: "error",
@@ -103,7 +108,7 @@ function KeyPad({
 
                 break;
             default:
-                if (tempPin.length <= 5) {
+                if (tempPin.length < 4) {
                     setTempPin(
                         (prevState) => prevState + event.target.innerText
                     );

@@ -2,25 +2,42 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../../services/firebase/firebase-config";
 
+import Skeleton from "@mui/material/Skeleton";
+
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 
-function Shop({ business }) {
+function Shop({ bizRelationship }) {
     const [prizes, setPrizes] = useState();
+    const [business, setBusiness] = useState();
 
-    console.log("Shop Item: ", business);
+    console.log("Shop Item: ", bizRelationship);
     useEffect(() => {
         db.collection("shops")
-            .doc(business.businessId)
+            .doc(bizRelationship.businessId)
+            .get()
+            .then((doc) => {
+                console.log("doc in shop business: ", doc);
+                setBusiness({
+                    businessId: doc.id,
+                    ...doc.data(),
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting Business Info: ", error);
+            });
+
+        db.collection("shops")
+            .doc(bizRelationship.businessId)
             .collection("prizes")
             .get()
-            .then((prizes) => {
-                console.log("Prizes in Shop query: ", prizes);
+            .then((querySnapshot) => {
+                console.log("Prizes in Shop query: ", querySnapshot);
                 setPrizes(
-                    prizes.docs.map((doc) => ({
+                    querySnapshot.docs.map((doc) => ({
                         prizeId: doc.id,
                         prizes: doc.data(),
                     }))
@@ -32,12 +49,24 @@ function Shop({ business }) {
     }, []);
 
     if (!prizes) {
-        return <div>...Loading Prize Count</div>;
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "10px",
+                }}
+            >
+                <Skeleton variant="rectangular" width={350} height={218} />
+            </div>
+        );
     }
+
     return (
         <div>
             <Link
-                to={`/shops/${business.businessId}`}
+                to={`/shops/${bizRelationship.businessId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
             >
                 <Divider />
@@ -50,8 +79,8 @@ function Shop({ business }) {
                             {business.businessName}
                         </Typography>
                         <Typography type="subheading" component="h4">
-                            Likes: {business.likes.length} | Prizes:{" "}
-                            {prizes.length}
+                            Your Points: {bizRelationship.business.pointSum} |
+                            Prizes: {prizes.length}
                         </Typography>
                     </div>
                 </ListItem>
