@@ -9,6 +9,8 @@ import { db } from "../../services/firebase/firebase-config";
 import Shop from "./Shop";
 import UpcomingMessage from "../UpcomingMessage";
 
+import "../../lib/scss/components/partner-shops/partner-shops.scss";
+
 function PartnerShops() {
     const [bizRelationships, setBizRelationships] = useState();
 
@@ -50,14 +52,7 @@ function PartnerShops() {
 
     console.log("BizRelationships in PartnerShops: ", bizRelationships);
     return (
-        <List
-            sx={{
-                width: "90vmin",
-
-                bgcolor: "background.paper",
-                borderRadius: "5px",
-            }}
-        >
+        <List className="partner-shops-wrapper">
             {bizRelationships.length > 0 ? (
                 bizRelationships.map((bizRelationship, i) => (
                     <Shop key={i} bizRelationship={bizRelationship} />

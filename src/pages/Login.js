@@ -16,6 +16,7 @@ function Login() {
     const { referrerId } = useParams();
 
     console.log("ReferrerId in Login: ", referrerId);
+    console.log("Storage: ", localStorage.getItem("redirectPath"));
 
     return (
         <>

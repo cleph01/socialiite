@@ -1,0 +1,44 @@
+@import "../../variables/variables";
+
+.actions__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0px;
+
+    .actions__wrapper {
+        display: flex;
+
+        align-items: center;
+        width: 70%;
+
+        .likes-followers__wrapper {
+            font-size: 13px;
+            padding: 0px 0px;
+            margin-left: 10px;
+            font-weight: 700;
+        }
+    }
+
+    .follow-btn {
+        display: block;
+        position: relative;
+        font-size: 12px;
+        padding: 0px 8px;
+        height: 30px;
+        border-radius: 25px;
+        background: $secondary;
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s ease-out;
+
+        .follow-icon {
+            font-size: 14px;
+        }
+    }
+}

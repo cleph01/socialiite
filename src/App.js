@@ -34,8 +34,6 @@ const initialState = {
     geoDistance: null,
 };
 
-
-
 function App() {
     const [userState, userDispatch] = useReducer(UserReducer, initialState);
     const [notificationsState, notificationDispatch] = useReducer(
@@ -85,6 +83,11 @@ function App() {
                                 >
                                     <COMPONENTS.MyProfile />
                                 </PrivateRoute>
+
+                                <Route
+                                    path={ROUTES.SHOP}
+                                    component={COMPONENTS.Shop}
+                                />
 
                                 <Route
                                     path={ROUTES.STORE}

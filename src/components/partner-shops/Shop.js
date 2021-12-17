@@ -5,10 +5,13 @@ import { db } from "../../services/firebase/firebase-config";
 import Skeleton from "@mui/material/Skeleton";
 
 import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
+
+import "../../lib/scss/components/partner-shops/shop.scss";
 
 function Shop({ bizRelationship }) {
     const [prizes, setPrizes] = useState();
@@ -64,7 +67,7 @@ function Shop({ bizRelationship }) {
     }
 
     return (
-        <div>
+        <div className="partner-shop-wrapper">
             <Link
                 to={`/shops/${bizRelationship.businessId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
@@ -83,6 +86,22 @@ function Shop({ bizRelationship }) {
                             Prizes: {prizes.length}
                         </Typography>
                     </div>
+                    <ListItemSecondaryAction
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            width: "60px",
+                        }}
+                    >
+                        <div
+                            style={{ fontSize: "24px" }}
+                            onClick={() => {
+                                alert("Clicked");
+                            }}
+                        >
+                            👀
+                        </div>
+                    </ListItemSecondaryAction>
                 </ListItem>
                 <Divider />
             </Link>

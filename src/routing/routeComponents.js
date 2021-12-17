@@ -20,7 +20,7 @@ const HotSpot = lazy(() => import("../pages/HotSpot.js"));
 
 // Shops Directory
 // const AllShops = lazy(() => import("../pages/AllShops.js"));
-// const Shop = lazy(() => import("../pages/shops/Shop.js"));
+const Shop = lazy(() => import("../pages/Shop.js"));
 
 // QR / Checkin
 const Store = lazy(() => import("../pages/Store.js"));
@@ -50,4 +50,14 @@ const NotFound = lazy(() => import("../pages/NotFound.js"));
 
 // const EditProduct = lazy(() => import("../pages/EditProduct.js"));
 
-export { Home, Login, MyProfile, HotSpot, Store, Checkin, Trade, NotFound };
+export {
+    Home,
+    Login,
+    MyProfile,
+    HotSpot,
+    Shop,
+    Store,
+    Checkin,
+    Trade,
+    NotFound,
+};

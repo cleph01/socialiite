@@ -13,23 +13,12 @@ import PartnerShops from "../components/partner-shops/PartnerShops";
 import Wallet from "../components/wallet/Wallet";
 import Notifications from "../components/notifications/Notifications";
 import UploadShoutout from "../components/shoutouts/UploadShoutout";
+import UploadSuccess from "../components/shoutouts/UploadSuccess";
 
 import "../lib/scss/pages/hero-home.scss";
 
 import { db } from "../services/firebase/firebase-config";
 
-const user = {
-    avartarUrl: "https://www.w3schools.com/howto/img_avatar.png",
-    displayName: "charlesmontoya79@gmail.com",
-    socials: {
-        facebook: "facbook",
-        youtube: "youtube",
-        instagram: "instagram",
-        twitter: "twitter",
-        linkedIn: "linkedIn",
-        github: "github",
-    },
-};
 function Hero({ authUser }) {
     const { userState, userDispatch } = useContext(UserContext);
 
@@ -60,7 +49,7 @@ function Hero({ authUser }) {
                         // If doesn't Exist, Create New User and set State with Reducer
 
                         const newUserData = {
-                            displayName: authUser.displayName,
+                            displayName: authUser.email,
                             avatarUrl: authUser.photoURL,
                             seller: false,
                             email: authUser.email,
@@ -114,12 +103,16 @@ function Hero({ authUser }) {
                 <Shoutouts />
             </Route>
 
-            <Route path="/hero/shoutout/:postId">
+            {/* <Route path="/hero/shoutout/:postId">
                 <ShoutoutMedia />
-            </Route>
+            </Route> */}
 
             <Route path="/hero/upload">
                 <UploadShoutout />
+            </Route>
+
+            <Route path="/hero/upload-success">
+                <UploadSuccess />
             </Route>
 
             <Route path="/hero/partner-shops">

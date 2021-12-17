@@ -37,6 +37,14 @@ const UserReducer = (state, action) => {
                 followingBusinesses: action.payload.followingBusinesses,
             };
 
+        case "USER/UPDATE_USER_FOLLOWING_BIZ":
+            console.log("Setting Existing Details: ", action.payload);
+
+            return {
+                ...state,
+                followingBusinesses: action.payload,
+            };
+
         case "USER/SET_GEO_LOCATION":
             console.log("Setting Geo Location: ", action.payload);
 

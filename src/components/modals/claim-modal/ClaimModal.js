@@ -1,9 +1,10 @@
-import { useState } from "react";
-
+import { useContext } from "react";
+import { UserContext } from "../../../contexts/UserContext";
 import Box from "@mui/material/Box";
 
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+
+import { db, firebase } from "../../../services/firebase/firebase-config";
 
 const style = {
     display: "flex",
@@ -48,9 +49,160 @@ const cancelStyle = {
 
 function ClaimModal({
     openClaimModal,
-    handleAddToWallet,
     handleCloseClaimModal,
+    walletPrize,
+    userBizRelationship,
+    setUserBizRelationship,
+    business,
+    setAlertMsg,
+    setOpenClaimModal,
+    setOpenSnackBar,
 }) {
+    const { authUser } = useContext(UserContext);
+
+    const handleAddToWallet = () => {
+        // Reject if No Relationship exists and they're trying to claim a reward
+        if (!userBizRelationship && walletPrize.prize.pointCost > 0) {
+            setAlertMsg({
+                message: "Welcome! Claim a Freebie First! 🚀 ",
+                severity: "error",
+            });
+        } else if (!userBizRelationship && walletPrize.prize.incentive) {
+            // Create new relationship if No Relationship exists and they're trying to claim incentive
+
+            const relationshipData = {
+                relationshipId: business.businessId,
+                businessName: business.businessName,
+                visitCount: 0,
+                pointSum: 0,
+                redeemCount: 0,
+                redeemLog: [],
+                visitLog: [],
+            };
+
+            const walletItem = {
+                businessId: business.businessId,
+                businessName: business.businessName,
+                emoji: walletPrize.prize.emoji,
+                itemDescription: walletPrize.prize.description,
+                prizeId: walletPrize.prizeId,
+                pointCost: walletPrize.prize.pointCost,
+                publicWallet: true,
+                redeemed: false,
+                tags: walletPrize.prize.tags,
+                timestamp: Date.now(),
+                userId: authUser.uid,
+                tradeOffers: [],
+                offeredInTrade: false,
+            };
+
+            db.collection("users")
+                .doc(authUser.uid)
+                .collection("bizRelationships")
+                .doc(business.businessId)
+                .set(relationshipData)
+                .then((docRef) => {
+                    console.log(
+                        "New Relationship Created with Id: ",
+                        business.businessId
+                    );
+                    setUserBizRelationship(relationshipData);
+
+                    db.collection("wallet")
+                        .add(walletItem)
+                        .then((newWalletItemId) => {
+                            setAlertMsg({
+                                message:
+                                    "Relationship Created and Item Added to Your Wallet 💰",
+                                severity: "success",
+                            });
+
+                            setOpenSnackBar(true);
+                        })
+                        .catch((error) => {
+                            console.log("Error Adding to Wallet: ", error);
+                        });
+                })
+                .catch((error) => {
+                    console.error("Error adding document: ", error);
+                });
+        } else if (
+            walletPrize.prize.pointCost <= userBizRelationship.pointSum
+        ) {
+            const walletItem = {
+                businessId: business.businessId,
+                businessName: business.businessName,
+                emoji: walletPrize.prize.emoji,
+                itemDescription: walletPrize.prize.description,
+                prizeId: walletPrize.prizeId,
+                pointCost: walletPrize.prize.pointCost,
+                publicWallet: true,
+                redeemed: false,
+                tags: walletPrize.prize.tags,
+                timestamp: Date.now(),
+                userId: authUser.uid,
+                tradeOffers: [],
+                offeredInTrade: false,
+            };
+
+            // Add Prize to Wallet and Update pointsSum in Biz Relationship
+
+            db.collection("wallet")
+                .add(walletItem)
+                .then((newWalletItemId) => {
+                    // Decrement Prize Point Threshold from BizRelationship Tally
+                    db.collection("users")
+                        .doc(authUser.uid)
+                        .collection("bizRelationships")
+                        .doc(userBizRelationship.businessId)
+                        .update({
+                            pointSum: firebase.firestore.FieldValue.increment(
+                                -walletPrize.prize.pointCost
+                            ),
+                        })
+                        .then(() => {
+                            console.log(
+                                "Pre PointSum Update: ",
+                                userBizRelationship
+                            );
+                            setUserBizRelationship((prevState) => ({
+                                ...prevState,
+                                pointSum:
+                                    prevState.pointSum -
+                                    walletPrize.prize.pointCost,
+                            }));
+                        })
+                        .catch((error) => {
+                            // The document probably doesn't exist.
+                            console.error("Error updating PointSume: ", error);
+                        });
+
+                    const updatedPoints =
+                        userBizRelationship.pointSum -
+                        walletPrize.prize.pointCost;
+                    console.log("Post PointSum Update: ", userBizRelationship);
+                    setAlertMsg({
+                        message: `Item Added to Wallet. New Points: ${updatedPoints}`,
+                        severity: "success",
+                    });
+
+                    setOpenSnackBar(true);
+                })
+                .catch((error) => {
+                    console.log("Error Adding to Wallet: ", error);
+                });
+        } else {
+            setAlertMsg({
+                message: "Not Enouguh Points.",
+                severity: "error",
+            });
+
+            setOpenSnackBar(true);
+        }
+
+        setOpenClaimModal(false);
+    };
+
     return (
         <Modal
             open={openClaimModal}

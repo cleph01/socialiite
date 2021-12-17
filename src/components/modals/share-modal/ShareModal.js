@@ -32,15 +32,17 @@ const style = {
 function ShareModal({ openShareModal, handleCloseShareModal, shareBusiness }) {
     const { authUser } = useContext(UserContext);
 
-    const encodeMsg = encodeurl(
-        `Wanted to share this with you. Check them out. ${
-            shareBusiness
-                ? shareBusiness.businessName +
-                  ": https://socialiite.web.app/shops/" +
-                  shareBusiness.businessId
-                : "undefined"
-        }/${authUser.uid}`
-    );
+    const encodeMsg = authUser
+        ? encodeurl(
+              `Wanted to share this with you. Check them out. ${
+                  shareBusiness
+                      ? shareBusiness.businessName +
+                        ": https://socialiite.web.app/shops/" +
+                        shareBusiness.businessId
+                      : "undefined"
+              }/${authUser.uid}`
+          )
+        : null;
 
     const smsMessage =
         platform.macos || platform.ios

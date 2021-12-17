@@ -57,7 +57,7 @@ function Auth({ referrerId, setCheckedIn }) {
                                         // If doesn't Exist, Create New User and set State with Reducer
 
                                         const newUserData = {
-                                            displayName: authUser.email,
+                                            displayName: authUser.displayName,
                                             avatarUrl: authUser.photoURL,
                                             seller: false,
                                             email: authUser.email,

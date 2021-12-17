@@ -70,7 +70,7 @@ function HeroHeader({ user, setOpenPinModal }) {
                     />
                     <div className="hero__details">
                         <div className="hero__displayName">
-                            {authUser.displayName}
+                            {user.displayName}
                         </div>
                         <div className="hero__stats_wrapper">
                             <div className="hero__stats">
@@ -102,7 +102,7 @@ function HeroHeader({ user, setOpenPinModal }) {
                             <div className="col-right-subcol">
                                 <div onClick={() => setOpenPinModal(true)}>
                                     <MenuButton
-                                        text="Your PIN"
+                                        text="Your ID"
                                         color="#213b77"
                                         emoji={
                                             <span style={emojiStyle}>🤫</span>

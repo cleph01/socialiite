@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+import { UserContext } from "../../contexts/UserContext";
 
 import Shoutout from "./Shoutout";
 
@@ -14,13 +16,13 @@ import { db } from "../../services/firebase/firebase-config";
 
 function Shoutouts() {
     const [posts, setPosts] = useState();
+    const { authUser } = useContext(UserContext);
 
     useEffect(() => {
-        const authUser = localStorage.getItem("authUser");
         // Get Posts
         db.collection("shoutouts")
             .where("userId", "==", authUser.uid)
-            .orderBy("timestamp", "desc")
+
             .get()
             .then((querySnapshot) => {
                 console.log("Posts in query: ", querySnapshot.docs);

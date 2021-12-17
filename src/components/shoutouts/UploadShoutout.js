@@ -78,7 +78,36 @@ function UploadShoutout() {
 
     // Submit
     const handleSubmit = () => {
-        return;
+        const tempInput = {
+            storagePath:
+                "https://firebasestorage.googleapis.com/v0/b/socialiite.appspot.com/o/shoutouts%2FEpuj5NNcOjTYu4lKcVBtEnLXttC3%2F1638663387271.mp4?alt=media&token=e6ca2793-2cfb-4444-9c33-00215c5df972",
+            title: "El Titulo",
+            description: "El Description",
+        };
+        // send YouTube Stuff
+        const API_END_POINT = "https://accounts.google.com/o/oauth2/v2/auth";
+
+        const postData = {
+            scope: "https://www.googleapis.com/auth/youtube.upload",
+            state: JSON.stringify({ tempInput }),
+            redirect_uri: "http://localhost:3000/hero/upload-success",
+            response_type: "token",
+            client_id:
+                "467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com",
+        };
+
+        // https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com
+        fetch(
+            encodeURIComponent(
+                "https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com"
+            )
+        )
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.log("Error hitting getting oAuth permission: ", error);
+            });
     };
 
     const handleUpload = () => {
@@ -401,7 +430,7 @@ function UploadShoutout() {
                 )}
             </CardContent>
             <CardActions>
-                <button onClick={handleUpload} className="upload-shoutout-btn">
+                <button onClick={handleSubmit} className="upload-shoutout-btn">
                     Submit
                 </button>
             </CardActions>

@@ -24,8 +24,7 @@ const cancelStyle = {
     textAlign: "center",
     width: "fit-content",
     fontSize: "small",
-    marginLeft: "10px",
-    // background-color: #bcc0bc,
+
     color: "#bb3133",
     border: "1px solid #bb3133",
     borderRadius: "5px",
@@ -34,23 +33,6 @@ const cancelStyle = {
 };
 
 function PinModal({ userId, openPinModal, handleClosePinModal }) {
-    const [pin, setPin] = useState();
-    console.log("userId in pin modal: ", userId);
-    useEffect(() => {
-        if (userId) {
-            db.collection("users")
-                .doc(userId)
-                .get()
-                .then((docRef) => {
-                    console.log("docRef in db call: ", docRef);
-                    setPin(docRef.data().pin);
-                })
-                .catch((error) => {
-                    console.log("Error Getting Pin: ", error);
-                });
-        }
-    }, []);
-
     return (
         <Modal
             open={openPinModal}
@@ -59,10 +41,11 @@ function PinModal({ userId, openPinModal, handleClosePinModal }) {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <h3>Your PIN</h3>
+                <h3>Your ID</h3>
                 <div style={{ fontSize: "36px" }}>🤫</div>
-                <h4>Use it to Check In at Shops</h4>
-                <h1 style={{ letterSpacing: "20px" }}>{pin}</h1>
+
+                <div style={{ marginTop: "20px" }}>{userId}</div>
+                <h4>Use it to Refer Friends and Get Paid</h4>
                 <div
                     style={{
                         display: "flex",
@@ -72,7 +55,7 @@ function PinModal({ userId, openPinModal, handleClosePinModal }) {
                     }}
                 >
                     <div style={cancelStyle} onClick={handleClosePinModal}>
-                        Cancel
+                        Close
                     </div>
                 </div>
             </Box>

@@ -264,7 +264,7 @@ function CheckIn() {
                         </Typography>
                         <br />
                         <Typography variant="body2" color="text.secondary">
-                            Post a Shoutout, Share a Prizee With a Friend !! You
+                            Post a Shoutout, Share a Prize With a Friend !! You
                             get paid and they AUTOMATICALLY win the prize when
                             they Login
                         </Typography>
