@@ -97,10 +97,17 @@ function UploadShoutout() {
         };
 
         // https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com
+
+        // let URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=${REACT_APP_YOUTUBE_ID}`;
+
         fetch(
-            encodeURIComponent(
+            encodeURI(
                 "https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com"
             )
+            // {
+            //     mode: "no-cors",
+            //     'Content-Type': 'application/x-www-form-urlencoded'
+            // }
         )
             .then((response) => {
                 console.log(response.data);
@@ -331,7 +338,7 @@ function UploadShoutout() {
             <CardContent>
                 <center>
                     <h1>New Video</h1>
-                    <PickerInline
+                    {/* <PickerInline
                         apikey={process.env.REACT_APP_FILESTACK_KEY}
                         buttonText="Upload Video"
                         buttonClass="ui medium button gray"
@@ -341,7 +348,7 @@ function UploadShoutout() {
                             console.log("on upload done: ", res)
                         }
                         onError={onError}
-                    />
+                    /> */}
                     <input
                         accept="video/*"
                         onChange={handleChange("video")}

@@ -5,6 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import Avatar from "@mui/material/Avatar";
 import Socials from "./Socials";
 import MenuButton from "../MenuButton";
+import CircleMenu from "./CircleMenu";
 
 import "../../lib/scss/components/hero/hero-header.scss";
 
@@ -61,6 +62,7 @@ function HeroHeader({ user, setOpenPinModal }) {
     return (
         <>
             {/* Main Grid */}
+
             <div className="hero-header__grid">
                 <div className="col col-left">
                     <Avatar
@@ -99,95 +101,11 @@ function HeroHeader({ user, setOpenPinModal }) {
                     <div className="col-right">
                         <Socials socials={user.socials} />
                         <div className="col-right-subcol-wrapper">
-                            <div className="col-right-subcol">
-                                <div onClick={() => setOpenPinModal(true)}>
-                                    <MenuButton
-                                        text="Your ID"
-                                        color="#213b77"
-                                        emoji={
-                                            <span style={emojiStyle}>🤫</span>
-                                        }
-                                    />
-                                </div>
-                                <Link to="/hero/shoutouts">
-                                    <MenuButton
-                                        text="Shoutouts"
-                                        color="#213b77"
-                                        emoji={
-                                            <span style={emojiStyle}>📣</span>
-                                        }
-                                    />
-                                </Link>
-
-                                <Link to="/hero/wallet">
-                                    <MenuButton
-                                        text="Wallet"
-                                        color="#213b77"
-                                        emoji={
-                                            <span style={emojiStyle}>💵</span>
-                                        }
-                                    />
-                                </Link>
-                                <Link to="/hero/partner-shops/">
-                                    <MenuButton
-                                        text="Partners"
-                                        color="#213b77"
-                                        emoji={
-                                            <span style={emojiStyle}>🤜🤛</span>
-                                        }
-                                    />
-                                </Link>
-                            </div>
-                            <div className="col-right-subcol">
-                                <div
-                                    className={
-                                        notifications.length > 0 ? "glow" : null
-                                    }
-                                >
-                                    <Link to="/hero/notifications">
-                                        <MenuButton
-                                            text="Offers"
-                                            color="#213b77"
-                                            emoji={
-                                                <span style={emojiStyle}>
-                                                    🔔
-                                                </span>
-                                            }
-                                        />
-                                    </Link>
-                                </div>
-                                <Link to="/trade">
-                                    <MenuButton
-                                        text="Trade"
-                                        color="#213b77"
-                                        emoji={
-                                            <span style={emojiStyle}>🤝</span>
-                                        }
-                                    />
-                                </Link>
-                                <Link to="/hero/partner-shops/">
-                                    <MenuButton
-                                        text="Search"
-                                        color="#213b77"
-                                        emoji={
-                                            <span style={emojiStyle}>🔍</span>
-                                        }
-                                    />
-                                </Link>
-
-                                <div onClick={handleSignOut}>
-                                    <MenuButton
-                                        text="Signout"
-                                        color="#bb3133"
-                                        emoji={
-                                            <span style={emojiStyle}>✌️</span>
-                                        }
-                                    />
-                                </div>
-                            </div>
+                            <CircleMenu />
                         </div>
                     </div>
                 </div>
+                <div className="onboard-btn">Get Paid Today!</div>
             </div>
         </>
     );

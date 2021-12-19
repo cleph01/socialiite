@@ -6,6 +6,7 @@ import { UserContext } from "../contexts/UserContext";
 
 import HeroHeader from "../components/hero/HeroHeader";
 import PinModal from "../components/modals/pin-modal/PinModal";
+import CircleMenu from "../components/hero/CircleMenu";
 
 import Shoutouts from "../components/shoutouts/Shoutouts";
 import ShoutoutMedia from "../components/shoutouts/ShoutoutMedia";
@@ -93,11 +94,12 @@ function Hero({ authUser }) {
         <div
             className="hero-home__container"
             style={{
-                backgroundImage: 'url("/logo192.png")',
                 marginBottom: "125px",
             }}
         >
             <HeroHeader user={userState} setOpenPinModal={setOpenPinModal} />
+
+            {/* <CircleMenu /> */}
 
             <Route path="/hero/shoutouts">
                 <Shoutouts />
