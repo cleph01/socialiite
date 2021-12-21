@@ -4,6 +4,9 @@ import { lazy } from "react";
 const Home = lazy(() => import("../pages/Home.js"));
 const Login = lazy(() => import("../pages/Login.js"));
 
+// Privacy Policy
+const Privacy = lazy(() => import("../pages/PrivacyPolicy.js"));
+
 // user Profile
 const MyProfile = lazy(() => import("../pages/Hero"));
 // const UserProfile = lazy(() => import("../pages/my_profile/UserProfile.js"));
@@ -53,6 +56,7 @@ const NotFound = lazy(() => import("../pages/NotFound.js"));
 export {
     Home,
     Login,
+    Privacy,
     MyProfile,
     HotSpot,
     Shop,

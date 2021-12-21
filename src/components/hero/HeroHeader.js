@@ -63,8 +63,8 @@ function HeroHeader({ user, setOpenPinModal }) {
         <>
             {/* Main Grid */}
 
-            <div className="hero-header__grid">
-                <div className="col col-left">
+            <div className="hero-header__container">
+                <div className="col">
                     <Avatar
                         src={user.avatarUrl}
                         alt={user.displayName}
@@ -95,16 +95,12 @@ function HeroHeader({ user, setOpenPinModal }) {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="col">
-                    {/* Grid at second column */}
-                    <div className="col-right">
-                        <Socials socials={user.socials} />
-                        <div className="col-right-subcol-wrapper">
-                            <CircleMenu />
-                        </div>
+                    <Socials socials={user.socials} />
+                    <div className="col-right-subcol-wrapper">
+                        <CircleMenu />
                     </div>
                 </div>
+
                 <div className="onboard-btn">Get Paid Today!</div>
             </div>
         </>

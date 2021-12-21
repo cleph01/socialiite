@@ -7,6 +7,8 @@ import UploadIcon from "@mui/icons-material/Upload";
 
 import Skeleton from "@mui/material/Skeleton";
 
+import Signup from "../../components/youtube-auth/Signup";
+
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
@@ -335,10 +337,11 @@ function UploadShoutout() {
 
     return (
         <div className="upload-shoutout__container">
-            <CardContent>
+            <Signup />
+            {/* <CardContent>
                 <center>
                     <h1>New Video</h1>
-                    {/* <PickerInline
+                    <PickerInline
                         apikey={process.env.REACT_APP_FILESTACK_KEY}
                         buttonText="Upload Video"
                         buttonClass="ui medium button gray"
@@ -348,7 +351,7 @@ function UploadShoutout() {
                             console.log("on upload done: ", res)
                         }
                         onError={onError}
-                    /> */}
+                    />
                     <input
                         accept="video/*"
                         onChange={handleChange("video")}
@@ -456,7 +459,7 @@ function UploadShoutout() {
                         {alertMsg.message}
                     </Alert>
                 </Snackbar>
-            </Stack>
+            </Stack> */}
         </div>
     );
 }

@@ -45,13 +45,12 @@ const UserReducer = (state, action) => {
                 followingBusinesses: action.payload,
             };
 
-        case "USER/SET_GEO_LOCATION":
-            console.log("Setting Geo Location: ", action.payload);
+        case "USER/SET_ACCESS_TOKEN":
+            console.log("Setting ACCESS Token: ", action.payload);
 
             return {
                 ...state,
-                gotDistance: action.payload.gotDistance,
-                geoDistance: action.payload.geoDistance,
+                googleToken: action.payload,
             };
 
         case "AUTH/LOGOUT":

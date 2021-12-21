@@ -8,6 +8,12 @@ const HOME = "/";
 const LOGIN = "/login/:referrerId?";
 
 /**
+ * Privacy Policy
+ */
+
+const PRIVACY_POLICY = "/legal/privacy-policy"
+/**
+ * 
  *  User Profile
  *  Private
  */
@@ -56,6 +62,7 @@ const CHECKIN = "/checkin/:businessId";
 export {
     HOME,
     LOGIN,
+    PRIVACY_POLICY,
     MY_PROFILE,
     USER_PROFILE,
     WALLET,

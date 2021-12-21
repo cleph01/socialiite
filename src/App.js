@@ -113,6 +113,11 @@ function App() {
 
                                 <Route
                                     exact
+                                    path="/legal/privacy-policy"
+                                    component={COMPONENTS.Privacy}
+                                />
+                                <Route
+                                    exact
                                     path="/"
                                     component={COMPONENTS.Home}
                                 />
