@@ -59,7 +59,7 @@ function Auth({ referrerId, setCheckedIn }) {
                                         const newUserData = {
                                             displayName: authUser.displayName,
                                             avatarUrl: authUser.photoURL,
-                                            seller: false,
+
                                             email: authUser.email,
                                             phoneNumber: authUser.phoneNumber,
                                             timestamp: Date.now(),

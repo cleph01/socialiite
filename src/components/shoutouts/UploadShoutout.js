@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, forwardRef } from "react";
-import axios from "axios";
+
 import { uuid } from "uuid/v4";
 import { Redirect } from "react-router-dom";
 import { PickerInline } from "filestack-react";
@@ -29,10 +29,46 @@ import "../../lib/scss/components/shoutouts/upload-shoutout.scss";
 import { UserContext } from "../../contexts/UserContext";
 
 import { db, storage, firebase } from "../../services/firebase/firebase-config";
+// import { google } from "googleapis" ;
+// const youtube = google.youtube("v3");
 
 function UploadShoutout() {
-    const { authUser } = useContext(UserContext);
+    const { authUser, userState } = useContext(UserContext);
 
+    const [GoogleAuthObj, setGoogleAuthObj] = useState();
+
+    const [accessToken, setAccessToken] = useState(null);
+
+    const initClient = () => {
+        window.gapi.client
+            .init({
+                apiKey: process.env.REACT_APP_API_KEY,
+                clientId: process.env.REACT_APP_CLIENT_ID,
+                scope: "https://www.googleapis.com/auth/youtube.upload",
+                discoveryDocs: [
+                    "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
+                ],
+            })
+            .then(() => {
+                setGoogleAuthObj(window.gapi.auth2.getAuthInstance());
+                console.log(
+                    "Success Got Client Obj: ",
+                    window.gapi.auth2.getAuthInstance()
+                );
+
+                setAccessToken(
+                    window.gapi.auth2
+                        .getAuthInstance()
+                        .currentUser.get()
+                        .getAuthResponse(true).access_token
+                );
+            })
+            .catch((error) => {
+                console.log("Error Inializing Gapi: ", error);
+            });
+    };
+
+    console.log("Gapi Obj: ", GoogleAuthObj);
     const [values, setValues] = useState({
         video: "",
         caption: "",
@@ -80,43 +116,27 @@ function UploadShoutout() {
 
     // Submit
     const handleSubmit = () => {
-        const tempInput = {
-            storagePath:
-                "https://firebasestorage.googleapis.com/v0/b/socialiite.appspot.com/o/shoutouts%2FEpuj5NNcOjTYu4lKcVBtEnLXttC3%2F1638663387271.mp4?alt=media&token=e6ca2793-2cfb-4444-9c33-00215c5df972",
-            title: "El Titulo",
-            description: "El Description",
-        };
-        // send YouTube Stuff
-        const API_END_POINT = "https://accounts.google.com/o/oauth2/v2/auth";
+        console.log("Submit");
+        const request = window.gapi.client.youtube.videos.insert({
+            part: "snippet,contentDetails,status",
+            resource: {
+                // Video title and description
+                snippet: {
+                    title: "El Titulo",
+                    description: "El Description",
+                    categoryId: "22",
+                },
+                status: {
+                    privacyStatus: "public",
+                },
+            },
+            media: {
+                mimeType: "video/mp4",
+                body: values.video.stream(), // readable stream
+            },
+        });
 
-        const postData = {
-            scope: "https://www.googleapis.com/auth/youtube.upload",
-            state: JSON.stringify({ tempInput }),
-            redirect_uri: "http://localhost:3000/hero/upload-success",
-            response_type: "token",
-            client_id:
-                "467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com",
-        };
-
-        // https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com
-
-        // let URL = `https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=${REACT_APP_YOUTUBE_ID}`;
-
-        fetch(
-            encodeURI(
-                "https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/youtube.upload&redirect_uri=http://localhost:3000/hero/upload-success&response_type=token&client_id=467034634375-54bffnbjerdb3n6phddhjkfaatgaqunu.apps.googleusercontent.com"
-            )
-            // {
-            //     mode: "no-cors",
-            //     'Content-Type': 'application/x-www-form-urlencoded'
-            // }
-        )
-            .then((response) => {
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.log("Error hitting getting oAuth permission: ", error);
-            });
+        request.execute((res) => console.log("response: ", res));
     };
 
     const handleUpload = () => {
@@ -183,22 +203,6 @@ function UploadShoutout() {
                                     setOpenSnackBar(true);
 
                                     // send YouTube Stuff
-                                    axios
-                                        .post(
-                                            "https://us-central1-socialiite.cloudfunctions.net/uploadVideo",
-                                            {
-                                                title: "El Titulo",
-                                                description: "El Description",
-                                            }
-                                        )
-                                        .then((response) => {
-                                            console.log(response.data);
-                                        })
-                                        .catch((error) => {
-                                            console.log(
-                                                "Error hitting Cloud upload function"
-                                            );
-                                        });
                                 })
                                 .catch((error) => {
                                     setAlertMsg({
@@ -231,66 +235,64 @@ function UploadShoutout() {
         }
     };
 
-    const clientOptions = {
-        accept: "video/*",
-        fromSources: ["local_file_system", "instagram", "facebook"],
-        maxSize: 1000000000,
-    };
-
     const onSuccess = (result) => {
-        console.log("FileStack Url: ", result.filesUploaded[0].url);
+        console.log("Youtube Url: ", result);
 
-        let postData = {
-            userId: authUser.uid,
-            postUrl: result.filesUploaded[0].url,
-            caption: values.caption,
-            tags: values.tags,
-            businessId: businessInfo.businessId,
-            businessName: businessInfo.businessName,
-            likes: [],
-            comments: [],
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        };
+        // let postData = {
+        //     userId: authUser.uid,
+        //     postUrl: result.filesUploaded[0].url,
+        //     caption: values.caption,
+        //     tags: values.tags,
+        //     businessId: businessInfo.businessId,
+        //     businessName: businessInfo.businessName,
+        //     likes: [],
+        //     comments: [],
+        //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        // };
 
-        db.collection("shoutouts")
-            .add(postData)
-            .then((docRef) => {
-                console.log("DocRef ID: ", docRef.id);
-                setAlertMsg({
-                    message: "Successfully Published Shoutout",
-                    severity: "success",
-                });
+        // db.collection("shoutouts")
+        //     .add(postData)
+        //     .then((docRef) => {
+        //         console.log("DocRef ID: ", docRef.id);
+        //         setAlertMsg({
+        //             message: "Successfully Published Shoutout",
+        //             severity: "success",
+        //         });
 
-                setValues({
-                    ...values,
-                    postId: docRef.id,
-                });
+        //         setValues({
+        //             ...values,
+        //             postId: docRef.id,
+        //         });
 
-                setOpenSnackBar(true);
-            })
-            .catch((error) => {
-                setAlertMsg({
-                    message: "Error Publishin Shoutout. Try Again",
-                    severity: "error",
-                });
+        //         setOpenSnackBar(true);
+        //     })
+        //     .catch((error) => {
+        //         setAlertMsg({
+        //             message: "Error Publishin Shoutout. Try Again",
+        //             severity: "error",
+        //         });
 
-                setOpenSnackBar(true);
-            });
+        //         setOpenSnackBar(true);
+        //     });
 
-        setProgress(0);
+        // setProgress(0);
 
-        setValues({
-            ...values,
-            video: "",
-            caption: "",
-            tags: "",
-            redirect: true,
-            error: "",
-        });
+        // setValues({
+        //     ...values,
+        //     video: "",
+        //     caption: "",
+        //     tags: "",
+        //     redirect: true,
+        //     error: "",
+        // });
     };
     const onError = (error) => {
-        console.error("error FileStack: ", error);
+        console.error("error YouTube: ", error);
     };
+
+    useEffect(() => {
+        window.gapi.load("client:auth2", initClient);
+    }, []);
 
     useEffect(() => {
         db.collection("users")
@@ -337,21 +339,29 @@ function UploadShoutout() {
 
     return (
         <div className="upload-shoutout__container">
-            <Signup />
-            {/* <CardContent>
+            {GoogleAuthObj?.currentUser
+                .get()
+                .hasGrantedScopes(
+                    "https://www.googleapis.com/auth/youtube.upload"
+                ) ? (
+                <>
+                    <div onClick={() => GoogleAuthObj.signOut()}>
+                        isAuthorized - SignOut
+                    </div>
+                    <div>{`auth toke: ${
+                        GoogleAuthObj?.currentUser.get().getAuthResponse(true)
+                            .access_token
+                    }`}</div>
+                </>
+            ) : (
+                <div onClick={() => GoogleAuthObj.signIn()}>
+                    Google Sign IN Button
+                </div>
+            )}
+            <Signup setAccessToken={setAccessToken} />
+            <CardContent>
                 <center>
                     <h1>New Video</h1>
-                    <PickerInline
-                        apikey={process.env.REACT_APP_FILESTACK_KEY}
-                        buttonText="Upload Video"
-                        buttonClass="ui medium button gray"
-                        options={clientOptions}
-                        onSuccess={onSuccess}
-                        onUploadDone={(res) =>
-                            console.log("on upload done: ", res)
-                        }
-                        onError={onError}
-                    />
                     <input
                         accept="video/*"
                         onChange={handleChange("video")}
@@ -459,7 +469,7 @@ function UploadShoutout() {
                         {alertMsg.message}
                     </Alert>
                 </Snackbar>
-            </Stack> */}
+            </Stack>
         </div>
     );
 }

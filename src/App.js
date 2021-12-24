@@ -20,7 +20,7 @@ import "./App.css";
 const initialState = {
     displayName: null,
     avatarUrl: null,
-    seller: null,
+
     email: null,
     phoneNumber: null,
     timestamp: null,
@@ -110,6 +110,13 @@ function App() {
                                     path={ROUTES.HOT_SPOT}
                                     component={COMPONENTS.HotSpot}
                                 />
+
+                                <PrivateRoute
+                                    path={ROUTES.ONBOARD}
+                                    authUser={authUser}
+                                >
+                                    <COMPONENTS.Onboard />
+                                </PrivateRoute>
 
                                 <Route
                                     exact

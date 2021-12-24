@@ -15,6 +15,9 @@ import Wallet from "../components/wallet/Wallet";
 import Notifications from "../components/notifications/Notifications";
 import UploadShoutout from "../components/shoutouts/UploadShoutout";
 import UploadSuccess from "../components/shoutouts/UploadSuccess";
+import MyShops from "../components/my-shops/MyShops";
+import NewShop from "../components/my-shops/NewShop";
+import InviteNewShop from "../components/invite-new-shop/InviteNewShop";
 
 import "../lib/scss/pages/hero-home.scss";
 
@@ -127,6 +130,17 @@ function Hero({ authUser }) {
 
             <Route path="/hero/notifications">
                 <Notifications />
+            </Route>
+            <Route path="/hero/invite-new-shop">
+                <InviteNewShop />
+            </Route>
+
+            <Route path="/hero/my-shops/new">
+                <NewShop />
+            </Route>
+
+            <Route path="/hero/my-shops">
+                <MyShops />
             </Route>
 
             <PinModal

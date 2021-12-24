@@ -7,6 +7,9 @@ const Login = lazy(() => import("../pages/Login.js"));
 // Privacy Policy
 const Privacy = lazy(() => import("../pages/PrivacyPolicy.js"));
 
+// Onboard Business
+const Onboard = lazy(() => import("../pages/OnboardBusiness.js"));
+
 // user Profile
 const MyProfile = lazy(() => import("../pages/Hero"));
 // const UserProfile = lazy(() => import("../pages/my_profile/UserProfile.js"));
@@ -57,6 +60,7 @@ export {
     Home,
     Login,
     Privacy,
+    Onboard,
     MyProfile,
     HotSpot,
     Shop,

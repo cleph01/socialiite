@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { UserContext } from "../../contexts/UserContext";
 
-export default function SignUp() {
+export default function SignUp({setAccessToken}) {
     const [showLogin, setShowLogin] = useState(true);
     const [showLogout, setShowLogout] = useState(false);
 
@@ -10,7 +10,7 @@ export default function SignUp() {
 
     const successGoogle = (resp) => {
         console.log("Google response: ", resp);
-        //setGoogleToken
+        
         userDispatch({
             type: "USER/SET_ACCESS_TOKEN",
             payload: resp.accessToken,

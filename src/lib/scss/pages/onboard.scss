@@ -1,0 +1,85 @@
+.onboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90vmin;
+
+    .onboard-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 25px 0px;
+        background-color: #fff;
+        margin: 10px 0px;
+        border-radius: 5px;
+
+        .onboard-logo-wrapper img {
+            width: 75px;
+            height: auto;
+        }
+
+        .onboard-welcome-header {
+            padding: 0px 20px;
+
+            .onboard-salesperson-name {
+                font-weight: 700;
+            }
+        }
+        .columns {
+            width: 90%;
+            padding: 8px;
+        }
+
+        /* Style the list */
+        .price {
+            list-style-type: none;
+            border: 1px solid #eee;
+            margin: 0;
+            padding: 0;
+            -webkit-transition: 0.3s;
+            transition: 0.3s;
+
+            /* Add shadows on hover */
+            &:hover {
+                box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            .header {
+                background-color: #3d9ad1;
+                color: white;
+                font-size: 25px;
+            }
+
+            li {
+                border-bottom: 1px solid #eee;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .grey {
+                background-color: #eee;
+                font-size: 20px;
+            }
+
+            /* The "Sign Up" button */
+            .button {
+                background-color: #04aa6d;
+                border: none;
+                color: white;
+                padding: 10px 25px;
+                text-align: center;
+                text-decoration: none;
+                font-size: 18px;
+            }
+
+            /* Change the width of the three columns to 100%
+    (to stack horizontally on small screens) */
+            @media only screen and (max-width: 600px) {
+                .columns {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

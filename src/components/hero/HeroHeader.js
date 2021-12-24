@@ -2,6 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 
+import isUserSeller from "../../services/stripe/isUserSeller";
+
 import Avatar from "@mui/material/Avatar";
 import Socials from "./Socials";
 import MenuButton from "../MenuButton";
@@ -9,9 +11,7 @@ import CircleMenu from "./CircleMenu";
 
 import "../../lib/scss/components/hero/hero-header.scss";
 
-import { auth } from "../../services/firebase/firebase-config";
-
-import { db } from "../../services/firebase/firebase-config";
+import { auth, db } from "../../services/firebase/firebase-config";
 
 const emojiStyle = {
     display: "inline-block",
@@ -74,6 +74,7 @@ function HeroHeader({ user, setOpenPinModal }) {
                         <div className="hero__displayName">
                             {user.displayName}
                         </div>
+
                         <div className="hero__stats_wrapper">
                             <div className="hero__stats">
                                 <div className="hero__stat">356</div>
@@ -96,12 +97,36 @@ function HeroHeader({ user, setOpenPinModal }) {
                         </div>
                     </div>
                     <Socials socials={user.socials} />
-                    <div className="col-right-subcol-wrapper">
+                    {isUserSeller() ? (
+                        <div
+                            className="seller btn"
+                            onClick={() => {
+                                history.push("/hero/my-shops");
+                            }}
+                        >
+                            Manage Businesses
+                        </div>
+                    ) : (
+                        <div
+                            className="not-seller btn"
+                            onClick={() => {
+                                history.push("/onboard");
+                            }}
+                        >
+                            List Your Business
+                        </div>
+                    )}
+                    <div className="circle-menu-wrapper">
                         <CircleMenu />
                     </div>
-                </div>
 
-                <div className="onboard-btn">Get Paid Today!</div>
+                    <div
+                        className="onboard btn"
+                        onClick={() => history.push("/hero/invite-new-shop")}
+                    >
+                        Get Paid Monthly!
+                    </div>
+                </div>
             </div>
         </>
     );

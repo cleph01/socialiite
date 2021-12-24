@@ -1,0 +1,68 @@
+.invite-shop-container {
+    display: flex;
+    flex-direction: column;
+
+    width: 90vmin;
+
+    padding: 30px 20px 5px;
+    background-color: #fff;
+    border-radius: 5px;
+
+    .invite-shop-wrapper {
+    }
+
+    .invite-shop-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .img-wrapper {
+            background-color: #316799;
+            padding: 4px 8px;
+            border-radius: 5px;
+        }
+        h3 {
+            text-align: center;
+        }
+    }
+
+    .mission-emoji {
+        text-align: center;
+        width: 100%;
+        font-size: 32px;
+        margin: 25px 0px;
+    }
+
+    .invite-shop-cta-wrapper {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: 35px 10px;
+
+        .invite-shop-cta-words {
+            width: 50%;
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .invite-shop-cta-emoji {
+            font-size: 32px;
+        }
+
+        .invite-shop-cta-icon {
+        }
+    }
+
+    .invite-shop-body {
+    }
+
+    .invite-shop-close-btn {
+        text-align: center;
+        width: 100%;
+        padding: 10px 0px;
+        border-radius: 5px;
+        color: #fff;
+        background: #3d9ad1;
+    }
+}

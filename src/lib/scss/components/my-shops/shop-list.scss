@@ -1,0 +1,17 @@
+.my-shop-list-container {
+    a {
+        text-decoration: none;
+    }
+    .shop-list-business-name {
+        color: #3a3939;
+    }
+
+    .list-icons-wrapper {
+        display: flex;
+
+        .list-icons {
+            color: #7c7c7c;
+            margin-left: 10px;
+        }
+    }
+}

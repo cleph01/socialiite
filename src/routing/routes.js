@@ -8,12 +8,16 @@ const HOME = "/";
 const LOGIN = "/login/:referrerId?";
 
 /**
+ *  Onboard Business
+ *  Private
+ */
+const ONBOARD = "/onboard/:salesPersonId?";
+/**
  * Privacy Policy
  */
-
-const PRIVACY_POLICY = "/legal/privacy-policy"
+const PRIVACY_POLICY = "/legal/privacy-policy";
 /**
- * 
+ *
  *  User Profile
  *  Private
  */
@@ -62,6 +66,7 @@ const CHECKIN = "/checkin/:businessId";
 export {
     HOME,
     LOGIN,
+    ONBOARD,
     PRIVACY_POLICY,
     MY_PROFILE,
     USER_PROFILE,
