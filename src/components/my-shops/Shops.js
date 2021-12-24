@@ -44,29 +44,29 @@ function Shop({ shops }) {
     return (
         <List className="my-shop-list-container">
             {shops.map((shop, i) => (
-                <Link to={`/shops/${shop.businessId}`} key={i}>
+                <>
                     <Divider />
                     <ListItem>
                         <ListItemAvatar>
                             <Avatar src={shop.logoUrl} />
                         </ListItemAvatar>
-
-                        <Typography
-                            type="headline"
-                            component="h2"
-                            color="primary"
-                            className="shop-list-business-name"
-                        >
-                            {shop.businessName}
-                        </Typography>
-
+                        <Link to={`/shops/${shop.businessId}`} key={i}>
+                            <Typography
+                                type="headline"
+                                component="h2"
+                                color="primary"
+                                className="shop-list-business-name"
+                            >
+                                {shop.businessName}
+                            </Typography>
+                        </Link>
                         <ListItemSecondaryAction className="list-icons-wrapper">
                             <EditIcon className="list-icons" />
                             <DeleteForeverIcon className="list-icons" />
                         </ListItemSecondaryAction>
                     </ListItem>
                     <Divider />
-                </Link>
+                </>
             ))}
         </List>
     );

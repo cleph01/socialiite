@@ -69,7 +69,10 @@ function OnboardBusiness() {
         );
 
         if (salesPersonId) {
-            localStorage.setItem("salesPersonId", salesPersonId);
+            if (salesPersonId !== authUser.uid) {
+                localStorage.setItem("salesPersonId", salesPersonId);
+            }
+
             db.collection("users")
                 .doc(salesPersonId)
                 .get()
@@ -97,14 +100,16 @@ function OnboardBusiness() {
                 </div>
                 <h2>✨ 👋 ✨ </h2>
                 <div className="onboard-welcome-header">
-                    <p>
-                        Hi, &nbsp;
-                        <span className="onboard-salesperson-name">
-                            {salesPerson?.displayName}
-                        </span>{" "}
-                        shared our app with you because we are the future of
-                        marketing.
-                    </p>
+                    {salesPersonId && (
+                        <p>
+                            Hi,{" "}
+                            <span className="onboard-salesperson-name">
+                                {salesPerson?.displayName}
+                            </span>{" "}
+                            shared our app with you because we are the future of
+                            marketing.
+                        </p>
+                    )}
                     <p>
                         We are Socialiite. The only Peer-to-Peer marketing
                         platform that turns your cutomers into your best

@@ -67,17 +67,33 @@ function InviteNewShop() {
                             content.
                         </p>
                         <p>
-                            We are the ones making the content, then they own it
-                            and profit off our work.
+                            You make the content, they own it, and profit from
+                            your work.
+                        </p>
+                        <p>Socialiite allows you to create the same content.</p>
+                        <p> But now you're going to be paid for it</p>
+                        <p>Creating content is a form of expresion.</p>
+                        <p>
+                            We tell the world what's on our minds, where we are,
+                            what we're eating, wearing, jamming to
+                        </p>
+                        <p>We are being Socialiites 🙌</p>
+                        <p>We are ALL influencers to a very real extent.</p>
+                        <p>
+                            We have friends and family who value our opinion,
+                            style, and tastes.
                         </p>
                         <p>
-                            Socialiite allows you to create the same type
-                            content, content is a form of expressing
-                            ourselves... we either post a place we are,
-                            something we're eating, something we're wearing...
-                            we are promoting an activity, event, product, or
-                            service.
+                            Take back your economic power, promote yourself and
+                            the businesses you support AND FINALLY get paid for
+                            it.
                         </p>
+                        <p>
+                            All your content is uploaded to YOUR YouTube helping
+                            you build your personal brand while also helping the
+                            business you care about.
+                        </p>
+                        <h3>It's a Win-Win</h3>
                         <p>
                             Invite another business or List your side--hustle on
                             Socialiite so that other Socialiites can promote you
@@ -89,11 +105,18 @@ function InviteNewShop() {
                         </p>
                         <p>
                             For a business to be on Socialiite, they must agree
-                            to pay you for bringing in new business.... in
-                            addition to offering incentives for the customers
-                            you bring in and prizes for repeat business you can
-                            get paid out in USD or ETH.
+                            to pay you for bringing in new business.
                         </p>
+                        <p>
+                            ... in addition to offering FREE incentives for the
+                            new customers you bring in.
+                        </p>
+                        <p>
+                            {" "}
+                            PLUS, they must offer prizes for repeat business.
+                        </p>{" "}
+                        <p className="invite-shop-fire-emoji">🔥🔥🔥</p>
+                        <p>You can get paid out in USD or ETH.</p>
                     </div>
                     <div
                         className="invite-shop-close-btn"
