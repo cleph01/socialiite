@@ -81,7 +81,7 @@ function CircleMenu() {
                         opacity: "0.75",
                     }}
                     onClick={() => {
-                        history.push("/hero/trades");
+                        history.push("/trade");
                     }}
                 >
                     🤝
@@ -95,7 +95,7 @@ function CircleMenu() {
                         opacity: "0.75",
                     }}
                     onClick={() => {
-                        history.push("/hero/wallet");
+                        history.push("/hero/search");
                     }}
                 >
                     🔍

@@ -32,6 +32,7 @@ const initialState = {
     userId: null,
     gotDistance: false,
     geoDistance: null,
+    referrals: [],
 };
 
 function App() {

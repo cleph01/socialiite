@@ -16,9 +16,8 @@ function AvailablePrizes({ businessId, handleOpenClaimModal }) {
     const [prizes, setPrizes] = useState();
 
     useEffect(() => {
-        db.collection("shops")
-            .doc(businessId)
-            .collection("prizes")
+        db.collection("prizes")
+            .where("businessId", "==", businessId)
             .get()
             .then((querySnapshot) => {
                 setPrizes(

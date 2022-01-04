@@ -4,7 +4,7 @@ import { UserContext } from "../contexts/UserContext";
 
 import { db, firebase } from "../services/firebase/firebase-config";
 
-import CheckinModal from "../components/modals/checkin-modal/CheckinModal";
+
 import AvailablePrizes from "../components/checkin/AvailablePrizes";
 
 import Skeleton from "@mui/material/Skeleton";
@@ -31,7 +31,7 @@ import KeyPad from "../components/checkin/KeyPad";
 
 import "../lib/scss/pages/checkin.scss";
 import ProcessCheckin from "../components/checkin/ProcessCheckin";
-import ProcessAuth from "../components/checkin/ProcessAuth";
+
 
 function CheckIn() {
     const { authUser } = useContext(UserContext);
@@ -40,11 +40,10 @@ function CheckIn() {
     const [checkedIn, setCheckedIn] = useState(false);
 
     const [business, setBusiness] = useState();
-    const [businessExists, setBusinessExists] = useState(false);
 
     const [prizes, setPrizes] = useState();
 
-    const [openCheckinModal, setOpenCheckinModal] = useState(false);
+    
 
     const [userBizRelationship, setUserBizRelationship] = useState(null);
 
@@ -57,106 +56,9 @@ function CheckIn() {
 
     const [openSnackBar, setOpenSnackBar] = useState(false);
 
-    const handleCheckedInToggle = (pass) => {
-        if (pass) {
-            setCheckedIn(true);
-            setOpenCheckinModal(false);
+   
 
-            setTimeout(() => {
-                setCheckedIn(false);
-            }, 3000);
-        } else {
-            setOpenCheckinModal(false);
-        }
-    };
-
-    // const handleOpenClaimModal = (itemObj) => {
-    //     setOpenClaimModal(true);
-    //     setwalletPrize(itemObj);
-
-    //     console.log("Wallet Prize: ", walletPrize);
-    // };
-
-    const handleCloseCheckinModal = () => setOpenCheckinModal(false);
-
-    // const handleAddToWallet = () => {
-    //     console.log("Add to wallet invoked: ", walletPrize);
-
-    //     if (walletPrize.pointCost <= userBizRelationship.pointSum) {
-    //         //Add Prize to Wallet and Update pointsSum in Biz Relationship
-    //         db.collection("wallet")
-    //             .add({
-    //                 userId: authUser.uid,
-    //                 businessId: businessId,
-    //                 businessName: business.businessName,
-    //                 emoji: walletPrize.emoji,
-    //                 itemDescription: walletPrize.description,
-    //                 itemId: walletPrize.prizeId,
-    //                 redeemed: false,
-    //                 publicWallet: true,
-    //                 tags: walletPrize.tags,
-    //                 tradeOffers: [],
-    //                 offeredInTrade: false,
-    //                 pointCost: walletPrize.pointCost,
-    //                 created: Date.now(),
-    //             })
-    //             .then((docRef) => {
-    //                 console.log("Prize Added to Wallet with ID: ", docRef.id);
-
-    //                 // Decrement Points Sum from BizRelationship
-    //                 db.collection("users")
-    //                     .doc(authUser.uid)
-    //                     .collection("bizRelationships")
-    //                     .doc(userBizRelationship.businessId)
-    //                     .update({
-    //                         pointSum: firebase.firestore.FieldValue.increment(
-    //                             -walletPrize.pointCost
-    //                         ),
-    //                     })
-    //                     .then(() => {
-    //                         console.log("PointSum successfully updated!");
-
-    //                         setUserBizRelationship((prevState) => {
-    //                             return {
-    //                                 ...prevState,
-    //                                 pointSum:
-    //                                     prevState.pointSum -
-    //                                     walletPrize.pointCost,
-    //                             };
-    //                         });
-    //                     })
-    //                     .catch((error) => {
-    //                         // The document probably doesn't exist.
-    //                         console.error("Error updating PointSume: ", error);
-    //                     });
-
-    //                 setAlertMsg({
-    //                     message: "Item Added to Wallet.",
-    //                     severity: "success",
-    //                 });
-
-    //                 setOpenSnackBar(true);
-    //             })
-    //             .catch((error) => {
-    //                 console.error("Error adding to wallet: ", error);
-
-    //                 setAlertMsg({
-    //                     message: "Error Adding to Wallet.",
-    //                     severity: "error",
-    //                 });
-
-    //                 setOpenSnackBar(true);
-    //             });
-    //     } else {
-    //         setAlertMsg({
-    //             message: "Not Enouguh Points.",
-    //             severity: "error",
-    //         });
-    //     }
-
-    //     // setOpenClaimModal(false);
-    //     setOpenSnackBar(true);
-    // };
+    
 
     useEffect(() => {
         // Get Business Info
@@ -164,7 +66,6 @@ function CheckIn() {
             .doc(businessId)
             .get()
             .then((doc) => {
-                setBusinessExists(doc.exists);
                 setBusiness({ businessId: businessId, ...doc.data() });
             })
             .catch((err) => {

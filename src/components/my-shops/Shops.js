@@ -44,7 +44,7 @@ function Shop({ shops }) {
     return (
         <List className="my-shop-list-container">
             {shops.map((shop, i) => (
-                <>
+                <div key={i}>
                     <Divider />
                     <ListItem>
                         <ListItemAvatar>
@@ -66,7 +66,7 @@ function Shop({ shops }) {
                         </ListItemSecondaryAction>
                     </ListItem>
                     <Divider />
-                </>
+                </div>
             ))}
         </List>
     );

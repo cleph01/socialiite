@@ -6,10 +6,7 @@ import { UserContext } from "../contexts/UserContext";
 
 import HeroHeader from "../components/hero/HeroHeader";
 import PinModal from "../components/modals/pin-modal/PinModal";
-import CircleMenu from "../components/hero/CircleMenu";
-
 import Shoutouts from "../components/shoutouts/Shoutouts";
-import ShoutoutMedia from "../components/shoutouts/ShoutoutMedia";
 import PartnerShops from "../components/partner-shops/PartnerShops";
 import Wallet from "../components/wallet/Wallet";
 import Notifications from "../components/notifications/Notifications";
@@ -18,6 +15,7 @@ import UploadSuccess from "../components/shoutouts/UploadSuccess";
 import MyShops from "../components/my-shops/MyShops";
 import NewShop from "../components/my-shops/NewShop";
 import InviteNewShop from "../components/invite-new-shop/InviteNewShop";
+import Search from "../components/search/Search";
 
 import "../lib/scss/pages/hero-home.scss";
 
@@ -32,6 +30,23 @@ function Hero({ authUser }) {
     };
     useEffect(() => {
         // Try and Refactor with Async/Await
+
+        // To be deleted after test users are set
+
+        // const searchableKeywords = [];
+
+        // for (let i = 1; i <= authUser.email.length; i++) {
+        //     searchableKeywords.push(authUser.email.slice(0, i));
+        // }
+
+        // db.collection("users")
+        //     .doc(authUser.uid)
+        //     .update({
+        //         searchableKeywords: searchableKeywords,
+        //     })
+        //     .then(() => console.log("Searchable"));
+
+        // End of To Be Deleted
 
         // Check if User Exists
 
@@ -52,8 +67,16 @@ function Hero({ authUser }) {
                     } else {
                         // If doesn't Exist, Create New User and set State with Reducer
 
+                        // Create searchable keyword array for firestore user autocomplete search
+
+                        const searchableKeywords = [];
+
+                        for (let i = 1; i <= authUser.email.length; i++) {
+                            searchableKeywords.push(authUser.email.slice(0, i));
+                        }
+
                         const newUserData = {
-                            displayName: authUser.email,
+                            displayName: authUser.displayName,
                             avatarUrl: authUser.photoURL,
                             seller: false,
                             email: authUser.email,
@@ -66,6 +89,8 @@ function Hero({ authUser }) {
                             followingBusinesses: [],
                             openWallet: true,
                             userId: authUser.uid,
+                            referrals: [],
+                            searchableKeywords: searchableKeywords,
                         };
 
                         db.collection("users")
@@ -102,15 +127,9 @@ function Hero({ authUser }) {
         >
             <HeroHeader user={userState} setOpenPinModal={setOpenPinModal} />
 
-            {/* <CircleMenu /> */}
-
             <Route path="/hero/shoutouts">
                 <Shoutouts />
             </Route>
-
-            {/* <Route path="/hero/shoutout/:postId">
-                <ShoutoutMedia />
-            </Route> */}
 
             <Route path="/hero/upload">
                 <UploadShoutout />
@@ -141,6 +160,10 @@ function Hero({ authUser }) {
 
             <Route path="/hero/my-shops">
                 <MyShops />
+            </Route>
+
+            <Route path="/hero/search">
+                <Search />
             </Route>
 
             <PinModal

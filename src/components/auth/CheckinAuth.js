@@ -56,6 +56,19 @@ function Auth({ referrerId, setCheckedIn }) {
                                     } else {
                                         // If doesn't Exist, Create New User and set State with Reducer
 
+                                        // Create searchable keyword array for firestore user autocomplete search
+                                        const searchableKeywords = [];
+
+                                        for (
+                                            let i = 1;
+                                            i <= authUser.email.length;
+                                            i++
+                                        ) {
+                                            searchableKeywords.push(
+                                                authUser.email.slice(0, i)
+                                            );
+                                        }
+
                                         const newUserData = {
                                             displayName: authUser.displayName,
                                             avatarUrl: authUser.photoURL,
@@ -71,6 +84,9 @@ function Auth({ referrerId, setCheckedIn }) {
                                             followingBusinesses: [],
                                             openWallet: true,
                                             userId: authUser.uid,
+                                            referrals: [],
+                                            searchableKeywords:
+                                                searchableKeywords,
                                         };
 
                                         db.collection("users")

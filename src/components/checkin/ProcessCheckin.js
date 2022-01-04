@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 
 import AddIcon from "@mui/icons-material/Add";
 import KeyPad from "./KeyPad";
 import CheckinAuth from "../../components/auth/Auth";
+import ReferralModal from "../modals/referral-modal/ReferralModal";
 
 import { db, firebase } from "../../services/firebase/firebase-config";
 
@@ -24,6 +25,10 @@ function ProcessCheckin({
     const { businessId } = useParams();
 
     const [dupCheckIn, setDupCheckIn] = useState();
+
+    const [openReferralModal, setOpenReferralModal] = useState(true);
+
+    const handleCloseReferralModal = () => setOpenReferralModal(false);
 
     const handleCheckin = () => {
         // Check if Relationship with business exists
@@ -170,8 +175,40 @@ function ProcessCheckin({
             });
     };
 
-    console.log("User biz RElationhip at render: ", userBizRelationship);
+    // Check if User has previously checkedIn (i.e. relationship)
+    // otherwise, its their first time here and we need to ask if they've
+    // been referred.
 
+    useEffect(() => {
+        if (authUser) {
+            db.collection("users")
+                .doc(authUser.uid)
+                .collection("bizRelationships")
+                .doc(businessId)
+                .get()
+                .then((doc) => {
+                    console.log("User Biz Relationship doc: ", doc);
+                    if (doc.exists) {
+                        console.log("Relationship exists");
+
+                        // If Relationship Exists, Update Visit data
+                        setUserBizRelationship({
+                            businessId: businessId,
+                            ...doc.data(),
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log(
+                        "Error Getting Business Relationship in Process Checkin: ",
+                        error
+                    );
+                });
+        }
+    }, [authUser]);
+
+    console.log("User biz RElationhip at render: ", userBizRelationship);
+    console.log("User State at Process Checkin: ", userState);
     return (
         <div className="process-checkin__container">
             <div className="process-checkin__wrapper">
@@ -188,7 +225,9 @@ function ProcessCheckin({
                         <div style={{ fontSize: "36px" }}>🙌</div>
                         <h4>Your New Points: {userBizRelationship.pointSum}</h4>
                         <div>Remember to Log back in and </div>
-                        <div>Visit Your Partner Page to add Prizes to Your Wallet</div>
+                        <div>
+                            Visit Your Partner Page to add Prizes to Your Wallet
+                        </div>
                         <h4>@ {business.businessName}</h4>
                     </div>
                 )}
@@ -196,14 +235,20 @@ function ProcessCheckin({
                 {!checkedIn && authUser && (
                     <KeyPad
                         handleCheckin={handleCheckin}
-                        setCheckedIn={setCheckedIn}
                         setAlertMsg={setAlertMsg}
                         setOpenSnackBar={setOpenSnackBar}
                     />
                 )}
 
-                {!authUser && <CheckinAuth setCheckedIn={setCheckedIn} />}
+                {!authUser && <CheckinAuth />}
             </div>
+
+            <ReferralModal
+                handleCloseReferralModal={handleCloseReferralModal}
+                openReferralModal={openReferralModal}
+                setAlertMsg={setAlertMsg}
+                setOpenSnackBar={setOpenSnackBar}
+            />
         </div>
     );
 }

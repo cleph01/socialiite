@@ -35,6 +35,8 @@ const UserReducer = (state, action) => {
                 followersFriends: action.payload.followersFriends,
                 followingFriends: action.payload.followingFriends,
                 followingBusinesses: action.payload.followingBusinesses,
+                stripeId: action.payload.stripeId,
+                stripeLink: action.payload.stripeLink,
             };
 
         case "USER/UPDATE_USER_FOLLOWING_BIZ":

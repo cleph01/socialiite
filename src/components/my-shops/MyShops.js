@@ -1,5 +1,5 @@
 import React, { useState, Suspense, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import Card from "@mui/material/Card";
 
@@ -10,13 +10,18 @@ import Avatar from "@mui/material/Avatar";
 
 import "../../lib/scss/components/my-shops/my-shop.scss";
 
-import { db } from "../../services/firebase/firebase-config";
+import { db, firebase } from "../../services/firebase/firebase-config";
 
 import Shops from "./Shops";
 
 function Shop() {
-    const { authUser } = useContext(UserContext);
+    const history = useHistory();
+    const { userState, authUser } = useContext(UserContext);
     const [shops, setShops] = useState([]);
+
+    const sendToCustomerPortal = () => {
+        window.location.assign(userState.stripeLink);
+    };
 
     useEffect(() => {
         db.collection("shops")
@@ -37,12 +42,20 @@ function Shop() {
             });
     }, []);
 
+    console.log("UserState in myShops: ", userState);
+
     return (
         <div className="shop-container">
             <Card className="shop-wrapper">
                 <CardContent>
                     <div className="shop-header">
                         <h3>Your Shops</h3>
+                        <div
+                            className="billing-btn"
+                            onClick={sendToCustomerPortal}
+                        >
+                            Billing
+                        </div>
                         <Link to="/hero/my-shops/new">
                             <div className="add-shop-btn">
                                 <AddBoxIcon />
