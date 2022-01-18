@@ -13,45 +13,10 @@ import Divider from "@mui/material/Divider";
 
 import "../../lib/scss/components/partner-shops/shop.scss";
 
-function Shop({ bizRelationship }) {
-    const [prizes, setPrizes] = useState();
-    const [business, setBusiness] = useState();
+function Shop({ business }) {
+    console.log("Shop Item: ", business);
 
-    console.log("Shop Item: ", bizRelationship);
-    useEffect(() => {
-        db.collection("shops")
-            .doc(bizRelationship.businessId)
-            .get()
-            .then((doc) => {
-                console.log("doc in shop business: ", doc);
-                setBusiness({
-                    businessId: doc.id,
-                    ...doc.data(),
-                });
-            })
-            .catch((error) => {
-                console.log("Error getting Business Info: ", error);
-            });
-
-        db.collection("shops")
-            .doc(bizRelationship.businessId)
-            .collection("prizes")
-            .get()
-            .then((querySnapshot) => {
-                console.log("Prizes in Shop query: ", querySnapshot);
-                setPrizes(
-                    querySnapshot.docs.map((doc) => ({
-                        prizeId: doc.id,
-                        prizes: doc.data(),
-                    }))
-                );
-            })
-            .catch((error) => {
-                console.log("Error Shop Info: ", error);
-            });
-    }, []);
-
-    if (!prizes) {
+    if (!business) {
         return (
             <div
                 style={{
@@ -69,7 +34,7 @@ function Shop({ bizRelationship }) {
     return (
         <div className="">
             <Link
-                to={`/shops/${bizRelationship.businessId}`}
+                to={`/shops/${business.businessId}`}
                 style={{ textDecoration: "none", color: "inherit" }}
             >
                 <Divider />
@@ -80,10 +45,6 @@ function Shop({ bizRelationship }) {
                     <div className="bla">
                         <Typography type="headline" component="h2">
                             {business.businessName}
-                        </Typography>
-                        <Typography type="subheading" component="h4">
-                            Your Points: {bizRelationship.business.pointSum} |
-                            Prizes: {prizes.length}
                         </Typography>
                     </div>
                     <ListItemSecondaryAction

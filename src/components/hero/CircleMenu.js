@@ -46,7 +46,7 @@ function CircleMenu() {
                 >
                     💵
                 </span>
-                <span
+                {/* <span
                     className="link"
                     style={{
                         fontSize: "33px",
@@ -72,7 +72,7 @@ function CircleMenu() {
                     }}
                 >
                     🎬
-                </span>
+                </span> */}
                 <span
                     className="link"
                     style={{

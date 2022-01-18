@@ -1,6 +1,6 @@
-@import "../../variables/variables";
-.partner-shops-container {
+.transaction-history-container {
     width: 90vmin;
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,8 +10,4 @@
     padding: 15px 0px;
     opacity: 0.85;
     position: relative;
-
-    .partner-shops-wrapper {
-        width: 90%;
-    }
 }

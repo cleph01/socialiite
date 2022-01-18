@@ -30,6 +30,9 @@ function Search() {
 
     const handleSearch = () => {
         if (searchType === "shops" && searchTerm !== "") {
+            // Clear previous Result set
+            setSearchResults([]);
+
             db.collection("shops")
                 .where("tags", "array-contains", searchTerm)
                 .get()
@@ -45,6 +48,9 @@ function Search() {
                     console.log("Error getting Shop Search: ", error);
                 });
         } else if (searchType === "prizes" && searchTerm !== "") {
+            // Clear previous Result set
+            setSearchResults([]);
+
             db.collection("prizes")
                 .where("tags", "array-contains", searchTerm)
                 .get()
@@ -81,6 +87,7 @@ function Search() {
 
             <div className="search-bar-wrapper">
                 <TextField
+                    sx={{ width: "33%" }}
                     label="Search Type"
                     value={searchType}
                     onChange={handleSelectChange}

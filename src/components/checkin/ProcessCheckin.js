@@ -26,7 +26,9 @@ function ProcessCheckin({
 
     const [dupCheckIn, setDupCheckIn] = useState();
 
-    const [openReferralModal, setOpenReferralModal] = useState(true);
+    const [openReferralModal, setOpenReferralModal] = useState(false);
+
+    const [selectedSearchUser, setSelectedSearchUser] = useState(null);
 
     const handleCloseReferralModal = () => setOpenReferralModal(false);
 
@@ -51,18 +53,9 @@ function ProcessCheckin({
 
                     const bizRelationship = doc.data();
 
-                    const currTime = Date.now();
-
-                    let lastCheckin = bizRelationship.visitLog.slice(-1)[0];
-
-                    const timeDiff = Math.abs(currTime - lastCheckin);
-
-                    const diffInDays = timeDiff / (1000 * 60 * 60);
-
-                    console.log("Difference in Days: ", diffInDays);
-                    // Update Visits, etc
-                    // Update Counts and Log
-                    if (diffInDays >= 1) {
+                    // If Relationship exists due to claiming incentive from share
+                    // but never vistied/checked in... Then update visit Log and referrer immediately
+                    if (bizRelationship.visitLog.length === 0) {
                         db.collection("users")
                             .doc(authUser.uid)
                             .collection("bizRelationships")
@@ -82,11 +75,6 @@ function ProcessCheckin({
                                     "BizRelationship Points Successfully Updated!"
                                 );
 
-                                setUserBizRelationship({
-                                    businessId: businessId,
-                                    ...doc.data(),
-                                });
-
                                 setUserBizRelationship((prevState) => ({
                                     ...prevState,
                                     pointSum: prevState.pointSum + 1,
@@ -102,6 +90,43 @@ function ProcessCheckin({
                                 setOpenSnackBar(true);
 
                                 setCheckedIn(true);
+
+                                // If customer was referred by a Socialiite
+                                // Add new customer to referrer's referall array
+                                if (selectedSearchUser) {
+                                    db.collection("users")
+                                        .doc(selectedSearchUser.userId)
+                                        .update({
+                                            referrals:
+                                                firebase.firestore.FieldValue.arrayUnion(
+                                                    {
+                                                        businessId: businessId,
+                                                        referred: authUser.uid,
+                                                        paid: false,
+                                                        timestamp: Date.now(),
+                                                    }
+                                                ),
+                                        })
+                                        .then(() => {
+                                            console.log(
+                                                "Referrer Array Successfully Updated!"
+                                            );
+
+                                            setAlertMsg({
+                                                message:
+                                                    "Referrer credited with your visit!",
+                                                severity: "success",
+                                            });
+
+                                            setOpenSnackBar(true);
+                                        })
+                                        .catch((error) => {
+                                            console.error(
+                                                "Error updating Referrer Array: ",
+                                                error
+                                            );
+                                        });
+                                }
                             })
                             .catch((error) => {
                                 // The document probably doesn't exist.
@@ -111,15 +136,116 @@ function ProcessCheckin({
                                 );
                             });
                     } else {
-                        setAlertMsg({
-                            message: "Sorry, Only One Checkin Per Day",
-                            severity: "error",
-                        });
+                        // Else If Relationship Exists and Visit Log != 0 Check if Dupe Checkin
+                        const currTime = Date.now();
 
-                        setOpenSnackBar(true);
+                        let lastCheckin = bizRelationship.visitLog.slice(-1)[0];
 
-                        setDupCheckIn(true);
-                        setCheckedIn(true);
+                        const timeDiff = Math.abs(currTime - lastCheckin);
+
+                        const diffInDays = timeDiff / (1000 * 60 * 60);
+
+                        console.log("Difference in Days: ", diffInDays);
+                        // Update Visits, etc
+                        // Update Counts and Log
+                        if (diffInDays >= 1) {
+                            db.collection("users")
+                                .doc(authUser.uid)
+                                .collection("bizRelationships")
+                                .doc(businessId)
+                                .update({
+                                    visitCount:
+                                        firebase.firestore.FieldValue.increment(
+                                            1
+                                        ),
+                                    pointSum:
+                                        firebase.firestore.FieldValue.increment(
+                                            1
+                                        ),
+                                    visitLog:
+                                        firebase.firestore.FieldValue.arrayUnion(
+                                            Date.now()
+                                        ),
+                                })
+                                .then(() => {
+                                    console.log(
+                                        "BizRelationship Points Successfully Updated!"
+                                    );
+
+                                    setUserBizRelationship((prevState) => ({
+                                        ...prevState,
+                                        pointSum: prevState.pointSum + 1,
+                                    }));
+
+                                    setAlertMsg({
+                                        message: `Checkin Successful. New Points: ${
+                                            bizRelationship.pointSum + 1
+                                        }`,
+                                        severity: "success",
+                                    });
+
+                                    setOpenSnackBar(true);
+
+                                    setCheckedIn(true);
+
+                                    // If customer was referred by a Socialiite
+                                    // Add new customer to referrer's referall array
+                                    if (selectedSearchUser) {
+                                        db.collection("users")
+                                            .doc(selectedSearchUser.userId)
+                                            .update({
+                                                referrals:
+                                                    firebase.firestore.FieldValue.arrayUnion(
+                                                        {
+                                                            businessId:
+                                                                businessId,
+                                                            referred:
+                                                                authUser.uid,
+                                                            paid: false,
+                                                            timestamp:
+                                                                Date.now(),
+                                                        }
+                                                    ),
+                                            })
+                                            .then(() => {
+                                                console.log(
+                                                    "Referrer Array Successfully Updated!"
+                                                );
+
+                                                setAlertMsg({
+                                                    message:
+                                                        "Referrer credited with your visit!",
+                                                    severity: "success",
+                                                });
+
+                                                setOpenSnackBar(true);
+                                            })
+                                            .catch((error) => {
+                                                console.error(
+                                                    "Error updating Referrer Array: ",
+                                                    error
+                                                );
+                                            });
+                                    }
+                                })
+                                .catch((error) => {
+                                    // The document probably doesn't exist.
+                                    console.error(
+                                        "Error updating BizRelationship Points: ",
+                                        error
+                                    );
+                                });
+                        } else {
+                            setAlertMsg({
+                                message: "Sorry, Only One Checkin Per Day",
+                                severity: "error",
+                            });
+
+                            setOpenSnackBar(true);
+
+                            setDupCheckIn(true);
+                            setCheckedIn(true);
+                        }
                     }
                 } else {
                     // If relationship does NOT exist, create New Relationship
@@ -154,6 +280,43 @@ function ProcessCheckin({
                             setCheckedIn(true);
 
                             setOpenSnackBar(true);
+
+                            // If customer was referred by a Socialiite
+                            // Add new customer to referrer's referall array
+                            if (selectedSearchUser) {
+                                db.collection("users")
+                                    .doc(selectedSearchUser.userId)
+                                    .update({
+                                        referrals:
+                                            firebase.firestore.FieldValue.arrayUnion(
+                                                {
+                                                    businessId: businessId,
+                                                    referred: authUser.uid,
+                                                    paid: false,
+                                                    timestamp: Date.now(),
+                                                }
+                                            ),
+                                    })
+                                    .then(() => {
+                                        console.log(
+                                            "Referrer Array Successfully Updated!"
+                                        );
+
+                                        setAlertMsg({
+                                            message:
+                                                "Referrer credited with your visit!",
+                                            severity: "success",
+                                        });
+
+                                        setOpenSnackBar(true);
+                                    })
+                                    .catch((error) => {
+                                        console.error(
+                                            "Error updating Referrer Array: ",
+                                            error
+                                        );
+                                    });
+                            }
                         })
                         .catch((error) => {
                             console.error("Error adding document: ", error);
@@ -191,11 +354,22 @@ function ProcessCheckin({
                     if (doc.exists) {
                         console.log("Relationship exists");
 
-                        // If Relationship Exists, Update Visit data
+                        // If Relationship Exists,
+                        // set userBizRelationship
                         setUserBizRelationship({
                             businessId: businessId,
                             ...doc.data(),
                         });
+
+                        // If User's first time visiting business
+                        // set Show ReferralModal true
+                        if (doc.data().visitLog.length < 1) {
+                            setOpenReferralModal(true);
+                        }
+                    } else {
+                        // If no BizRelationship exists
+                        // open referral Modal
+                        setOpenReferralModal(true);
                     }
                 })
                 .catch((error) => {
@@ -248,6 +422,8 @@ function ProcessCheckin({
                 openReferralModal={openReferralModal}
                 setAlertMsg={setAlertMsg}
                 setOpenSnackBar={setOpenSnackBar}
+                selectedSearchUser={selectedSearchUser}
+                setSelectedSearchUser={setSelectedSearchUser}
             />
         </div>
     );

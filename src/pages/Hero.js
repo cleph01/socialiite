@@ -16,6 +16,7 @@ import MyShops from "../components/my-shops/MyShops";
 import NewShop from "../components/my-shops/NewShop";
 import InviteNewShop from "../components/invite-new-shop/InviteNewShop";
 import Search from "../components/search/Search";
+import FollowingShops from "../components/following-shops/FollowingShops";
 
 import "../lib/scss/pages/hero-home.scss";
 
@@ -141,6 +142,10 @@ function Hero({ authUser }) {
 
             <Route path="/hero/partner-shops">
                 <PartnerShops />
+            </Route>
+
+            <Route path="/hero/following-shops">
+                <FollowingShops />
             </Route>
 
             <Route path="/hero/wallet">

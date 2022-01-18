@@ -1,0 +1,22 @@
+.monthly-income-container {
+    width: 90vmin;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 15px 0px;
+    opacity: 0.85;
+
+    .section {
+        background-color: #ffffff;
+        padding: 12px;
+        width: 90%;
+    }
+
+    .center {
+        text-align: center;
+    }
+}

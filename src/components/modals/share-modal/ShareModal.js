@@ -40,7 +40,7 @@ function ShareModal({ openShareModal, handleCloseShareModal, shareBusiness }) {
                         ": https://socialiite.web.app/shops/" +
                         shareBusiness.businessId
                       : "undefined"
-              }/${authUser.uid}`
+              }`
           )
         : null;
 

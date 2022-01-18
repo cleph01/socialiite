@@ -119,6 +119,13 @@ function App() {
                                     <COMPONENTS.Onboard />
                                 </PrivateRoute>
 
+                                <PrivateRoute
+                                    path={ROUTES.INCOME}
+                                    authUser={authUser}
+                                >
+                                    <COMPONENTS.Income />
+                                </PrivateRoute>
+
                                 <Route
                                     exact
                                     path="/legal/privacy-policy"

@@ -21,7 +21,7 @@ function Shoutout({ item }) {
                 />
             )}
             <Link to={`/post/${authUser.uid}/${item.postId}`}>
-                <ImageListItemBar
+                <ImageListItemBar sx={{padding:"0px 6px"}}
                     title={`${item.post.caption.slice(0, 10)}...`}
                     subtitle={item.post.businessName}
                     position="below"

@@ -8,6 +8,12 @@ const HOME = "/";
 const LOGIN = "/login/:referrerId?";
 
 /**
+ *  Income Page
+ * Private
+ */
+const INCOME = "/income";
+
+/**
  *  Onboard Business
  *  Private
  */
@@ -67,6 +73,7 @@ export {
     HOME,
     LOGIN,
     ONBOARD,
+    INCOME,
     PRIVACY_POLICY,
     MY_PROFILE,
     USER_PROFILE,

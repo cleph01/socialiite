@@ -10,6 +10,9 @@ const Privacy = lazy(() => import("../pages/PrivacyPolicy.js"));
 // Onboard Business
 const Onboard = lazy(() => import("../pages/OnboardBusiness.js"));
 
+// Income Page
+const Income = lazy(() => import("../pages/Income.js"));
+
 // user Profile
 const MyProfile = lazy(() => import("../pages/Hero"));
 // const UserProfile = lazy(() => import("../pages/my_profile/UserProfile.js"));
@@ -61,6 +64,7 @@ export {
     Login,
     Privacy,
     Onboard,
+    Income,
     MyProfile,
     HotSpot,
     Shop,

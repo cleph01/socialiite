@@ -17,6 +17,7 @@ const UserReducer = (state, action) => {
                 followingBusinesses: [],
                 followingFriends: [],
                 referrerId: action.payload.referrerId,
+                referrals: [],
             };
 
         case "USER/SET_EXISTING_USER":
@@ -37,6 +38,7 @@ const UserReducer = (state, action) => {
                 followingBusinesses: action.payload.followingBusinesses,
                 stripeId: action.payload.stripeId,
                 stripeLink: action.payload.stripeLink,
+                referrals: action.payload.referrals,
             };
 
         case "USER/UPDATE_USER_FOLLOWING_BIZ":

@@ -52,18 +52,21 @@ function PartnerShops() {
 
     console.log("BizRelationships in PartnerShops: ", bizRelationships);
     return (
-        <List className="partner-shops-wrapper">
-            {bizRelationships.length > 0 ? (
-                bizRelationships.map((bizRelationship, i) => (
-                    <Shop key={i} bizRelationship={bizRelationship} />
-                ))
-            ) : (
-                <UpcomingMessage
-                    message="Connect With A Business, Show the World Why They're Awesome, And Get Paid!!"
-                    emoji="🚀"
-                />
-            )}
-        </List>
+        <div className="partner-shops-container">
+            <h3>Partner Shops</h3>
+            <List className="partner-shops-wrapper">
+                {bizRelationships.length > 0 ? (
+                    bizRelationships.map((bizRelationship, i) => (
+                        <Shop key={i} bizRelationship={bizRelationship} />
+                    ))
+                ) : (
+                    <UpcomingMessage
+                        message="Connect With A Business, Show the World Why They're Awesome, And Get Paid!!"
+                        emoji="🚀"
+                    />
+                )}
+            </List>
+        </div>
     );
 }
 

@@ -1,6 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../../contexts/UserContext";
 import { db, firebase } from "../../../services/firebase/firebase-config";
+
+import WalletItems from "./WalletItems";
+
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -313,6 +316,7 @@ function MakeOffer({
 
     console.log("Wallet in make Offer: ", wallet);
     console.log("Offer: ", offer);
+    console.log("Prize: ", prize);
     return (
         <Modal
             open={openMakeOfferModal}
@@ -322,18 +326,39 @@ function MakeOffer({
         >
             <Box sx={style}>
                 <h2>Make an Offer</h2>
-                <h3>Target Prize</h3>
-                <h4>{prize.itemDescription}</h4>
-                <div style={{ fontWeight: "700", margin: "6px 0px 10px" }}>
-                    @ {prize.businessName}
+
+                <div style={{ fontSize: "96px" }}>{prize.emoji}</div>
+                <div style={{ fontSize: "26px", color: "#888997" }}>
+                    {prize.itemDescription}
+                </div>
+                <div
+                    style={{
+                        fontWeight: "700",
+                        margin: "10px 0px 10px",
+                        color: "#888997",
+                    }}
+                >
+                    by {prize.businessName}
                 </div>
 
-                <div style={{ fontSize: "36px" }}>{prize.emoji}</div>
+                <div
+                    style={{
+                        fontWeight: "700",
+                        margin: "10px 0px 10px",
+                        fontSize: "36px",
+                    }}
+                >
+                    {prize.pointCost > 1
+                        ? `${prize.pointCost} Points`
+                        : `${prize.pointCost} Point`}
+                </div>
 
-                <Divider sx={{ color: "#000" }} />
+                <Divider sx={{ width: "100%" }} />
 
                 <h3>My Wallet 👇</h3>
-                <List
+
+                <WalletItems wallet={wallet} />
+                {/* <List
                     className="product-list-container"
                     sx={{ width: "100%", maxHeight: "300px", overflow: "auto" }}
                 >
@@ -367,7 +392,7 @@ function MakeOffer({
                             <Divider />
                         </span>
                     ))}
-                </List>
+                </List> */}
                 <div
                     style={{
                         display: "flex",

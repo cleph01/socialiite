@@ -58,7 +58,7 @@ function HeroHeader({ user, setOpenPinModal }) {
         };
     }, []);
 
-    console.log("Notifications: ", notifications);
+    console.log("UserState in Header: ", user);
     return (
         <>
             {/* Main Grid */}
@@ -76,20 +76,36 @@ function HeroHeader({ user, setOpenPinModal }) {
                         </div>
 
                         <div className="hero__stats_wrapper">
-                            <div className="hero__stats">
-                                <div className="hero__stat">356</div>
+                            <div
+                                className="hero__stats"
+                                onClick={() => {
+                                    history.push("/income");
+                                }}
+                            >
+                                <div className="hero__stat">
+                                    {user.referrals?.length}
+                                </div>
                                 <div className="hero__stat__label">
                                     Referrals
                                 </div>
                             </div>
                             <div className="hero__stats">
-                                <div className="hero__stat">693</div>
+                                <div className="hero__stat">
+                                    {user.followersFriends?.length}
+                                </div>
                                 <div className="hero__stat__label">
                                     Followers
                                 </div>
                             </div>
-                            <div className="hero__stats">
-                                <div className="hero__stat">936</div>
+                            <div
+                                className="hero__stats"
+                                onClick={() => {
+                                    history.push("/hero/following-shops");
+                                }}
+                            >
+                                <div className="hero__stat">
+                                    {user.followingBusinesses?.length}
+                                </div>
                                 <div className="hero__stat__label">
                                     Following
                                 </div>

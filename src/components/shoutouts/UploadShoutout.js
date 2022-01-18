@@ -29,7 +29,7 @@ import "../../lib/scss/components/shoutouts/upload-shoutout.scss";
 import { UserContext } from "../../contexts/UserContext";
 
 import { db, storage, firebase } from "../../services/firebase/firebase-config";
-// import { google } from "googleapis" ;
+
 // const youtube = google.youtube("v3");
 
 function UploadShoutout() {

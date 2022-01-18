@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import { db, firebase } from "../../../services/firebase/firebase-config";
 
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../../../contexts/UserContext";
 
 import Box from "@mui/material/Box";
 
@@ -23,7 +23,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Divider from "@mui/material/Divider";
 
 import logo from "../../../assets/images/logos/flame-only-logo.png";
-import { authorizedbuyersmarketplace } from "googleapis/build/src/apis/authorizedbuyersmarketplace";
 
 const style = {
     display: "flex",
@@ -71,14 +70,24 @@ function ReferralModal({
     openReferralModal,
     setAlertMsg,
     setOpenSnackBar,
+    selectedSearchUser,
+    setSelectedSearchUser,
 }) {
     const [searchUser, setSearchUser] = useState("");
-    const [searchUserOptions, setSearchUserOptions] = useState("");
-    const [selectedSearchUser, setSelectedSearchUser] = useState(null);
+    const [searchUserOptions, setSearchUserOptions] = useState([]);
 
     const { authUser } = useContext(UserContext);
 
     const handleConfirmReferral = () => {
+        if (!selectedSearchUser) {
+            setAlertMsg({
+                message: "Referrer Field Can't Be Empty",
+                severity: "error",
+            });
+
+            setOpenSnackBar(true);
+        }
+
         if (selectedSearchUser.userId === authUser.uid) {
             setAlertMsg({
                 message: "Sorry, Can't Refer Yourself 🧐",
@@ -86,11 +95,39 @@ function ReferralModal({
             });
 
             setOpenSnackBar(true);
+        } else {
+            db.collection("users")
+                .doc(selectedSearchUser.userId)
+
+                .update({
+                    referrals: firebase.firestore.FieldValue.arrayUnion(
+                        authUser.uid
+                    ),
+                })
+                .then(() => {
+                    console.log("Referral Connection Updated!");
+
+                    setAlertMsg({
+                        message: "Congratulations! Your Friend Just Got Paid",
+                        severity: "success",
+                    });
+
+                    setOpenSnackBar(true);
+                })
+                .catch((error) => {
+                    // The document probably doesn't exist.
+                    console.error(
+                        "Error updating BizRelationship Points: ",
+                        error
+                    );
+                });
         }
     };
+
     const handleReferrerSelect = (user) => {
         setSelectedSearchUser(user);
         setSearchUser(user.email);
+        setSearchUserOptions([]);
     };
 
     const handleSearchUser = (event) => {
@@ -111,8 +148,6 @@ function ReferralModal({
                             ...refDoc.data(),
                         }))
                     );
-                } else {
-                    setSearchUserOptions([]);
                 }
             })
             .catch((error) => {
@@ -120,6 +155,7 @@ function ReferralModal({
             });
     };
 
+    console.log("Selected Search User: ", selectedSearchUser);
     return (
         <Modal
             open={openReferralModal}
@@ -139,14 +175,10 @@ function ReferralModal({
                 </div>
                 <h3>The Social Media that Pays YOU</h3>
 
-                <h4>
-                    Help spread the word about this wonderful business and get
-                    paid!
-                </h4>
-                <h4>Who invited you here?</h4>
+                <h4>Tell us who invited you below </h4>
 
-                <h4>We need to pay them first</h4>
-                <h4>Thank You</h4>
+                <h4> And let's get them get paid!</h4>
+
                 <TextField
                     sx={{ width: "100%" }}
                     id="handle"
@@ -166,6 +198,7 @@ function ReferralModal({
                                     onClick={() => {
                                         setSearchUser("");
                                         setSearchUserOptions([]);
+                                        setSelectedSearchUser(null);
                                     }}
                                 />
                             </InputAdornment>
@@ -199,24 +232,25 @@ function ReferralModal({
                         ))}
                     </List>
                 ) : null}
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        marginTop: "15px",
-                    }}
-                >
-                    <div
-                        style={redeemStyle}
-                        onClick={() => handleConfirmReferral}
-                    >
-                        Confirm Referral
-                    </div>
-                    <div style={cancelStyle} onClick={handleCloseReferralModal}>
-                        Cancel
-                    </div>
+
+                <br />
+                <div style={cancelStyle} onClick={handleCloseReferralModal}>
+                    {selectedSearchUser ? "Continue" : "Close"}
                 </div>
+
+                {!selectedSearchUser && (
+                    <h4>You can close if no one referred you. </h4>
+                )}
+
+                {selectedSearchUser && (
+                    <div style={{ textAlign: "center" }}>
+                        <h4>Now it's your turn to share and get paid!</h4>
+                        <h4>
+                            Next Step: Keypad Code Must Be Valid for Referral
+                            Payment to Go Through
+                        </h4>
+                    </div>
+                )}
             </Box>
         </Modal>
     );
