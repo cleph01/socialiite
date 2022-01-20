@@ -10,7 +10,7 @@ import Divider from "@mui/material/Divider";
 
 function OfferList({ offers, removeFromOffer }) {
     return (
-        <List sx={{ width: "90%", overflow: "scroll", maxHeight: "300px" }}>
+        <List sx={{ width: "90%" }}>
             {offers.map((offer, i) => (
                 <div key={i}>
                     <Divider />
