@@ -3,19 +3,11 @@ import { UserContext } from "../../../contexts/UserContext";
 import { db, firebase } from "../../../services/firebase/firebase-config";
 
 import WalletItems from "./WalletItems";
+import OfferList from "./OfferList";
 
 import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
 
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
-import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import Skeleton from "@mui/material/Skeleton";
 
@@ -34,6 +26,7 @@ const style = {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
+    overflow: "scroll",
 };
 
 const redeemStyle = {
@@ -64,6 +57,8 @@ const cancelStyle = {
 
 function MakeOffer({
     prize,
+    wallet,
+    setWallet,
     openMakeOfferModal,
     handleCloseMakeOfferModal,
     setOpenSnackBar,
@@ -71,13 +66,24 @@ function MakeOffer({
 }) {
     const { authUser } = useContext(UserContext);
 
-    const [wallet, setWallet] = useState();
-    const [offer, setOffer] = useState([]);
+    const [walletIndex, setWalletIndex] = useState(0);
+
+    const [offers, setOffers] = useState([]);
+
+    const removeFromOffer = (item) => {
+        setOffers((prevState) =>
+            prevState.filter(
+                (offer) => offer.walletItemId !== item.walletItemId
+            )
+        );
+
+        setWallet((prevState) => [...prevState, item]);
+    };
 
     const handleSubmitOffer = () => {
         if (wallet.length > 0) {
             let tradeOffer = { bidderId: authUser.uid, offer: {} };
-            offer.forEach((offerItem) => {
+            offers.forEach((offerItem) => {
                 for (let i = 0; i < wallet.length; i++) {
                     if (offerItem === wallet[i].walletItemId) {
                         tradeOffer.offer[i] = {
@@ -114,7 +120,7 @@ function MakeOffer({
                                 tradeOffers: updatedTradeOffer,
                             })
                             .then(() => {
-                                offer.forEach((walletItemId) => {
+                                offers.forEach((walletItemId) => {
                                     db.collection("wallet")
                                         .doc(walletItemId)
                                         .update({
@@ -133,13 +139,13 @@ function MakeOffer({
                                 });
 
                                 // Empty Offer State
-                                setOffer([]);
+                                setOffers([]);
 
                                 // Reset the Wallet to Remove Offered for Trade
                                 let newWallet = [];
                                 for (let i = 0; i < wallet.length; i++) {
                                     if (
-                                        !offer.includes(wallet[i].walletItemId)
+                                        !offers.includes(wallet[i].walletItemId)
                                     ) {
                                         newWallet.push(wallet[i]);
                                     }
@@ -185,7 +191,7 @@ function MakeOffer({
                             .then((docRef) => {
                                 console.log("Trade Offer: ", tradeOffer);
 
-                                offer.forEach((walletItemId) => {
+                                offers.forEach((walletItemId) => {
                                     db.collection("wallet")
                                         .doc(walletItemId)
                                         .update({
@@ -204,13 +210,13 @@ function MakeOffer({
                                 });
 
                                 // Empty Offer State
-                                setOffer([]);
+                                setOffers([]);
 
                                 // Reset the Wallet to Remove Offered for Trade
                                 let newWallet = [];
                                 for (let i = 0; i < wallet.length; i++) {
                                     if (
-                                        !offer.includes(wallet[i].walletItemId)
+                                        !offers.includes(wallet[i].walletItemId)
                                     ) {
                                         newWallet.push(wallet[i]);
                                     }
@@ -253,70 +259,21 @@ function MakeOffer({
     const handleChange = (event) => {
         const isChecked = event.target.checked;
         if (isChecked) {
-            setOffer((prevState) => {
+            setOffers((prevState) => {
                 return [...prevState, event.target.value];
             });
         } else {
-            const index = offer.indexOf(event.target.value);
+            const index = offers.indexOf(event.target.value);
 
-            setOffer((prevState) => {
+            setOffers((prevState) => {
                 return prevState.filter((elem, i) => index !== i);
             });
         }
     };
 
-    useEffect(() => {
-        db.collection("wallet")
-            .where("userId", "==", authUser.uid)
-            .where("offeredInTrade", "==", false)
-            .get()
-            .then((items) => {
-                console.log("Wallet Items in MakeOffer: ", items);
+    console.log("wallet Hash in Make oFfer: ", wallet);
+    console.log("Offer: ", offers);
 
-                setWallet(
-                    items.docs.map((doc) => ({
-                        walletItemId: doc.id,
-                        ...doc.data(),
-                    }))
-                );
-                // const rawWallet = items.docs.map((doc) => ({
-                //     walletItemId: doc.id,
-                //     ...doc.data(),
-                // }));
-
-                // let newArr = [];
-                // // Filter out items
-                // for (let i = 0; i < rawWallet.length; i++) {
-                //     if (rawWallet[i].userId === authUser.uid) {
-                //         newArr.push(rawWallet[i]);
-                //     }
-                // }
-
-                // setWallet(newArr);
-            })
-            .catch((error) => {
-                console.log("Error Getting Wallet Items: ", error);
-            });
-    }, []);
-
-    if (!wallet) {
-        return (
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: "10px",
-                }}
-            >
-                <Skeleton variant="rectangular" width={350} height={218} />
-            </div>
-        );
-    }
-
-    console.log("Wallet in make Offer: ", wallet);
-    console.log("Offer: ", offer);
-    console.log("Prize: ", prize);
     return (
         <Modal
             open={openMakeOfferModal}
@@ -328,14 +285,14 @@ function MakeOffer({
                 <h2>Make an Offer</h2>
 
                 <div style={{ fontSize: "96px" }}>{prize.emoji}</div>
-                <div style={{ fontSize: "26px", color: "#888997" }}>
+                <div style={{ fontSize: "26px", color: "#282a35" }}>
                     {prize.itemDescription}
                 </div>
                 <div
                     style={{
                         fontWeight: "700",
                         margin: "10px 0px 10px",
-                        color: "#888997",
+                        color: "#282a35",
                     }}
                 >
                     by {prize.businessName}
@@ -346,6 +303,7 @@ function MakeOffer({
                         fontWeight: "700",
                         margin: "10px 0px 10px",
                         fontSize: "36px",
+                        color: "#282a35",
                     }}
                 >
                     {prize.pointCost > 1
@@ -357,42 +315,21 @@ function MakeOffer({
 
                 <h3>My Wallet 👇</h3>
 
-                <WalletItems wallet={wallet} />
-                {/* <List
-                    className="product-list-container"
-                    sx={{ width: "100%", maxHeight: "300px", overflow: "auto" }}
-                >
-                    <Divider />
-                    {wallet.map((item, index) => (
-                        <span key={index}>
-                            <ListItem className="product-list-item">
-                                <ListItemAvatar>
-                                    <Avatar
-                                        sx={{ width: 46, height: 46 }}
-                                        loading="lazy"
-                                    >
-                                        <span style={{ fontSize: "36px" }}>
-                                            {item.emoji}
-                                        </span>
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={item.itemDescription}
-                                    secondary={item.businessName}
-                                />
-                                <ListItemSecondaryAction>
-                                    <input
-                                        type="checkbox"
-                                        style={{ transform: "scale(2)" }}
-                                        onChange={handleChange}
-                                        value={item.walletItemId}
-                                    />
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                            <Divider />
-                        </span>
-                    ))}
-                </List> */}
+                <WalletItems
+                    wallet={wallet}
+                    setWallet={setWallet}
+                    setWalletIndex={setWalletIndex}
+                    walletIndex={walletIndex}
+                    setOffers={setOffers}
+                />
+
+                {offers && (
+                    <OfferList
+                        offers={offers}
+                        removeFromOffer={removeFromOffer}
+                    />
+                )}
+
                 <div
                     style={{
                         display: "flex",

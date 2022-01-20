@@ -16,26 +16,22 @@ import NavBar from "../components/NavBar";
 
 import "../lib/scss/pages/trade-room.scss";
 
-import logo from "../assets/images/logos/logo_white_text.png";
-
 function Trade() {
     const { authUser } = useContext(UserContext);
 
-    const [prize, setPrize] = useState({
-        emoji: "🍣",
-        description: "All You Can Eat Sushi",
-        priceCost: "4",
-        businessId: "abcd",
-        businessName: "Haiku",
-    });
+    const [wallet, setWallet] = useState();
+
+    const [prize, setPrize] = useState({});
 
     const [trade, setTrade] = useState();
 
     const [openTrades, setOpenTrades] = useState();
 
     const [openViewTradeModal, setOpenViewTradeModal] = useState(false);
+
     const [openAvailablePrizeModal, setOpenAvailablePrizeModal] =
         useState(false);
+
     const [openMakeOfferModal, setOpenMakeOfferModal] = useState(false);
 
     const [openSnackBar, setOpenSnackBar] = useState(false);
@@ -46,8 +42,10 @@ function Trade() {
     });
 
     const handleCloseViewTradeModal = () => setOpenViewTradeModal(false);
+
     const handleCloseViewAvailablePrizeModal = () =>
         setOpenAvailablePrizeModal(false);
+
     const handleCloseMakeOfferModal = () => setOpenMakeOfferModal(false);
 
     const Alert = forwardRef(function Alert(props, ref) {
@@ -62,7 +60,27 @@ function Trade() {
         setOpenSnackBar(false);
     };
 
-    console.log("Open Trades: ", openTrades);
+    useEffect(() => {
+        db.collection("wallet")
+            .where("userId", "==", authUser.uid)
+            .where("offeredInTrade", "==", false)
+            .get()
+            .then((items) => {
+                console.log("Wallet Items in MakeOffer: ", items);
+
+                setWallet(
+                    items.docs.map((doc) => ({
+                        walletItemId: doc.id,
+                        ...doc.data(),
+                    }))
+                );
+            })
+            .catch((error) => {
+                console.log("Error Getting Wallet Items: ", error);
+            });
+    }, []);
+
+    console.log("Wallet in Trade: ", wallet);
 
     return (
         <div
@@ -96,6 +114,8 @@ function Trade() {
                 }
             />
             <MakeOffer
+                wallet={wallet}
+                setWallet={setWallet}
                 prize={prize}
                 openMakeOfferModal={openMakeOfferModal}
                 handleCloseMakeOfferModal={handleCloseMakeOfferModal}
