@@ -46,7 +46,7 @@ function CircleMenu() {
                 >
                     💵
                 </span>
-                {/* <span
+                <span
                     className="link"
                     style={{
                         fontSize: "33px",
@@ -71,8 +71,8 @@ function CircleMenu() {
                         history.push("/hero/upload");
                     }}
                 >
-                    🎬
-                </span> */}
+                    🤳
+                </span>
                 <span
                     className="link"
                     style={{

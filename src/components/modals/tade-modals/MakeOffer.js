@@ -82,24 +82,20 @@ function MakeOffer({
     };
 
     const handleSubmitOffer = () => {
-        if (wallet.length > 0) {
+        if (offers.length > 0) {
             let tradeOffer = { bidderId: authUser.uid, offer: {} };
-            offers.forEach((offerItem) => {
-                for (let i = 0; i < wallet.length; i++) {
-                    if (offerItem === wallet[i].walletItemId) {
-                        tradeOffer.offer[i] = {
-                            businessId: wallet[i].businessId,
-                            businessName: wallet[i].businessName,
-                            emoji: wallet[i].emoji,
-                            itemDescription: wallet[i].itemDescription,
-                            pointCost: wallet[i].pointCost,
-                            walletItemId: wallet[i].walletItemId,
-                        };
-                    }
-                }
+            offers.forEach((offerItem, i) => {
+                tradeOffer.offer[i] = {
+                    businessId: offerItem.businessId,
+                    businessName: offerItem.businessName,
+                    emoji: offerItem.emoji,
+                    itemDescription: offerItem.itemDescription,
+                    pointCost: offerItem.pointCost,
+                    walletItemId: offerItem.walletItemId,
+                };
             });
-            console.log("Prize Wallet Id: ", prize.walletItemId);
 
+            // Check if trade with this prizeId already exists
             db.collection("trades")
                 .where("walletItemId", "==", prize.walletItemId)
                 .get()
@@ -121,9 +117,9 @@ function MakeOffer({
                                 tradeOffers: updatedTradeOffer,
                             })
                             .then(() => {
-                                offers.forEach((walletItemId) => {
+                                offers.forEach((offer) => {
                                     db.collection("wallet")
-                                        .doc(walletItemId)
+                                        .doc(offer.walletItemId)
                                         .update({
                                             offeredInTrade: true,
                                         })
@@ -143,12 +139,16 @@ function MakeOffer({
                                 setOffers([]);
 
                                 // Reset the Wallet to Remove Offered for Trade
+                                // Try and Optimize -> O(n^2)
                                 let newWallet = [];
                                 for (let i = 0; i < wallet.length; i++) {
-                                    if (
-                                        !offers.includes(wallet[i].walletItemId)
-                                    ) {
-                                        newWallet.push(wallet[i]);
+                                    for (let j = 0; j < offers.length; j++) {
+                                        if (
+                                            offers[j].walletItemId !==
+                                            wallet[i].walletItemId
+                                        ) {
+                                            newWallet.push(wallet[i]);
+                                        }
                                     }
                                 }
                                 // set Wallet with new value
@@ -192,9 +192,9 @@ function MakeOffer({
                             .then((docRef) => {
                                 console.log("Trade Offer: ", tradeOffer);
 
-                                offers.forEach((walletItemId) => {
+                                offers.forEach((offer) => {
                                     db.collection("wallet")
-                                        .doc(walletItemId)
+                                        .doc(offer.walletItemId)
                                         .update({
                                             offeredInTrade: true,
                                         })
@@ -214,12 +214,16 @@ function MakeOffer({
                                 setOffers([]);
 
                                 // Reset the Wallet to Remove Offered for Trade
+                                // Try and Optimize -> O(n^2)
                                 let newWallet = [];
                                 for (let i = 0; i < wallet.length; i++) {
-                                    if (
-                                        !offers.includes(wallet[i].walletItemId)
-                                    ) {
-                                        newWallet.push(wallet[i]);
+                                    for (let j = 0; j < offers.length; j++) {
+                                        if (
+                                            offers[j].walletItemId !==
+                                            wallet[i].walletItemId
+                                        ) {
+                                            newWallet.push(wallet[i]);
+                                        }
                                     }
                                 }
                                 // set Wallet with new value
@@ -248,7 +252,7 @@ function MakeOffer({
                 });
         } else {
             setAlertMsg({
-                message: "Wallet is Empty",
+                message: "No Items Selected",
                 severity: "error",
             });
 
@@ -271,6 +275,8 @@ function MakeOffer({
             });
         }
     };
+
+    console.log("Prize Wallet Id Make Offer: ", prize.walletItemId);
 
     console.log("wallet Hash in Make oFfer: ", wallet);
     console.log("Offer: ", offers);
@@ -344,7 +350,10 @@ function MakeOffer({
                     </div>
                     <div
                         style={cancelStyle}
-                        onClick={handleCloseMakeOfferModal}
+                        onClick={() => {
+                            handleCloseMakeOfferModal();
+                            setOffers([]);
+                        }}
                     >
                         Cancel
                     </div>

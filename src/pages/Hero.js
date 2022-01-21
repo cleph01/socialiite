@@ -14,6 +14,7 @@ import UploadShoutout from "../components/shoutouts/UploadShoutout";
 import UploadSuccess from "../components/shoutouts/UploadSuccess";
 import MyShops from "../components/my-shops/MyShops";
 import NewShop from "../components/my-shops/NewShop";
+import EditShop from "../components/my-shops/EditShop";
 import InviteNewShop from "../components/invite-new-shop/InviteNewShop";
 import Search from "../components/search/Search";
 import FollowingShops from "../components/following-shops/FollowingShops";
@@ -161,6 +162,10 @@ function Hero({ authUser }) {
 
             <Route path="/hero/my-shops/new">
                 <NewShop />
+            </Route>
+
+            <Route path="/hero/my-shops/edit/:businessId">
+                <EditShop />
             </Route>
 
             <Route path="/hero/my-shops">

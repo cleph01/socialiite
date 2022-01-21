@@ -34,8 +34,9 @@ const USER_PROFILE = "/user/:otherUserId";
 
 /**
  *  Shoutout Post
- *
+ *  Public
  */
+const SHOUTOUT = "/shoutout/:shoutoutId/:businessId";
 
 // Display posts from other SM platforms according to Hash Tag
 const HOT_SPOT = "/hotspot/:businessId";
@@ -80,6 +81,7 @@ export {
     WALLET,
     TRADE,
     HOT_SPOT,
+    SHOUTOUT,
     SHOPS,
     SHOP,
     STORE,

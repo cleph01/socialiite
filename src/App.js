@@ -112,6 +112,10 @@ function App() {
                                     component={COMPONENTS.HotSpot}
                                 />
 
+                                <Route
+                                    path={ROUTES.SHOUTOUT}
+                                    component={COMPONENTS.Shoutout}
+                                />
                                 <PrivateRoute
                                     path={ROUTES.ONBOARD}
                                     authUser={authUser}

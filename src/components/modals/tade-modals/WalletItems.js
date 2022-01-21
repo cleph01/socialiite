@@ -30,7 +30,9 @@ function WalletItems({
 
     const traverseBackward = () => {
         if (walletIndex === 0) {
-            setWalletIndex(wallet.length - 1);
+            setWalletIndex(walletHashArr.length - 1);
+        } else if (walletIndex - 1 > walletHashArr.length - 1) {
+            setWalletIndex(walletHashArr.length - 1);
         } else {
             setWalletIndex(walletIndex - 1);
         }
@@ -48,7 +50,10 @@ function WalletItems({
                 }
             }
 
-            return [...prevState, walletItem];
+            return [
+                ...prevState,
+                { ...walletItem, walletItemId: offerWalletId },
+            ];
         });
 
         setWallet((prevState) => {

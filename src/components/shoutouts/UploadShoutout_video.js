@@ -1,13 +1,13 @@
 import React, { useState, useContext, useEffect, forwardRef } from "react";
 
-// import { uuid } from "uuid";
+import { uuid } from "uuid/v4";
 import { Redirect } from "react-router-dom";
 import { PickerInline } from "filestack-react";
 import UploadIcon from "@mui/icons-material/Upload";
 
 import Skeleton from "@mui/material/Skeleton";
 
-import Signup from "../../components/youtube-auth/Signup";
+import Signup from "../youtube-auth/Signup";
 
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -29,15 +29,48 @@ import "../../lib/scss/components/shoutouts/upload-shoutout.scss";
 import { UserContext } from "../../contexts/UserContext";
 
 import { db, storage, firebase } from "../../services/firebase/firebase-config";
-import { width } from "@mui/system";
 
 // const youtube = google.youtube("v3");
 
 function UploadShoutout() {
     const { authUser, userState } = useContext(UserContext);
 
+    const [GoogleAuthObj, setGoogleAuthObj] = useState();
+
+    const [accessToken, setAccessToken] = useState(null);
+
+    const initClient = () => {
+        window.gapi.client
+            .init({
+                apiKey: process.env.REACT_APP_API_KEY,
+                clientId: process.env.REACT_APP_CLIENT_ID,
+                scope: "https://www.googleapis.com/auth/youtube.upload",
+                discoveryDocs: [
+                    "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
+                ],
+            })
+            .then(() => {
+                setGoogleAuthObj(window.gapi.auth2.getAuthInstance());
+                console.log(
+                    "Success Got Client Obj: ",
+                    window.gapi.auth2.getAuthInstance()
+                );
+
+                setAccessToken(
+                    window.gapi.auth2
+                        .getAuthInstance()
+                        .currentUser.get()
+                        .getAuthResponse(true).access_token
+                );
+            })
+            .catch((error) => {
+                console.log("Error Inializing Gapi: ", error);
+            });
+    };
+
+    console.log("Gapi Obj: ", GoogleAuthObj);
     const [values, setValues] = useState({
-        image: "",
+        video: "",
         caption: "",
         tags: "",
         redirect: false,
@@ -45,6 +78,8 @@ function UploadShoutout() {
         postId: "",
     });
 
+    const [url, setUrl] = useState(null);
+    const [storagePath, setStoragePath] = useState();
     const [progress, setProgress] = useState(0);
     const [bizRelationships, setBizRelationships] = useState();
     const [businessInfo, setBusinessInfo] = useState();
@@ -68,7 +103,7 @@ function UploadShoutout() {
 
     const handleChange = (name) => (event) => {
         const value =
-            name === "image" ? event.target.files[0] : event.target.value;
+            name === "video" ? event.target.files[0] : event.target.value;
         setValues({ ...values, [name]: value });
     };
 
@@ -79,21 +114,40 @@ function UploadShoutout() {
         });
     };
 
-    const handleUpload = () => {
-        const uniqueId = Date.now();
+    // Submit
+    const handleSubmit = () => {
+        console.log("Submit");
+        const request = window.gapi.client.youtube.videos.insert({
+            part: "snippet,contentDetails,status",
+            resource: {
+                // Video title and description
+                snippet: {
+                    title: "El Titulo",
+                    description: "El Description",
+                    categoryId: "22",
+                },
+                status: {
+                    privacyStatus: "public",
+                },
+            },
+            media: {
+                mimeType: "video/mp4",
+                body: values.video.stream(), // readable stream
+            },
+        });
 
-        if (
-            values.image &&
-            values.image &&
-            values.caption &&
-            values.tags &&
-            businessInfo
-        ) {
-            let ext = values.image.name.split(".").pop();
+        request.execute((res) => console.log("response: ", res));
+    };
+
+    const handleUpload = () => {
+        const uniqueId = uuid();
+
+        if (values.video) {
+            setStoragePath(`shoutouts/${authUser.uid}/${uniqueId}.mp4`);
 
             const uploadTask = storage
-                .ref(`shoutouts/${authUser.uid}/${uniqueId}.${ext}`)
-                .put(values.image);
+                .ref(`shoutouts/${authUser.uid}/${uniqueId}.mp4`)
+                .put(values.video, { contentType: "video.mp4" });
 
             uploadTask.on(
                 "state-changed",
@@ -107,22 +161,20 @@ function UploadShoutout() {
                 },
                 (error) => {
                     // Error function
-                    console.log(error);
+                    console.log("Error Uploading Video: ", error);
                     alert(error.message);
                 },
                 () => {
                     // complete function...
-
                     storage
-                        .ref(`shoutouts/${authUser.uid}`)
-                        .child(`${uniqueId}.${ext}`)
+                        .ref(`shoutouts/${authUser.uid}/`)
+                        .child(`${uniqueId}.mp4`)
                         .getDownloadURL()
                         .then((url) => {
-                            // post image inside db
-
+                            // post video inside db
                             let postData = {
                                 userId: authUser.uid,
-                                imageUrl: url,
+                                postUrl: url,
                                 caption: values.caption,
                                 tags: values.tags,
                                 businessId: businessInfo.businessId,
@@ -139,25 +191,23 @@ function UploadShoutout() {
                                     console.log("DocRef ID: ", docRef.id);
                                     setAlertMsg({
                                         message:
-                                            "Successfully Published Shoutout",
+                                            "Stored! Now Sending to YouTube",
                                         severity: "success",
                                     });
 
                                     setValues({
-                                        image: "",
-                                        caption: "",
-                                        tags: "",
-                                        redirect: true,
-                                        error: "",
+                                        ...values,
                                         postId: docRef.id,
                                     });
 
                                     setOpenSnackBar(true);
+
+                                    // send YouTube Stuff
                                 })
                                 .catch((error) => {
                                     setAlertMsg({
                                         message:
-                                            "Error Publishin Shoutout. Try Again",
+                                            "Error Saving Shoutout details to db.",
                                         severity: "error",
                                     });
 
@@ -165,18 +215,84 @@ function UploadShoutout() {
                                 });
 
                             setProgress(0);
+
+                            setValues({
+                                ...values,
+                                video: "",
+                                caption: "",
+                                tags: "",
+                                redirect: true,
+                                error: "",
+                            });
+                        })
+                        .catch((error) => {
+                            console.log("Error getting download Url: ", error);
                         });
                 }
             );
         } else {
-            setAlertMsg({
-                message: "Fields Cannot Be Blank",
-                severity: "error",
-            });
-
-            setOpenSnackBar(true);
+            alert("Video Upload Failed");
         }
     };
+
+    const onSuccess = (result) => {
+        console.log("Youtube Url: ", result);
+
+        // let postData = {
+        //     userId: authUser.uid,
+        //     postUrl: result.filesUploaded[0].url,
+        //     caption: values.caption,
+        //     tags: values.tags,
+        //     businessId: businessInfo.businessId,
+        //     businessName: businessInfo.businessName,
+        //     likes: [],
+        //     comments: [],
+        //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        // };
+
+        // db.collection("shoutouts")
+        //     .add(postData)
+        //     .then((docRef) => {
+        //         console.log("DocRef ID: ", docRef.id);
+        //         setAlertMsg({
+        //             message: "Successfully Published Shoutout",
+        //             severity: "success",
+        //         });
+
+        //         setValues({
+        //             ...values,
+        //             postId: docRef.id,
+        //         });
+
+        //         setOpenSnackBar(true);
+        //     })
+        //     .catch((error) => {
+        //         setAlertMsg({
+        //             message: "Error Publishin Shoutout. Try Again",
+        //             severity: "error",
+        //         });
+
+        //         setOpenSnackBar(true);
+        //     });
+
+        // setProgress(0);
+
+        // setValues({
+        //     ...values,
+        //     video: "",
+        //     caption: "",
+        //     tags: "",
+        //     redirect: true,
+        //     error: "",
+        // });
+    };
+    const onError = (error) => {
+        console.error("error YouTube: ", error);
+    };
+
+    useEffect(() => {
+        window.gapi.load("client:auth2", initClient);
+    }, []);
 
     useEffect(() => {
         db.collection("users")
@@ -201,13 +317,8 @@ function UploadShoutout() {
             });
     }, []);
 
-    console.log("User State at Shoutout Upload: ", userState);
     if (values.redirect) {
-        return (
-            <Redirect
-                to={`/shoutout/${values.postId}/${businessInfo.businessId}`}
-            />
-        );
+        return <Redirect to={"/hero/shoutout/" + values.postId} />;
     }
 
     if (!bizRelationships) {
@@ -228,37 +339,56 @@ function UploadShoutout() {
 
     return (
         <div className="upload-shoutout__container">
+            {GoogleAuthObj?.currentUser
+                .get()
+                .hasGrantedScopes(
+                    "https://www.googleapis.com/auth/youtube.upload"
+                ) ? (
+                <>
+                    <div onClick={() => GoogleAuthObj.signOut()}>
+                        isAuthorized - SignOut
+                    </div>
+                    <div>{`auth toke: ${
+                        GoogleAuthObj?.currentUser.get().getAuthResponse(true)
+                            .access_token
+                    }`}</div>
+                </>
+            ) : (
+                <div onClick={() => GoogleAuthObj.signIn()}>
+                    Google Sign IN Button
+                </div>
+            )}
+            <Signup setAccessToken={setAccessToken} />
             <CardContent>
                 <center>
-                    <h1>New Shoutout</h1>
-                    <div className="file-input">
-                        <input
-                            type="file"
-                            className="file"
-                            id="file"
-                            onChange={handleChange("image")}
-                        />
-                        <label htmlFor="file">
-                            Upload Image <UploadIcon />
-                            <p className="file-name"></p>
-                        </label>
-                    </div>
+                    <h1>New Video</h1>
+                    <input
+                        accept="image/*"
+                        onChange={handleChange("video")}
+                        className="file-input"
+                        id="icon-button-file"
+                        type="file"
+                    />
+                    <label hor="icon-button-file">
+                        <button
+                            color="secondary"
+                            variant="contained"
+                            component="span"
+                        >
+                            Upload
+                            <UploadIcon />
+                        </button>
+                    </label>{" "}
                 </center>
+                <span className="">
+                    {values.video ? values.video.name : ""}
+                </span>
                 <progress
                     className="imageupload__progress"
                     value={progress}
                     max="100"
                 />
                 <br />
-                <div className="">
-                    {values.image && (
-                        <img
-                            style={{ width: "300px", height: "auto" }}
-                            alt="preview"
-                            src={URL.createObjectURL(values.image)}
-                        />
-                    )}
-                </div>
                 <div className="biz-relationship__wrapper">
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">
@@ -320,7 +450,7 @@ function UploadShoutout() {
                 )}
             </CardContent>
             <CardActions>
-                <button onClick={handleUpload} className="upload-shoutout-btn">
+                <button onClick={handleSubmit} className="upload-shoutout-btn">
                     Submit
                 </button>
             </CardActions>
@@ -333,7 +463,7 @@ function UploadShoutout() {
                 >
                     <Alert
                         onClose={handleCloseSnackBar}
-                        severity={alertMsg.severity}
+                        severity="success"
                         sx={{ width: "100%" }}
                     >
                         {alertMsg.message}

@@ -19,9 +19,10 @@ const MyProfile = lazy(() => import("../pages/Hero"));
 // const EditProfile = lazy(() => import("../pages/edit_profile/EditProfile.js"));
 
 // Shoutout Posts
+const Shoutout = lazy(() => import("../pages/Shoutout.js"));
 // const NewPost = lazy(() => import("../pages/post/AddPost.js"));
 // const Post = lazy(() => import("../pages/post/Post.js"));
-// const UserPosts = lazy(() => import("../pages/post/UserPosts.js"));
+
 const HotSpot = lazy(() => import("../pages/HotSpot.js"));
 
 // Digital Wallet
@@ -67,6 +68,7 @@ export {
     Income,
     MyProfile,
     HotSpot,
+    Shoutout,
     Shop,
     Store,
     Checkin,

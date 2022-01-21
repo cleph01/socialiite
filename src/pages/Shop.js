@@ -4,7 +4,7 @@ import { UserContext } from "../contexts/UserContext";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import Typography from "@mui/material/Typography";
+import PhoneIcon from "@mui/icons-material/Phone";
 import Avatar from "@mui/material/Avatar";
 import Divider from "@mui/material/Divider";
 
@@ -218,6 +218,16 @@ function Shop() {
                                 border: "1px solid #f0f0f0",
                             }}
                         />
+                    }
+                    action={
+                        <a
+                            href={`tel:${business.phone}`}
+                            style={{ textDecoration: "none" }}
+                        >
+                            <IconButton aria-label="settings">
+                                <PhoneIcon />
+                            </IconButton>
+                        </a>
                     }
                     title={business.businessName}
                     subheader={`${business.address}, ${business.city} ${business.state}`}
