@@ -10,20 +10,21 @@ const authUser = localStorage.getItem("authUser");
 function Shoutout({ item }) {
     return (
         <ImageListItem>
-            {item.post.youtubeId ? (
+            {item.youtubeId ? (
                 <YouTubeEmbed youtubeId={item.post.youtubeId} />
             ) : (
                 <img
-                    src={`${item.post.imageUrl}`}
-                    srcSet={`${item.post.imageUrl}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                    alt={item.post.title}
+                    src={`${item.imageUrl}`}
+                    srcSet={`${item.imageUrl}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                    alt={item.title}
                     loading="lazy"
                 />
             )}
-            <Link to={`/post/${authUser.uid}/${item.postId}`}>
-                <ImageListItemBar sx={{padding:"0px 6px"}}
-                    title={`${item.post.caption.slice(0, 10)}...`}
-                    subtitle={item.post.businessName}
+            <Link to={`/shoutout/${item.postId}/${item.businessId}`}>
+                <ImageListItemBar
+                    sx={{ padding: "0px 6px" }}
+                    title={`${item.caption.slice(0, 10)}...`}
+                    subtitle={item.businessName}
                     position="below"
                     actionIcon={<LinkIcon />}
                 />

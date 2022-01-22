@@ -30,7 +30,7 @@ function Shoutouts() {
                 setPosts(
                     querySnapshot.docs.map((doc) => ({
                         postId: doc.id,
-                        post: doc.data(),
+                        ...doc.data(),
                     }))
                 );
             })
