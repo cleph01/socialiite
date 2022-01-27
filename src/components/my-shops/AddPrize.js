@@ -20,7 +20,13 @@ import Select from "@mui/material/Select";
 
 import "../../lib/scss/components/my-shops/add-prize.scss";
 
-function AddPrize({ setAlertMsg, setOpenSnackBar, prizes, setPrizes }) {
+function AddPrize({
+    setAlertMsg,
+    setOpenSnackBar,
+    prizes,
+    setPrizes,
+    setShowAddPrize,
+}) {
     const [newPrize, setNewPrize] = useState({
         description: "",
         emoji: "",
@@ -141,6 +147,12 @@ function AddPrize({ setAlertMsg, setOpenSnackBar, prizes, setPrizes }) {
                 <div className="add-prize-btn" onClick={addPrize}>
                     Add Prize
                 </div>
+                <div
+                    className="cancel-btn"
+                    onClick={() => setShowAddPrize((prevState) => !prevState)}
+                >
+                    Close
+                </div>
             </div>
             <List className="prize-list__wrapper">
                 {prizes.length !== 0 &&
@@ -171,7 +183,7 @@ function AddPrize({ setAlertMsg, setOpenSnackBar, prizes, setPrizes }) {
                                             <span>
                                                 <span>Tags: </span>
 
-                                                {item.tags?.map((tag, i) => (
+                                                {item.tags.map((tag, i) => (
                                                     <span key={i}>
                                                         {tag}
                                                         {i ===
@@ -180,6 +192,10 @@ function AddPrize({ setAlertMsg, setOpenSnackBar, prizes, setPrizes }) {
                                                             : ","}{" "}
                                                     </span>
                                                 ))}
+                                            </span>
+                                            <br />
+                                            <span>
+                                                Point Cost: {item.pointCost}
                                             </span>
                                         </span>
                                     }

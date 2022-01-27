@@ -137,12 +137,24 @@ function EditShop() {
                                                 });
                                         });
                                     }
+
+                                    setAlertMsg({
+                                        message: "Edits Saved Successfully!",
+                                        severity: "success",
+                                    });
+                                    setOpenSnackBar(true);
                                 })
                                 .catch((error) => {
                                     console.log(
                                         "Error Saving Edited Business: ",
                                         error
                                     );
+
+                                    setAlertMsg({
+                                        message: "Edits Failed to Save",
+                                        severity: "error",
+                                    });
+                                    setOpenSnackBar(true);
                                 });
 
                             setProgress(0);
@@ -160,6 +172,7 @@ function EditShop() {
                 businessName: values.businessName || business.businessName,
                 aboutUs: values.aboutUs || business.aboutUs,
                 logoUrl: business.logoUrl || "",
+                tags: values.tags.split(" ") || business.tags,
             };
 
             db.collection("shops")
@@ -185,9 +198,20 @@ function EditShop() {
                                 });
                         });
                     }
+                    setAlertMsg({
+                        message: "Edits Saved Successfully!",
+                        severity: "success",
+                    });
+                    setOpenSnackBar(true);
                 })
                 .catch((error) => {
                     console.log("Error Saving Edited Business: ", error);
+
+                    setAlertMsg({
+                        message: "Edits failed!",
+                        severity: "error",
+                    });
+                    setOpenSnackBar(true);
                 });
         } else {
             alert("Nothing to Upload");
@@ -204,7 +228,7 @@ function EditShop() {
             .catch((error) => {
                 console.log("Error getting business info: ", error);
             });
-    }, []);
+    }, [businessId]);
 
     if (!business) {
         return (
@@ -308,6 +332,7 @@ function EditShop() {
                         setPrizes={setPrizes}
                         setOpenSnackBar={setOpenSnackBar}
                         setAlertMsg={setAlertMsg}
+                        setShowAddPrize={setShowAddPrize}
                     />
                 )}
 

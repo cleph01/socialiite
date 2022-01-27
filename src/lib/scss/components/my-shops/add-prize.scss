@@ -9,6 +9,56 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        .add-prize-btn {
+            display: block;
+            position: relative;
+            width: 120px;
+            height: 40px;
+            border-radius: 25px;
+            background: #3d9ad1;
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease-out;
+        }
+        .submit-btn {
+            display: block;
+            position: relative;
+            width: 100px;
+            height: 40px;
+            border-radius: 25px;
+            background: #22407c;
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease-out;
+        }
+
+        .cancel-btn {
+            display: block;
+            position: relative;
+            width: 100px;
+            height: 40px;
+            border-radius: 25px;
+            background: rgb(164, 164, 173);
+            box-shadow: 0 4px 7px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(61, 60, 60);
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease-out;
+        }
     }
 
     .prize-list__wrapper {

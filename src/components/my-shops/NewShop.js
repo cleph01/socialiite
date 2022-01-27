@@ -8,6 +8,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 import Divider from "@mui/material/Divider";
 
@@ -29,6 +30,8 @@ function NewShop() {
         aboutUs: "",
         tags: "",
     });
+
+    const [showAddPrize, setShowAddPrize] = useState(false);
 
     const [progress, setProgress] = useState(0);
 
@@ -118,6 +121,8 @@ function NewShop() {
                             severity: "success",
                         });
                         setOpenSnackBar(true);
+
+                        window.location.reload();
                     })
                     .catch((error) => {
                         console.log("Error Creating New Shop: ", error);
@@ -174,12 +179,30 @@ function NewShop() {
                             className="input"
                             multiline
                         />
-                        <AddPrize
-                            prizes={prizes}
-                            setPrizes={setPrizes}
-                            setAlertMsg={setAlertMsg}
-                            setOpenSnackBar={setOpenSnackBar}
-                        />
+                        <br />
+                        <br />
+                        {!showAddPrize ? (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    marginBottom: "25px",
+                                }}
+                                onClick={() => setShowAddPrize(true)}
+                            >
+                                <AddCircleOutlineIcon />
+                                {"  "}Add Prize
+                            </div>
+                        ) : (
+                            <AddPrize
+                                prizes={prizes}
+                                setPrizes={setPrizes}
+                                setOpenSnackBar={setOpenSnackBar}
+                                setAlertMsg={setAlertMsg}
+                                setShowAddPrize={setShowAddPrize}
+                            />
+                        )}
                     </div>
                 </CardContent>
                 <center>

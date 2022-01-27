@@ -35,7 +35,7 @@ function EditPrizeList({ businessId }) {
             .catch((error) => {
                 console.log("Error GEtting Price List: ", error);
             });
-    }, []);
+    }, [businessId]);
 
     if (!prizes) {
         return (
@@ -89,6 +89,10 @@ function EditPrizeList({ businessId }) {
                                                         : ","}{" "}
                                                 </span>
                                             ))}
+                                        </span>
+                                        <br />
+                                        <span>
+                                            Point Cost: {item.pointCost}
                                         </span>
                                     </span>
                                 }

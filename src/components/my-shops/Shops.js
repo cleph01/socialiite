@@ -13,7 +13,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 import "../../lib/scss/components/my-shops/shop-list.scss";
 
-function Shop({ shops }) {
+function Shop({ shops, setOpenDeleteModal, setDeleteBusiness }) {
     const history = useHistory();
 
     return (
@@ -44,7 +44,13 @@ function Shop({ shops }) {
                                     )
                                 }
                             />
-                            <DeleteForeverIcon className="list-icons" />
+                            <DeleteForeverIcon
+                                className="list-icons"
+                                onClick={() => {
+                                    setDeleteBusiness(shop);
+                                    setOpenDeleteModal(true);
+                                }}
+                            />
                         </ListItemSecondaryAction>
                     </ListItem>
                     <Divider />
