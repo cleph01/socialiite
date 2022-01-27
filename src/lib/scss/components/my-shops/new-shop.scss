@@ -9,6 +9,16 @@
     .card-wrapper {
         width: 100%;
 
+        .edit-shop-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .logo-header {
+                margin: 15px 0px 25px;
+            }
+        }
         .input {
             width: 100%;
         }

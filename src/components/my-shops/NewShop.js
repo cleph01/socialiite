@@ -1,65 +1,140 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 import { useHistory } from "react-router-dom";
+import { storage, db } from "../../services/firebase/firebase-config";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
+import Divider from "@mui/material/Divider";
 
-import NewShopLogoUpload from "../my-shops/NewShopLogoUpload";
-import NewPrizeInput from "../my-shops/NewPrizeInput";
+import Stack from "@mui/material/Stack";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+import AddPrize from "../my-shops/AddPrize";
 
 import "../../lib/scss/components/my-shops/new-shop.scss";
 
 function NewShop() {
     const history = useHistory();
 
+    const { authUser } = useContext(UserContext);
+
     const [values, setValues] = useState({
-        name: "",
-        handle: "",
-        email: "",
-        bio: "",
-        open: false,
-        error: "",
-        redirectToProfile: false,
+        businessName: "",
+        aboutUs: "",
+        tags: "",
     });
 
-    const [prizes, setPrizes] = useState([
-        { description: "", emoji: "", pointCost: 0, inentive: true },
-    ]);
+    const [progress, setProgress] = useState(0);
 
-    const [age, setAge] = React.useState(false);
+    const [prizes, setPrizes] = useState([]);
 
-    const appendPrizeField = () => {
-        setValues((prevState) => ({ ...prevState, error: "" }));
+    const [alertMsg, setAlertMsg] = useState({
+        message: "",
+        severity: "",
+    });
 
-        setPrizes((prevState) => [
-            ...prevState,
-            { description: "", emoji: "", pointCost: 0, inentive: true },
-        ]);
-    };
-
-    const deletePrizeField = (indexPos) => {
-        if (prizes.length === 1) {
-            setValues((prevState) => ({
-                ...prevState,
-                error: "Must Have At Least One Prize",
-            }));
-        } else {
-            setPrizes(prizes.filter((item, index) => index !== indexPos));
-        }
-    };
-
-    const handleAgeChange = (event) => {
-        setAge(event.target.value);
-    };
+    const [openSnackBar, setOpenSnackBar] = useState(false);
 
     const handleChange = (name) => (event) => {
         setValues({ ...values, [name]: event.target.value });
+    };
+
+    const Alert = forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === "clickaway") {
+            return;
+        }
+
+        setOpenSnackBar(false);
+    };
+
+    const handleSubmit = () => {
+        if (values.businessName || values.aboutUs) {
+            if (prizes.length === 0) {
+                setAlertMsg({
+                    message: "Must Include 1 Prize Minimum",
+                    severity: "error",
+                });
+                setOpenSnackBar(true);
+            } else {
+                db.collection("shops")
+                    .add({
+                        businessName: values.businessName,
+                        aboutUs: values.aboutUs,
+                        logoUrl: "",
+                        address: "",
+                        city: "",
+                        state: "",
+                        googlePlaceId: "",
+                        likes: [],
+                        lat: null,
+                        lon: null,
+                        phone: "",
+                        subscribed: true,
+                        tags: values.tags.toLowerCase().split(" "),
+                        ownerId: authUser.uid,
+                    })
+                    .then((docRef) => {
+                        prizes.forEach((prize) => {
+                            db.collection("prizes")
+                                .add({
+                                    businessId: docRef.id,
+                                    description: prize.description,
+                                    emoji: prize.emoji,
+                                    incentive: prize.incentive,
+                                    pointCost: prize.pointCost,
+                                    tags: prize.tags,
+                                })
+                                .then((prizeRef) => {
+                                    console.log(
+                                        "new shop created with Id: ",
+                                        prizeRef.id
+                                    );
+                                })
+                                .catch((error) => {
+                                    console.log(
+                                        "Error Creating New Shop: ",
+                                        error
+                                    );
+                                    setAlertMsg({
+                                        message: "Shop Creation Failed",
+                                        severity: "error",
+                                    });
+                                    setOpenSnackBar(true);
+                                });
+                        });
+
+                        setAlertMsg({
+                            message: "New Shop Created Successfully",
+                            severity: "success",
+                        });
+                        setOpenSnackBar(true);
+                    })
+                    .catch((error) => {
+                        console.log("Error Creating New Shop: ", error);
+                        setAlertMsg({
+                            message: "Shop Creation Failed",
+                            severity: "error",
+                        });
+                        setOpenSnackBar(true);
+                    });
+            }
+        } else {
+            setAlertMsg({
+                message: "Fields Cannot Be Blank",
+                severity: "error",
+            });
+            setOpenSnackBar(true);
+        }
     };
 
     console.log("Prizes: ", prizes);
@@ -68,53 +143,50 @@ function NewShop() {
         <div className="new-shop-container">
             <Card className="card-wrapper">
                 <CardContent>
-                    <center>
+                    <div className="new-shop-header">
                         <Typography variant="h5">New Shop</Typography>
-                        <NewShopLogoUpload />
+
+                        <br />
                         <TextField
                             id="handle"
                             label="Shop Name"
-                            value={values.handle}
-                            onChange={handleChange("handle")}
+                            value={values.businessName}
+                            onChange={handleChange("businessName")}
                             margin="normal"
                             className="input"
                         />
                         <br />
                         <TextField
                             id="bio"
-                            label="Description"
-                            value={values.bio}
-                            onChange={handleChange("bio")}
+                            label="About Us"
+                            value={values.aboutUs}
+                            onChange={handleChange("aboutUs")}
                             margin="normal"
                             className="input"
                             multiline
                         />
-                        {prizes.map((prize, i) => (
-                            <NewPrizeInput
-                                key={i}
-                                index={i}
-                                prize={prize}
-                                deletePrizeField={deletePrizeField}
-                                age={age}
-                            />
-                        ))}
-                        <br />{" "}
-                        {values.error && (
-                            <Typography component="p" color="error">
-                                {values.error}
-                            </Typography>
-                        )}
-                    </center>
+                        <TextField
+                            id="tags"
+                            label="Business Tags"
+                            value={values.tags}
+                            onChange={handleChange("tags")}
+                            margin="normal"
+                            className="input"
+                            multiline
+                        />
+                        <AddPrize
+                            prizes={prizes}
+                            setPrizes={setPrizes}
+                            setAlertMsg={setAlertMsg}
+                            setOpenSnackBar={setOpenSnackBar}
+                        />
+                    </div>
                 </CardContent>
                 <center>
                     <div className="btn-wrapper">
-                        <div
-                            className="add-prize-btn"
-                            onClick={appendPrizeField}
-                        >
-                            Add Prize
+                        <div className="submit-btn" onClick={handleSubmit}>
+                            Submit
                         </div>
-                        <div className="submit-btn">Submit</div>
                         <div
                             className="cancel-btn"
                             onClick={() => history.push("/hero/my-shops")}
@@ -124,6 +196,21 @@ function NewShop() {
                     </div>
                 </center>
             </Card>
+            <Stack spacing={2} sx={{ width: "100%" }}>
+                <Snackbar
+                    open={openSnackBar}
+                    autoHideDuration={3000}
+                    onClose={handleCloseSnackBar}
+                >
+                    <Alert
+                        onClose={handleCloseSnackBar}
+                        severity={alertMsg.severity}
+                        sx={{ width: "100%" }}
+                    >
+                        {alertMsg.message}
+                    </Alert>
+                </Snackbar>
+            </Stack>
         </div>
     );
 }

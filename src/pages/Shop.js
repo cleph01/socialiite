@@ -12,6 +12,7 @@ import Skeleton from "@mui/material/Skeleton";
 
 import NavBar from "../components/NavBar";
 import ActionsBar from "../components/shops/ActionsBar";
+import Comments from "../components/shops/Comments";
 import AvailablePrizes from "../components/shops/AvailablePrizes";
 
 import IconButton from "@mui/material/IconButton";
@@ -106,11 +107,10 @@ function Shop() {
 
         db.collection("shops")
             .doc(businessId)
-            .update({
-                comments: firebase.firestore.FieldValue.arrayUnion({
-                    comment: comment,
-                    displayName: userState.displayName,
-                }),
+            .collection("comments")
+            .add({
+                comment: comment,
+                displayName: userState.displayName,
             })
             .then(() => {
                 console.log("Successfully Adding Comment to Business");
@@ -121,16 +121,14 @@ function Shop() {
                 console.log("Error Adding Comment to Business: ", error);
             });
 
-        setBusiness((prevState) => ({
+        setComments((prevState) => [
             ...prevState,
-            comments: [
-                ...prevState.comments,
-                {
-                    comment: comment,
-                    displayName: userState.displayName,
-                },
-            ],
-        }));
+
+            {
+                comment: comment,
+                displayName: userState.displayName,
+            },
+        ]);
     };
 
     /**
@@ -276,13 +274,11 @@ function Shop() {
                     />
 
                     <div className="shop__comments">
-                        <small>Latest Reviews:</small>
-                        {business.comments.map((comment, index) => (
-                            <p key={index}>
-                                <strong>{comment.displayName}</strong>{" "}
-                                {comment.comment}
-                            </p>
-                        ))}
+                        <Comments
+                            businessId={businessId}
+                            comments={comments}
+                            setComments={setComments}
+                        />
                     </div>
 
                     {authUser && (

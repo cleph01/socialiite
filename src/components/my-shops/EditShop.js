@@ -1,11 +1,14 @@
 import React, { useState, useEffect, forwardRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
+import { storage, db } from "../../services/firebase/firebase-config";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 import Divider from "@mui/material/Divider";
 
@@ -15,11 +18,9 @@ import Stack from "@mui/material/Stack";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-import NewShopLogoUpload from "../my-shops/NewShopLogoUpload";
+import EditShopLogoUpload from "../my-shops/EditShopLogoUpload";
 import EditPrizeList from "./EditPrizeList";
 import AddPrize from "./AddPrize";
-
-import { db } from "../../services/firebase/firebase-config";
 
 import "../../lib/scss/components/my-shops/edit-shop.scss";
 
@@ -32,12 +33,17 @@ function EditShop() {
 
     const [prizes, setPrizes] = useState([]);
 
+    const [showAddPrize, setShowAddPrize] = useState(false);
+
+    const [progress, setProgress] = useState();
+
     console.log("businessId: ", businessId);
 
     const [values, setValues] = useState({
         businessName: "",
         aboutUs: "",
         logoUrl: "",
+        image: null,
     });
 
     const [alertMsg, setAlertMsg] = useState({
@@ -63,25 +69,128 @@ function EditShop() {
         setOpenSnackBar(false);
     };
 
-    const submitPrize = () => {
-        if (prizes.length === 0) {
-            setAlertMsg({
-                message: "Prizes Can't Be Empty",
-                severity: "error",
-            });
+    const submitUpdate = () => {
+        if (values.image) {
+            const ext = values.image.name.split(".").pop();
 
-            setOpenSnackBar(true);
+            const uploadTask = storage
+                .ref(`logos/${businessId}/logo.${ext}`)
+                .put(values.image);
+
+            uploadTask.on(
+                "state-changed",
+                (snapshot) => {
+                    // progress bar function
+                    const progress = Math.round(
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                    );
+
+                    setProgress(progress);
+                },
+                (error) => {
+                    // Error function
+                    console.log(error);
+                    alert(error.message);
+                },
+                () => {
+                    // complete function...
+                    storage
+                        .ref(`logos/${businessId}`)
+                        .child(`logo.${ext}`)
+                        .getDownloadURL()
+                        .then((url) => {
+                            // Update bizObject
+                            const bizObj = {
+                                businessName:
+                                    values.businessName ||
+                                    business.businessName,
+                                aboutUs: values.aboutUs || business.aboutUs,
+                                logoUrl: url,
+                            };
+
+                            db.collection("shops")
+                                .doc(businessId)
+                                .update({
+                                    updateTimestamp: Date.now(),
+                                    ...bizObj,
+                                })
+                                .then(() => {
+                                    if (prizes.length > 0) {
+                                        prizes.forEach((prize) => {
+                                            db.collection("prizes")
+                                                .add({
+                                                    businessId: businessId,
+                                                    timestamp: Date.now(),
+                                                    ...prize,
+                                                })
+                                                .then((prizeRef) => {
+                                                    console.log(
+                                                        "Prize Added: ",
+                                                        prizeRef.id
+                                                    );
+                                                })
+                                                .catch((error) => {
+                                                    console.log(
+                                                        "Error Saving Prizes: ",
+                                                        error
+                                                    );
+                                                });
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log(
+                                        "Error Saving Edited Business: ",
+                                        error
+                                    );
+                                });
+
+                            setProgress(0);
+
+                            setValues((prevState) => ({
+                                ...prevState,
+                                image: null,
+                            }));
+                        });
+                }
+            );
+        } else if (values.businessName || values.aboutUs || prizes.length > 0) {
+            // Update business Object only
+            const bizObj = {
+                businessName: values.businessName || business.businessName,
+                aboutUs: values.aboutUs || business.aboutUs,
+                logoUrl: business.logoUrl || "",
+            };
+
+            db.collection("shops")
+                .doc(businessId)
+                .update({
+                    updateTimestamp: Date.now(),
+                    ...bizObj,
+                })
+                .then(() => {
+                    if (prizes.length > 0) {
+                        prizes.forEach((prize) => {
+                            db.collection("prizes")
+                                .add({
+                                    businessId: businessId,
+                                    timestamp: Date.now(),
+                                    ...prize,
+                                })
+                                .then((prizeRef) => {
+                                    console.log("Prize Added: ", prizeRef.id);
+                                })
+                                .catch((error) => {
+                                    console.log("Error Saving Prizes: ", error);
+                                });
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.log("Error Saving Edited Business: ", error);
+                });
         } else {
-            prizes.forEach((prize) => {
-                db.collection("prizes")
-                    .add(prize)
-                    .then((docId) => {
-                        console.log("New Prize Added w Id: ", docId);
-                    })
-                    .catch((error) => {
-                        console.log("Error Adding Prize: ", error);
-                    });
-            });
+            alert("Nothing to Upload");
         }
     };
 
@@ -123,17 +232,30 @@ function EditShop() {
                         <Typography variant="h5">
                             {business.businessName}
                         </Typography>
-                        <NewShopLogoUpload />
+                        <EditShopLogoUpload
+                            setValues={setValues}
+                            values={values}
+                            progress={progress}
+                        />
                         <Divider sx={{ width: "100%" }} />
                         <div className="logo-header">
-                            <Typography variant="h5">Current Logo:</Typography>
+                            <Typography variant="h5">
+                                {business.logoUrl
+                                    ? "Current Logo: "
+                                    : "Preview: "}
+                            </Typography>
                             <br />
-                            <CardMedia
-                                component="img"
-                                height="194"
-                                image={business.logoUrl}
-                                alt="Logo"
-                            />
+                            {(business.logoUrl || values.image) && (
+                                <CardMedia
+                                    component="img"
+                                    height="194"
+                                    image={
+                                        business.logoUrl ||
+                                        URL.createObjectURL(values.image)
+                                    }
+                                    alt="Logo"
+                                />
+                            )}
                         </div>
                         <TextField
                             id="handle"
@@ -153,20 +275,45 @@ function EditShop() {
                             className="input"
                             multiline
                         />
+                        <br />
+                        <TextField
+                            id="bio"
+                            label="Tags"
+                            value={values.tags || business.tags.join(" ")}
+                            onChange={handleChange("tags")}
+                            margin="normal"
+                            className="input"
+                            multiline
+                        />
                     </div>
                 </CardContent>
                 <EditPrizeList businessId={businessId} />
-                <AddPrize
-                    businessId={businessId}
-                    prizes={prizes}
-                    setPrizes={setPrizes}
-                    setOpenSnackBar={setOpenSnackBar}
-                    setAlertMsg={setAlertMsg}
-                />
+                {!showAddPrize ? (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: "25px",
+                        }}
+                        onClick={() => setShowAddPrize(true)}
+                    >
+                        <AddCircleOutlineIcon />
+                        {"  "}Add Prize
+                    </div>
+                ) : (
+                    <AddPrize
+                        businessId={businessId}
+                        prizes={prizes}
+                        setPrizes={setPrizes}
+                        setOpenSnackBar={setOpenSnackBar}
+                        setAlertMsg={setAlertMsg}
+                    />
+                )}
 
                 <center>
                     <div className="btn-wrapper">
-                        <div className="submit-btn" onClick={submitPrize}>
+                        <div className="submit-btn" onClick={submitUpdate}>
                             Submit
                         </div>
                         <div

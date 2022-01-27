@@ -20,13 +20,7 @@ import Select from "@mui/material/Select";
 
 import "../../lib/scss/components/my-shops/add-prize.scss";
 
-function EditPrizeList({
-    businessId,
-    setAlertMsg,
-    setOpenSnackBar,
-    prizes,
-    setPrizes,
-}) {
+function AddPrize({ setAlertMsg, setOpenSnackBar, prizes, setPrizes }) {
     const [newPrize, setNewPrize] = useState({
         description: "",
         emoji: "",
@@ -34,8 +28,6 @@ function EditPrizeList({
         incentive: false,
         tags: "",
     });
-
-    const [incentive, setIncentive] = useState(false);
 
     const addPrize = () => {
         if (newPrize.description || newPrize.emoji || newPrize.pointCost) {
@@ -46,7 +38,7 @@ function EditPrizeList({
                     description: newPrize.description,
                     emoji: newPrize.emoji,
                     pointCost: newPrize.pointCost,
-                    incentive: incentive,
+                    incentive: newPrize.incentive,
                     tags: newPrize.tags.toLowerCase().split(" "),
                 },
             ]);
@@ -75,7 +67,10 @@ function EditPrizeList({
     };
 
     const handleIncentiveChange = (event) => {
-        setIncentive(event.target.value);
+        setNewPrize((prevState) => ({
+            ...prevState,
+            incentive: !prevState.incentive,
+        }));
     };
 
     const handleRemovePrize = (id) => (event) => {
@@ -126,12 +121,14 @@ function EditPrizeList({
             />
             <Box sx={{ minWidth: 120, marginTop: "15px" }}>
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                    <InputLabel id="demo-simple-select-label">
+                        Incentive
+                    </InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={newPrize.incentive}
-                        label="Age"
+                        label="Incentive"
                         onChange={handleIncentiveChange}
                     >
                         <MenuItem value={true}>True</MenuItem>
@@ -214,4 +211,4 @@ function EditPrizeList({
     );
 }
 
-export default React.memo(EditPrizeList);
+export default React.memo(AddPrize);

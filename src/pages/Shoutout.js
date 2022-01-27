@@ -13,6 +13,7 @@ import Skeleton from "@mui/material/Skeleton";
 
 import NavBar from "../components/NavBar";
 import ActionsBar from "../components/shoutouts/ActionsBar";
+import Comments from "../components/shoutouts/Comments";
 
 import "../lib/scss/pages/shop.scss";
 
@@ -37,13 +38,12 @@ function Shoutout() {
     const handlePostComment = (event) => {
         event.preventDefault();
 
-        db.collection("shops")
+        db.collection("shoutouts")
             .doc(shoutoutId)
-            .update({
-                comments: firebase.firestore.FieldValue.arrayUnion({
-                    comment: comment,
-                    displayName: userState.displayName,
-                }),
+            .collection("comments")
+            .add({
+                comment: comment,
+                displayName: userState.displayName,
             })
             .then(() => {
                 console.log("Successfully Adding Comment to Business");
@@ -54,16 +54,14 @@ function Shoutout() {
                 console.log("Error Adding Comment to Business: ", error);
             });
 
-        // setBusiness((prevState) => ({
-        //     ...prevState,
-        //     comments: [
-        //         ...prevState.comments,
-        //         {
-        //             comment: comment,
-        //             displayName: userState.displayName,
-        //         },
-        //     ],
-        // }));
+        setComments((prevState) => [
+            ...prevState,
+
+            {
+                comment: comment,
+                displayName: userState.displayName,
+            },
+        ]);
     };
 
     /**
@@ -180,13 +178,11 @@ function Shoutout() {
 
                     <br />
                     <div className="shop__comments">
-                        <small>Latest Reviews:</small>
-                        {shoutout.comments?.map((comment, index) => (
-                            <p key={index}>
-                                <strong>{comment.displayName}</strong>{" "}
-                                {comment.comment}
-                            </p>
-                        ))}
+                        <Comments
+                            shoutoutId={shoutoutId}
+                            comments={comments}
+                            setComments={setComments}
+                        />
                     </div>
 
                     {authUser && (
